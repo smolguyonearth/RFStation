@@ -1,30 +1,22 @@
-# Station Project Setup
-
-Welcome to the Station project! This guide will help you set up the development environment using Docker so you can start coding right away without having to manually install all the dependencies on your machine.
-
 ## Prerequisites
-
 Make sure you have the following installed on your machine:
 - [Docker](https://docs.docker.com/get-docker/)
 - [Docker Compose](https://docs.docker.com/compose/install/)
 
 ## Getting Started
 
-1. **Clone the repository:**
+1. **Clone the repository (with submodules):**
+   The `backend` is a Git submodule. To clone the main repo and the backend at the same time, run:
    ```bash
-   git clone <repository_url>
+   git clone --recurse-submodules https://github.com/smolguyonearth/RFStation
    cd Station
    ```
+   *(If you already cloned it normally, run `git submodule update --init --recursive` inside the Station folder).*
 
-2. **Pull the Backend Repository:**
-   The backend is its own separate Git repository. You must clone or pull it into the `backend` folder:
+2. **Pulling the latest Backend code:**
+   Whenever the backend code is updated, you can pull the latest changes by running:
    ```bash
-   # If the backend folder is empty, clone it:
-   git clone <backend_repository_url> backend
-   # Or if you just need to pull the latest changes:
-   cd backend
-   git pull origin main
-   cd ..
+   git submodule update --remote --merge
    ```
 
 3. **Environment Variables:**
@@ -39,15 +31,12 @@ Make sure you have the following installed on your machine:
    *Note: You only need the `--build` flag the first time or when you add new dependencies (like running `npm install` or `bun install`). For subsequent runs, just `docker-compose up` is enough.*
 
 ## Live Reloading
-
 We have configured `docker-compose.yml` to map your local files into the Docker containers. This means **you can edit the code locally on your machine, and the changes will instantly reflect in the running containers!**
 
 - **Frontend:** Built with Vite + React. It automatically reloads when you save a file.
   - Access at: `http://localhost:5173`
 - **Backend:** Built with Bun + Elysia. It runs with the `--watch` flag, so saving a backend file instantly restarts the server.
   - Access at: `http://localhost:3000`
-- **Database:** PostgreSQL. It initializes with the schema located in `db/init.sql`.
-  - Access at: `localhost:5432`
 
 ## Adding Dependencies
 
@@ -56,5 +45,3 @@ If you need to add a new package (e.g., to the frontend), you should do it from 
 1. Stop the containers (`Ctrl+C` or `docker-compose down`).
 2. Add the dependency locally using your package manager.
 3. Rebuild the containers: `docker-compose up --build`.
-
-Happy coding!
