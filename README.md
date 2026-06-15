@@ -45,3 +45,23 @@ If you need to add a new package (e.g., to the frontend), you should do it from 
 1. Stop the containers (`Ctrl+C` or `docker-compose down`).
 2. Add the dependency locally using your package manager.
 3. Rebuild the containers: `docker-compose up --build`.
+
+## Running Without Docker (Manual Setup)
+If you prefer not to use Docker, you can run the services manually in separate terminal windows:
+
+**1. Database**
+๊๊๊Use the schema from `db/init.sql`.
+
+**2. Backend**
+```bash
+cd backend
+bun install
+bun run dev
+```
+
+**3. Frontend**
+```bash
+cd frontend
+npm install
+npm run dev
+```
