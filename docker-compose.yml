@@ -1,22 +1,7 @@
 version: "3.8"
 
 services:
-  # Container 1: Database
-  database:
-    image: postgres:15
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgrespassword
-      POSTGRES_DB: devicedb
-    volumes:
-      # Mounts your schema so it runs on startup
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - app-network
-
-  # Container 2: Backend
+  # Container 1: Backend
   backend:
     build: 
       context: ./backend
@@ -28,12 +13,10 @@ services:
       - ./backend:/app
       - /app/node_modules # Prevents local modules from overriding container
     command: bun run dev # Runs with --watch enabled
-    depends_on:
-      - database
     networks:
       - app-network
 
-  # Container 3: Frontend
+  # Container 2: Frontend
   frontend:
     build: 
       context: ./frontend
