@@ -1,5 +1,5 @@
 import type { DeviceData } from "@/types/devies.types";
-import { Card, CardContent } from "../../@/components/ui/card";
+import { Card, CardContent } from "../../../components/ui/card";
 
 type LatestPacketProps = {
     latest: DeviceData | undefined;

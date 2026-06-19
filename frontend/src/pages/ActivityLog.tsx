@@ -61,7 +61,7 @@ export default function ActivityLog({ stream }: ActivityLogProps) {
             <select
               value={selectedGameId}
               onChange={(e) => setSelectedGameId(e.target.value)}
-              className="flex h-10 w-full sm:w-55 items-center justify-between rounded-lg border border-[#fbcfe8] bg-white px-3 py-2 text-sm text-[#475569] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#ec4899] dark:border-slate-700 dark:bg-[#1e293b] dark:text-slate-200"
+              className="flex h-10 w-full sm:w-55 items-center justify-between rounded-lg border border-nav-text-hover bg-white px-3 py-2 text-sm text-[#475569] shadow-sm focus:outline-none focus:ring-2 focus:ring-brand dark:border-slate-700 dark:bg-[#1e293b] dark:text-slate-200"
             >
               <option value="ALL">All Game Sessions</option>
               {gameSessions.map((game) => (
@@ -168,7 +168,6 @@ export default function ActivityLog({ stream }: ActivityLogProps) {
                     </div>
                   </div>
 
-                  {/* 3 คอลัมน์ข้อมูลในแนวนอน */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 py-3 border-y border-[#fce7f3] dark:border-slate-800">
                     <div className="flex flex-col">
                       <span className="text-[10px] font-bold text-[#94a3b8] dark:text-slate-500 uppercase tracking-wide">

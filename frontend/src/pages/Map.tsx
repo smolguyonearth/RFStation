@@ -36,7 +36,7 @@ export default function ConqueredLandBoard() {
               {/* Wait for add element */}
             </div>
 
-            <div className="w-full max-w-[500px] lg:max-w-[600px] aspect-square flex justify-center items-center">
+            <div className="w-full max-w-125 lg:max-w-150 aspect-square flex justify-center items-center">
               <div className="relative w-full h-full bg-[#f8f5ff] dark:bg-slate-900/50 rounded-xl overflow-hidden border border-nav-text-hover dark:border-slate-800 shadow-inner">
                 <svg viewBox="0 0 1024 1024" className="w-full h-full object-contain" xmlns="http://www.w3.org/2000/svg">
                   <image href={mapVectorBg} width="1024" height="1024" preserveAspectRatio="xMidYMid meet" />
@@ -49,7 +49,7 @@ export default function ConqueredLandBoard() {
                         stroke={lm.ownerId ? "#ffffff" : "transparent"}
                         strokeWidth="3"
                         className="transition-colors duration-500 hover:opacity-80 cursor-pointer"
-                        onClick={() => alert(`คุณคลิกพื้นที่: ${lm.name}`)}
+                        onClick={() => alert(`Name: ${lm.name}`)}
                       >
                         <title>{lm.name}</title>
                       </path>

@@ -6,13 +6,11 @@ import {
     CardContent,
     CardHeader,
     CardTitle,
-} from "../../@/components/ui/card";
-import { Button } from "../../@/components/ui/button";
-import { Badge } from "../../@/components/ui/badge";
-import Footer from "./Footer";
+} from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
 
 export default function GameBoard() {
-    // use the first mocked session as the initial game session
     const [gameSession] = useState<GameSession>(gameSessions[0]);
     const [currentPlayingId, setCurrentPlayingId] = useState<string | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -43,8 +41,8 @@ export default function GameBoard() {
     );
 
     return (
-        <div className="min-h-screen bg-white dark:bg-bg-main font-sans antialiased text-text-main">
-            <header className="border border-purple-100  dark:border-nav-border bg-purple-5dark:bg-nav-bg sticky top-0 z-50">
+        <div className="flex flex-col min-h-screen bg-white dark:bg-bg-main font-sans antialiased text-text-main">
+            <header className="border border-purple-100 dark:border-nav-border bg-purple-50 dark:bg-nav-bg sticky top-0 z-50 shrink-0">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                         <div className="h-9 w-9 bg-linear-to-tr from-pink-500 dark:from-brand to-pink-200 dark:to-brand-light rounded-xl flex items-center justify-center font-black text-white text-lg shadow-lg shadow-brand/20">
@@ -71,9 +69,9 @@ export default function GameBoard() {
                 </div>
             </header>
 
-            <main className="py-6 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-7xl mx-auto">
-                    <div className="p-6 max-w-6xl mx-auto space-y-6 bg-white  dark:bg-boardgame-card text-black dark:text-text-main border border-purple-100 dark:border-nav-border rounded-2xl min-h-screen shadow-xs">
+            <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-8">
+                <div className="max-w-7xl mx-auto h-full">
+                    <div className="p-6 max-w-6xl mx-auto space-y-6 bg-white dark:bg-boardgame-card text-black dark:text-text-main border border-purple-100 dark:border-nav-border rounded-2xl shadow-xs">
                         <div className="flex justify-between items-center bg-purple-50 dark:bg-nav-bg border border-purple-100 dark:border-nav-border p-4 rounded-xl">
                             <div>
                                 <h1 className="text-2xl font-bold tracking-tight">
@@ -119,13 +117,13 @@ export default function GameBoard() {
                                         <div
                                             key={player.player_id}
                                             className={`p-3 rounded-lg border transition-all ${player.player_id === gameSession.current_player_id
-                                                ? "bg-white dark:bg-boardgame-card border-pink-500 shadow-md shadow-brand/10 ring-1 ring-pink-500"
-                                                : "bg-white/60 dark:bg-boardgame-card/60 border-purple-100 dark:border-nav-border"
+                                                    ? "bg-white dark:bg-boardgame-card border-pink-500 shadow-md shadow-brand/10 ring-1 ring-pink-500"
+                                                    : "bg-white/60 dark:bg-boardgame-card/60 border-purple-100 dark:border-nav-border"
                                                 }`}
                                         >
                                             <div className="flex justify-between items-center">
                                                 <span
-                                                    className={`font-semibold ${player.player_id === gameSession.current_player_id ? "text-pink-500" : "text-white  dark:text-text-main"}`}
+                                                    className={`font-semibold ${player.player_id === gameSession.current_player_id ? "text-pink-500" : "text-white dark:text-text-main"}`}
                                                 >
                                                     {player.name}
                                                 </span>
@@ -194,8 +192,8 @@ export default function GameBoard() {
                                                             )
                                                         }
                                                         className={`transition-colors duration-300 cursor-pointer ${currentPlayingId === space.space_id
-                                                            ? "bg-amber-400 hover:bg-amber-500 text-slate-900 font-bold animate-pulse shadow-lg shadow-amber-400/20"
-                                                            : "bg-brand hover:bg-brand-dark text-white shadow-sm"
+                                                                ? "bg-amber-400 hover:bg-amber-500 text-slate-900 font-bold animate-pulse shadow-lg shadow-amber-400/20"
+                                                                : "bg-brand hover:bg-brand-dark text-white shadow-sm"
                                                             }`}
                                                     >
                                                         {currentPlayingId === space.space_id
@@ -212,8 +210,6 @@ export default function GameBoard() {
                     </div>
                 </div>
             </main>
-
-            <Footer />
 
         </div>
     );

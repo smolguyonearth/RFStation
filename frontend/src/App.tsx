@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import type { DeviceData } from "./types/devies.types";
 
-import Home from "./pages/Home";
+import Home from "@/pages/Home/Home"
 import GameBoard from "./pages/GameBoard";
 import ActivityLog from "./pages/ActivityLog";
 import Ranking from "./pages/Ranking";
@@ -12,6 +12,7 @@ import Navbar from "./pages/Navbar";
 import Map from "./pages/Map";
 
 import "./index.css";
+import Footer from "./pages/Footer";
 
 export default function App() {
   const [stream, setStream] = useState<DeviceData[]>([]);
@@ -80,7 +81,7 @@ export default function App() {
             }
           />
         </Routes>
-        {/* </main> */}
+        <Footer />
       </div>
     </Router>
   );

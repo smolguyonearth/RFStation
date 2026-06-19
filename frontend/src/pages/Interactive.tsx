@@ -17,7 +17,7 @@ export default function ConqueredLandBoard() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#fcf8f9] dark:bg-bg-main font-sans transition-colors duration-300">
-      <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-8">
+      <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-4">
         <div className="bg-white dark:bg-boardgame-card rounded-3xl border border-[#f3e8ff] dark:border-slate-800 shadow-sm overflow-hidden transition-colors duration-300">
           
           <div className="p-6 flex items-center gap-3 border-b border-[#f3e8ff] dark:border-slate-800/60">
@@ -36,7 +36,7 @@ export default function ConqueredLandBoard() {
               {/* Wait for add element */}
             </div>
 
-            <div className="w-full max-w-[500px] lg:max-w-[600px] aspect-square flex justify-center items-center">
+            <div className="w-full max-w-125 lg:max-w-150 aspect-square flex justify-center items-center">
               <div className="relative w-full h-full bg-[#f8f5ff] dark:bg-slate-900/50 rounded-xl overflow-hidden border border-nav-text-hover dark:border-slate-800 shadow-inner">
                 <svg viewBox="0 0 1024 1024" className="w-full h-full object-contain" xmlns="http://www.w3.org/2000/svg">
                   <image href={mapVectorBg} width="1024" height="1024" preserveAspectRatio="xMidYMid meet" />

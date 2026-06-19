@@ -1,7 +1,7 @@
-import type { DeviceData } from "../types/devies.types";
-import Header from "../components/Header";
-import LatestPacket from "../components/LatestPacket";
-import PacketHistory from "../components/PacketHistory";
+import type { DeviceData } from "../../types/devies.types";
+import Header from "./components/Header"
+import LatestPacket from "./components/LatestPacket";
+import PacketHistory from "./components/PacketHistory";
 
 interface HomeProps {
     latest: DeviceData | undefined;
@@ -11,7 +11,7 @@ interface HomeProps {
 export default function Home({ latest, stream }: HomeProps) {
     return (
         <div className="min-h-screen bg-white dark:bg-bg-main font-sans antialiased text-text-main animate-in fade-in duration-500">
-            <header className="border border-purple-100 dark:border-nav-border bg-purple-50 dark:bg-nav-bg sticky top-0 z-50">
+            {/* <header className="border border-purple-100 dark:border-nav-border bg-purple-50 dark:bg-nav-bg sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                         <div className="h-9 w-9 bg-linear-to-tr from-pink-500 dark:from-brand to-pink-200 dark:to-brand-light rounded-xl flex items-center justify-center font-black text-white text-lg shadow-lg shadow-brand/20">
@@ -36,7 +36,7 @@ export default function Home({ latest, stream }: HomeProps) {
                         </div>
                     </div>
                 </div>
-            </header>
+            </header> */}
 
             <main className="py-6 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto">
