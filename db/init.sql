@@ -28,15 +28,23 @@ CREATE INDEX idx_history_device_time ON device_history(device_code, recorded_at 
 -- Function to keep only the latest 1000 records in device_history
 CREATE OR REPLACE FUNCTION trim_device_history()
 RETURNS TRIGGER AS $$
+DECLARE
+  row_count BIGINT;
 BEGIN
-  -- Delete rows older than the 1000th most recent record
-  DELETE FROM device_history
-  WHERE id IN (
-    SELECT id FROM device_history
-    ORDER BY recorded_at DESC
-    OFFSET 1000
-  );
-  RETURN NEW;
+  -- Quick count check — skip if under limit
+  SELECT COUNT(*) INTO row_count FROM device_history;
+
+  -- Only trim when 10% over limit (avoids trimming on every insert)
+  IF row_count > 1100 THEN
+    DELETE FROM device_history
+    WHERE ctid IN (
+      SELECT ctid FROM device_history
+      ORDER BY recorded_at ASC
+      LIMIT row_count - 1000
+    );
+  END IF;
+
+  RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 

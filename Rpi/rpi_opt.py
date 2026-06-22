@@ -77,28 +77,15 @@ while True:
         payload = None
 
         # Format:
-        # AR,DEVICE1,DEVICE2,-55
-        if len(parts) == 4:
-            try:
-                payload = {
-                    'device_code': parts[1],
-                    'nearest_device': parts[2],
-                    'rssi': int(parts[3]),
-                    'zone_code': parts[0]
-                }
-
-            except ValueError:
-                print "[PARSE ERROR] Invalid RSSI:", line
-
-        # Format:
-        # DEVICE1,DEVICE2,-55
-        elif len(parts) == 3:
+        # DEVICE_CODE,NEAREST_DEVICE,RSSI
+        # nearest_device also serves as zone_code
+        if len(parts) == 3:
             try:
                 payload = {
                     'device_code': parts[0],
                     'nearest_device': parts[1],
                     'rssi': int(parts[2]),
-                    'zone_code': 'ZONE_A'
+                    'zone_code': parts[1]
                 }
 
             except ValueError:
