@@ -1,28 +1,19 @@
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import {
-    Search,
-    Menu,
-    X,
-    Gamepad2,
-    Activity,
-    Trophy,
-    PieChart,
-    Map as MapIcon,
-} from "lucide-react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { Menu, X, Map as MapIcon, Monitor } from "lucide-react";
 
 const NAV_LINKS = [
-    // { title: "Game Board", path: "/game", icon: Gamepad2 },
-    // { title: "Activity Log", path: "/activity-log", icon: Activity },
-    // { title: "Ranking", path: "/ranking", icon: Trophy },
-    // { title: "Summary", path: "/summary", icon: PieChart },
-    { title: "Map", path: "/map", icon: MapIcon },
+    { title: "nav.map", path: "/map", icon: MapIcon },
+    { title: "nav.monitor", path: "/monitor", icon: Monitor },
 ];
 
 export default function Navbar() {
+    const { t, i18n } = useTranslation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+    const changeLanguage = (lng: string) => i18n.changeLanguage(lng);
 
     return (
         <header className="bg-brand-primary dark:bg-nav-bg shadow-lg sticky top-0 z-50">
@@ -37,15 +28,7 @@ export default function Navbar() {
                     MoSCoW Board
                 </Link>
 
-                <div className="hidden lg:block relative w-full max-w-md">
-                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-brand-border/60 pointer-events-none" />
-                    <input
-                        type="text"
-                        placeholder="Search games, players, or zones..."
-                        className="w-full pl-10 pr-4 py-2.5 text-sm bg-black/10 text-white placeholder-brand-border/50 rounded-xl border border-white/5 focus:outline-none focus:ring-2 focus:ring-brand-accent focus:bg-black/20 transition-all backdrop-blur-sm"
-                    />
-                </div>
-
+                {/* Desktop Menu */}
                 <div className="hidden lg:flex gap-6 items-center text-sm font-medium">
                     {NAV_LINKS.map((link) => {
                         const Icon = link.icon;
@@ -59,19 +42,32 @@ export default function Navbar() {
                                     size={16}
                                     className="text-brand-accent group-hover:text-white transition-colors"
                                 />
-                                {link.title}
+                                {t(link.title)}
                             </Link>
                         );
                     })}
 
-                    <div className="w-px h-5 bg-white/10 mx-2"></div>
-
-                    <Link
-                        to="/tt"
-                        className="px-5 py-2.5 bg-brand-accent text-white rounded-xl hover:bg-[#4A85C5] hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 text-sm font-semibold transition-all flex items-center gap-2"
-                    >
-                        Sign In
-                    </Link>
+                    {/* Language Switcher */}
+                    <div className="flex gap-1 bg-black/20 p-1 rounded-lg">
+                        <button
+                            onClick={() => changeLanguage("en")}
+                            className={`px-2 py-1 rounded-md text-xs font-bold ${i18n.language === "en" ? "bg-brand-accent text-white" : "text-brand-border hover:text-white"}`}
+                        >
+                            EN
+                        </button>
+                        <button
+                            onClick={() => changeLanguage("th")}
+                            className={`px-2 py-1 rounded-md text-xs font-bold ${i18n.language === "th" ? "bg-brand-accent text-white" : "text-brand-border hover:text-white"}`}
+                        >
+                            TH
+                        </button>
+                        <button
+                            onClick={() => changeLanguage("de")}
+                            className={`px-2 py-1 rounded-md text-xs font-bold ${i18n.language === "de" ? "bg-brand-accent text-white" : "text-brand-border hover:text-white"}`}
+                        >
+                            DE
+                        </button>
+                    </div>
                 </div>
 
                 <button
@@ -82,42 +78,51 @@ export default function Navbar() {
                 </button>
             </nav>
 
+            {/* Mobile Menu */}
             {isMobileMenuOpen && (
-                <div className="lg:hidden px-4 pb-6 flex flex-col gap-4 border-t border-white/10 pt-4 bg-brand-primary absolute w-full shadow-2xl">
-                    <div className="relative w-full">
-                        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-brand-border/60 pointer-events-none" />
-                        <input
-                            type="text"
-                            placeholder="Search..."
-                            className="w-full pl-10 pr-4 py-3 text-sm bg-black/10 text-white placeholder-brand-border/50 rounded-xl border border-white/5 focus:outline-none focus:ring-2 focus:ring-brand-accent"
-                        />
-                    </div>
+                <div className="lg:hidden absolute w-full bg-brand-primary border-b border-white/10 shadow-2xl animate-in slide-in-from-top-5 duration-200">
+                    <div className="px-4 py-6 flex flex-col gap-6">
+                        <div className="flex flex-col gap-2">
+                            {NAV_LINKS.map((link) => {
+                                const Icon = link.icon;
+                                return (
+                                    <Link
+                                        key={link.path}
+                                        to={link.path}
+                                        onClick={toggleMenu}
+                                        className="flex items-center gap-4 text-brand-border hover:text-white hover:bg-white/5 p-4 rounded-2xl transition-all active:scale-[0.98]"
+                                    >
+                                        <div className="p-2 bg-white/5 rounded-xl">
+                                            <Icon size={20} className="text-brand-accent" />
+                                        </div>
+                                        <span className="font-semibold text-base">
+                                            {t(link.title)}
+                                        </span>
+                                    </Link>
+                                );
+                            })}
+                        </div>
 
-                    <div className="flex flex-col gap-1 text-sm font-medium">
-                        {NAV_LINKS.map((link) => {
-                            const Icon = link.icon;
-                            return (
-                                <Link
-                                    key={link.path}
-                                    to={link.path}
-                                    onClick={toggleMenu}
-                                    className="flex items-center gap-3 text-brand-border hover:text-white hover:bg-white/5 py-3 px-4 rounded-xl transition-colors"
-                                >
-                                    <Icon size={18} className="text-brand-accent" />
-                                    {link.title}
-                                </Link>
-                            );
-                        })}
-                    </div>
-
-                    <div className="flex items-center justify-between pt-4 mt-2 border-t border-white/10 px-2">
-                        <Link
-                            to="/tt"
-                            onClick={toggleMenu}
-                            className="px-8 py-3 bg-brand-accent text-white rounded-xl hover:bg-[#4A85C5] text-sm font-semibold shadow-sm text-center"
-                        >
-                            Sign In
-                        </Link>
+                        {/* Language Switcher */}
+                        <div className="bg-black/20 p-2 rounded-2xl">
+                            <p className="text-[10px] uppercase tracking-widest text-brand-border/50 font-bold px-3 py-2">
+                                Select Language
+                            </p>
+                            <div className="grid grid-cols-3 gap-2">
+                                {["en", "th", "de"].map((lng) => (
+                                    <button
+                                        key={lng}
+                                        onClick={() => changeLanguage(lng)}
+                                        className={`py-3 rounded-xl text-xs font-bold transition-all ${i18n.language === lng
+                                                ? "bg-brand-accent text-white shadow-lg"
+                                                : "text-brand-border hover:bg-white/5"
+                                            }`}
+                                    >
+                                        {lng.toUpperCase()}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
