@@ -1,49 +1,17 @@
-import type { MapLocation } from '@/types/map.types'
+import type { MapLocation } from '@/types/map.types';
+import { LANDMARK_PATHS } from '@/data/landmarkPaths';
 
 export const mockLandmarks: MapLocation[] = [
-    {
-        id: "lm_01",
-        name: "Mahanakhon Tower",
-        ownerId: null,
-        description: "The tallest skyscraper in the district, providing excellent strategic vision. Ideal for establishing a main command center.",
-        points: 50,
-        resources: ["Energy", "Tech"],
-        d: "M 484 73.5 V 56 L 493.5 49 L 503.5 56.5 V 67 H 505.5 V 75 H 508 V 94.5 H 512 L 512.5 96 H 515 V 126.5 H 516.5 L 519.5 127 L 521 130 V 145.5 H 526 V 203 H 531 V 212 L 527 215.5 L 527.5 239.5 L 524.5 242.5 V 245 H 527.5 L 528 260 H 526 V 264 H 527.5 V 274 H 530 V 278.5 L 520.5 285.5 V 286.5 H 523 L 526 288.5 V 294 H 529 V 340 V 349.5 L 533.5 352 V 435.5 L 536 434 V 433 H 539 V 437 L 544 441.5 V 450.5 L 491 484.5 L 445 456.5 V 445 L 448 444.5 V 436 H 450.5 V 427.5 L 451.5 426 V 357 L 451.5 355.5 V 350 L 452 347.5 L 448.5 345 V 335 L 454.5 330.5 L 450.5 327.5 V 313.5 L 447.5 311 V 307.5 L 451.5 305.5 V 304 L 448.5 302 V 288 L 456 285.5 V 282 V 261 L 451.5 257 V 221.5 L 456.5 218.5 V 214.5 L 448 211.5 V 204 L 456.5 199 V 198.252 V 158 L 462.5 156 V 153 L 467 151.5 V 130.5 H 471 V 130 V 119 H 475.5 V 113 H 471 V 109 L 475.5 101.5 L 475 85.5 L 480 82.5 V 77 L 484 73.5 Z",
-    },
-    {
-        id: "lm_02",
-        name: "Bremen Stadium",
-        ownerId: null,
-        description: "A massive stadium that serves as a stronghold for gathering troops, significantly boosting the army's morale and combat readiness.",
-        points: 40,
-        resources: ["Manpower", "Supplies"],
-        d: "M 923.731 382 C 964.122 394.459 986.111 405.481 1024.23 432.5 V 583 C 1000.69 600.845 984.503 606.4 951.731 610.5 C 908.423 608.759 887.033 601.167 855.231 573 C 832.967 552.01 826.487 540.491 816.231 520 C 810.519 485.805 813.476 462.124 816.73 443 C 821.045 427.424 839.805 407.387 863.731 394.5 C 887.657 381.613 899.825 384.151 923.731 382 Z",
-    },
-    {
-        id: "lm_03",
-        name: "Siam Square",
-        ownerId: null,
-        description: "The most bustling economic and commercial hub. Whoever controls this zone gains a massive financial advantage over their rivals.",
-        points: 60,
-        resources: ["Gold", "Influence"],
-        d: "M 132.5 802.5 L 130 800 L 146 753.5 H 153.5 C 153.9 753.5 154.667 745.5 155 741.5 L 153.5 740.5 L 153 737 L 155.5 734.5 V 732.5 L 156.5 731 V 729.5 L 157.5 726 H 159 L 162 700.5 L 166 643 V 634 L 165 632.5 L 163.5 634 H 160.5 L 159.5 632 V 628 H 161.5 V 625 H 160.5 L 159.5 622.5 L 160.5 621 L 159.5 620 L 157.5 618 V 614 L 155.5 613 L 152.5 612 L 151 610 V 608.5 L 153 606.5 L 154 603.5 L 151.5 600 L 148 597 H 151 H 154.5 L 155.5 589 L 157 593.5 L 161.5 598.5 L 167 602.5 L 169 602 L 171.5 600.5 L 172.5 599 V 592.5 V 590 H 174 L 175 599 L 176 600.5 L 178 602.5 L 180 605 L 182.5 605.5 L 184.5 604 L 190.5 598.5 V 594.5 V 592.5 L 191.5 592 V 590 H 193.5 L 194.5 591.5 V 598.5 L 197.5 603 L 202 606.5 H 206 L 209 604 L 210 600.5 V 594.5 H 211 L 212.5 603 L 213 604 L 215 606.5 H 217 H 221 L 227 604 L 230 600.5 L 233.5 596 L 231 611.5 V 614.5 L 234.5 611.5 V 614.5 L 232 618 L 229.5 620 L 227 621 V 623.5 L 225 625.5 V 629.5 L 226 631 V 635 L 221 637 L 220 640.5 L 225 730 L 229.5 737 L 232 763.5 L 260 768.5 L 262.5 772 L 247 816 L 240 818 L 132.5 802.5 Z",
-    },
-    {
-        id: "lm_04",
-        name: "Town Hall",
-        ownerId: null,
-        description: "The traditional center of administration. Capturing the Town Hall establishes political legitimacy and grants governing authority over the region.",
-        points: 70,
-        resources: ["Intel", "Influence"],
-        d: "M 747.5 261 L 742.5 254.5 V 249 L 747.5 245.5 V 241 H 745.5 L 741.5 234.5 V 226 H 739 V 223.5 H 741.5 V 221 H 739 V 218 H 741.5 V 209.5 H 740.5 V 204.5 L 744 172 L 751.5 202.5 L 754.5 185.5 H 753 V 181.5 H 754.5 V 176 H 753 V 166 H 751.5 L 757 154.5 L 760.5 109 L 767.5 158 L 768.5 120.5 H 772.5 L 775 159 L 779 156 V 149.5 L 778 149 V 146 H 779.5 V 140 L 778 139 V 135 H 779.5 L 780.5 123 H 778 V 119 L 780.5 107 L 783 120.5 L 784.5 117 L 789.5 79.5 L 792.5 109 L 795.5 116 L 797 109.5 L 797.5 125.5 L 802 117 L 803.5 103 L 805 107 L 808.5 81.5 L 811 99.5 L 813.5 105 L 814.5 115 H 817 L 818.5 105 L 820 115 H 840 L 842 99.5 L 840 97.5 V 94 L 844 92 L 847.5 60.5 L 851.5 89.5 L 853.5 93 H 854.5 L 855.5 115 H 856.5 L 858 107 L 859 115 H 861 V 107 L 862 115 H 876.5 L 880.5 109 L 884 115 H 892 V 108 H 895 V 78.5 L 898 94 L 902.5 71 L 905.5 46 L 907.5 71 L 913.5 92 L 916 74 L 917.5 115 L 924.5 116 L 927.5 80.5 L 930.5 96.5 L 938 50 L 944 92 L 948.5 82 L 947 149 L 948.5 158 L 953.5 171.5 L 957 149 L 960 165 L 963 150.5 L 964 164 L 965 166 L 967.5 187 L 970.5 192.5 V 287.5 L 969 290 L 945 306 L 931 309 H 923.5 V 304.5 H 883 L 880 309 H 835 L 829 304.5 H 787 L 784 301 L 776.5 303 L 773.5 301 V 294.5 L 771 292 H 762 L 753.5 281.5 V 275 H 747.5 V 261 Z",
-    },
-    {
-        id: "lm_05",
-        name: "Grand Palace",
-        ownerId: null,
-        description: "The ultimate symbol of supremacy. It is the most challenging territory to conquer, but it yields the highest rewards and victory points in the game.",
-        points: 100,
-        resources: ["Artifacts", "Gold", "Influence"],
-        d: "M 146 271 L 135.5 268 V 148 H 207.5 L 209.5 144 L 211.5 132 L 213 119 V 110 V 105.5 L 215.5 98.5 V 92 V 91 L 217 89 V 81.5 V 80 L 220 79 L 221 78 L 223 48 L 226 78 L 227.5 80 L 231 82.5 V 85 L 232.5 86.5 V 89 L 231 92 L 232.5 95.5 L 234 98.5 L 236 103 L 238 105.5 V 116.5 L 239.5 119 L 241 120 V 124 L 239.5 125 V 127 V 130.5 L 241 134 L 242.5 138 L 244.5 141.5 L 246.5 144 V 145.5 L 248.5 147 H 326.5 V 291 H 258.5 V 306 H 193.5 V 289.5 H 182.5 V 269.5 L 171 273.5 L 146 271 Z",
-    }
+    { id: "lm_01", name: "Mahanakhon Tower", ownerId: null, description: "The tallest skyscraper in the district.", points: 50, resources: ["Energy", "Tech"], d: LANDMARK_PATHS.mahanakhon },
+    { id: "lm_02", name: "Bremen Stadium", ownerId: null, description: "A massive stadium that serves as a stronghold.", points: 40, resources: ["Manpower", "Supplies"], d: LANDMARK_PATHS.bremenStadium },
+    { id: "lm_03", name: "Giant Swing", ownerId: null, description: "A historic religious structure.", points: 60, resources: ["Culture", "Influence"], d: LANDMARK_PATHS.giantSwing },
+    { id: "lm_04", name: "Town Hall", ownerId: null, description: "The traditional center of administration.", points: 70, resources: ["Intel", "Influence"], d: LANDMARK_PATHS.townHall },
+    { id: "lm_06", name: "Asiatique", ownerId: null, description: "Riverside open-air mall and entertainment hub.", points: 45, resources: ["Tourism", "Entertainment"], d: LANDMARK_PATHS.asiatique },
+    { id: "lm_08", name: "Chinatown Yaowarat Market", ownerId: null, description: "The vibrant heart of street food and trade.", points: 65, resources: ["Food", "Trade"], d: LANDMARK_PATHS.chinatown },
+    { id: "lm_05", name: "The Grand Palace", ownerId: null, description: "The ultimate symbol of supremacy.", points: 100, resources: ["Artifacts", "Gold", "Influence"], d: LANDMARK_PATHS.grandPalace },
+    { id: "lm_10", name: "Wat Arun", ownerId: null, description: "The iconic riverside temple.", points: 80, resources: ["Culture", "Tourism"], d: LANDMARK_PATHS.watArun },
+    { id: "lm_12", name: "Rolland", ownerId: null, description: "Statue representing liberty and market rights.", points: 55, resources: ["Nature"], d: LANDMARK_PATHS.rolland },
+    { id: "lm_13", name: "Town Musicians of Bremen", ownerId: null, description: "Iconic statue celebrating folklore.", points: 30, resources: ["Culture"], d: LANDMARK_PATHS.musicians },
+    { id: "lm_14", name: "ICONSIAM", ownerId: null, description: "Modern commerce and luxury.", points: 85, resources: ["Luxury Goods", "Gold"], d: LANDMARK_PATHS.iconsiam },
+    { id: "lm_15", name: "Wallanlagen", ownerId: null, description: "A historic park and former fortification area.", points: 40, resources: ["Nature", "History"], d: LANDMARK_PATHS.wallanlagen }
 ];
