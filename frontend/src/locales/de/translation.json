@@ -2,5 +2,67 @@
     "nav": {
         "map": "Karte",
         "monitor": "Monitor"
+    },
+    "map": {
+        "owner": "Besitzer",
+        "unclaimed": "Unbesetzt",
+        "no_description": "Keine Beschreibung verfügbar.",
+        "points": "Punkte",
+        "status": "Status",
+        "secured": "Gesichert",
+        "available": "Verfügbar"
+    },
+    "landmarks": {
+        "mahanakhon": {
+            "name": "Mahanakhon Tower",
+            "desc": "Das höchste Hochhaus des Viertels."
+        },
+        "bremen_stadium": {
+            "name": "Bremer Stadion",
+            "desc": "Ein riesiges Stadion, das als Festung dient."
+        },
+        "giant_swing": {
+            "name": "Riesenschaukel",
+            "desc": "Ein historisches religiöses Bauwerk."
+        },
+        "town_hall": {
+            "name": "Rathaus",
+            "desc": "Das traditionelle Verwaltungszentrum."
+        },
+        "asiatique": {
+            "name": "Asiatique",
+            "desc": "Open-Air-Einkaufszentrum und Unterhaltungsviertel am Flussufer."
+        },
+        "yaowarat": {
+            "name": "Chinatown Yaowarat",
+            "desc": "Das pulsierende Herz des Streetfoods und Handels."
+        },
+        "grand_palace": {
+            "name": "Der Große Palast",
+            "desc": "Das ultimative Symbol der Vorherrschaft."
+        },
+        "wat_arun": {
+            "name": "Wat Arun",
+            "desc": "Der ikonische Tempel am Flussufer."
+        },
+        "rolland": {
+            "name": "Bremer Roland",
+            "desc": "Statue, die Freiheit und Marktrechte repräsentiert."
+        },
+        "musicians": {
+            "name": "Bremer Stadtmusikanten",
+            "desc": "Ikonische Statue zur Feier der Folklore."
+        },
+        "iconsiam": {
+            "name": "ICONSIAM",
+            "desc": "Moderner Handel und Luxus."
+        },
+        "wallanlagen": {
+            "name": "Wallanlagen",
+            "desc": "Ein historischer Park und ehemaliges Befestigungsgebiet."
+        }
+    },
+    "common": {
+        "close": "Schließen"
     }
 }

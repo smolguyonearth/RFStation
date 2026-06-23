@@ -2,5 +2,67 @@
     "nav": {
         "map": "Map",
         "monitor": "Monitor"
+    },
+    "map": {
+        "owner": "Owner",
+        "unclaimed": "Unclaimed",
+        "no_description": "No description available.",
+        "points": "Points",
+        "status": "Status",
+        "secured": "Secured",
+        "available": "Available"
+    },
+    "landmarks": {
+        "mahanakhon": {
+            "name": "Mahanakhon Tower",
+            "desc": "The tallest skyscraper in the district."
+        },
+        "bremen_stadium": {
+            "name": "Bremen Stadium",
+            "desc": "A massive stadium that serves as a stronghold."
+        },
+        "giant_swing": {
+            "name": "Giant Swing",
+            "desc": "A historic religious structure."
+        },
+        "town_hall": {
+            "name": "Town Hall",
+            "desc": "The traditional center of administration."
+        },
+        "asiatique": {
+            "name": "Asiatique",
+            "desc": "Riverside open-air mall and entertainment hub."
+        },
+        "yaowarat": {
+            "name": "Chinatown Yaowarat",
+            "desc": "The vibrant heart of street food and trade."
+        },
+        "grand_palace": {
+            "name": "The Grand Palace",
+            "desc": "The ultimate symbol of supremacy."
+        },
+        "wat_arun": {
+            "name": "Wat Arun",
+            "desc": "The iconic riverside temple."
+        },
+        "rolland": {
+            "name": "Statue of Roland",
+            "desc": "Statue representing liberty and market rights."
+        },
+        "musicians": {
+            "name": "Town Musicians of Bremen",
+            "desc": "Iconic statue celebrating folklore."
+        },
+        "iconsiam": {
+            "name": "ICONSIAM",
+            "desc": "Modern commerce and luxury."
+        },
+        "wallanlagen": {
+            "name": "Wallanlagen",
+            "desc": "A historic park and former fortification area."
+        }
+    },
+    "common": {
+        "close": "Close"
     }
 }
