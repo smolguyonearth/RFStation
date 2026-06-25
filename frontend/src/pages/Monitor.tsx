@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
 import { AudioEngine } from "@/lib/AudioEngine"
-import Header from "@/components/Header"
-import LatestPacket from "@/components/LatestPacket"
-import HistoryList from "@/components/HistoryList"
+import Header from "@/components/Monitor/Header"
+import LatestPacket from "@/components/Monitor/LatestPacket"
+import HistoryList from "@/components/Monitor/HistoryList"
 import type { DeviceData } from "@/types/device.types"
 
 export default function Monitor() {

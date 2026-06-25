@@ -1,8 +1,8 @@
 import { useState } from "react"
 import type { MapLocation } from "@/types/map.types"
-import LandHeader from "@/components/LandHeader"
-import MapViewer from "@/components/MapViewer"
-import LandmarkDetails from "@/components/LandmarkDetails"
+import LandHeader from "@/components/Map/LandHeader"
+import MapViewer from "@/components/Map/MapViewer"
+import LandmarkDetails from "@/components/Map/LandmarkDetails"
 
 export default function ConqueredLandBoard() {
     const [selectedLand, setSelectedLand] = useState<MapLocation | null>(null);

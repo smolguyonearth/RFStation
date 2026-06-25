@@ -11,4 +11,6 @@ export interface MapLocation {
     readonly points: number;
     readonly resources: readonly ResourceType[];
     readonly d: string; // SVG path data
+    readonly image?: string;
+    readonly imageSource?: string;
 }
