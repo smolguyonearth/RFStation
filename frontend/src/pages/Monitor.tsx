@@ -33,23 +33,22 @@ export default function Monitor() {
 
         init();
 
-        const channel = supabase
-            .channel("db-changes")
-            .on(
-                "postgres_changes",
-                { event: "INSERT", schema: "public", table: "device_history" },
-                (payload) => {
-                    const newData = payload.new as DeviceData;
-                    setLatest(newData);
-                    setStream((prev) => [newData, ...prev]);
+        const ws = new WebSocket("ws://localhost:3000/ws");
 
-                    AudioEngine.playZone(newData.zone_code);
-                },
-            )
-            .subscribe();
+        ws.onmessage = (event) => {
+            try {
+                const newData = JSON.parse(event.data) as DeviceData;
+                setLatest(newData);
+                setStream((prev) => [newData, ...prev]);
+
+                AudioEngine.playZone(newData.zone_code);
+            } catch (err) {
+                console.error("Failed to parse ws message", err);
+            }
+        };
 
         return () => {
-            supabase.removeChannel(channel);
+            ws.close();
         };
     }, [isSystemActive]);
 
@@ -79,7 +78,7 @@ export default function Monitor() {
                             </button>
                         </div>
                     ) : (
-                        
+
                         <div className="space-y-6">
                             <LatestPacket latest={latest} />
                             <HistoryList stream={stream} />
