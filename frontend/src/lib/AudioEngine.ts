@@ -14,11 +14,14 @@ interface ZoneRecord {
 
 export class AudioEngine {
     static crossfadeDuration: number = 3;
+    static overlapFadeTime: number = 3;
+
     private static audioCtx: AudioContext | null = null;
     private static activeLayers: ActiveLayer[] = [];
     private static currentZone: string | null = null;
     private static zoneRecords: Map<string, ZoneRecord> = new Map();
     private static bufferCache: Map<string, AudioBuffer> = new Map();
+
     static init(): void {
         if (!this.audioCtx) {
             this.audioCtx = new (
@@ -26,6 +29,7 @@ export class AudioEngine {
             )();
         }
     }
+
     static async preload(zone: string): Promise<void> {
         await this.getBuffer(zone);
     }
@@ -34,7 +38,7 @@ export class AudioEngine {
         if (!this.audioCtx) this.init();
         const ctx = this.audioCtx!;
 
-        if (ctx.state === 'suspended') await ctx.resume();
+        if (ctx.state === "suspended") await ctx.resume();
 
         if (this.currentZone === zone) return;
 
@@ -42,43 +46,55 @@ export class AudioEngine {
         this.currentZone = zone;
 
         const now = ctx.currentTime;
-        const fd  = this.crossfadeDuration;
+        const fd = this.crossfadeDuration;
 
+        // fade out old layers
         for (const layer of this.activeLayers) {
             const g = layer.gain;
+
             g.gain.cancelScheduledValues(now);
             g.gain.setValueAtTime(g.gain.value, now);
             g.gain.linearRampToValueAtTime(0, now + fd);
-            layer.source.stop(now + fd);
+
+            try {
+                layer.source.stop(now + fd);
+            } catch {}
         }
 
         this.activeLayers = [];
 
         const buffer = await this.getBuffer(zone);
-
         if (this.currentZone !== zone) return;
 
         const resumeOffset = this.getResumeOffset(zone, buffer.duration);
+
         const source = ctx.createBufferSource();
-        const gain   = ctx.createGain();
+        const gain = ctx.createGain();
 
         source.buffer = buffer;
-        source.loop   = true;
 
         const startNow = ctx.currentTime;
+
+        // fade in
         gain.gain.setValueAtTime(0, startNow);
         gain.gain.linearRampToValueAtTime(1, startNow + fd);
 
         source.connect(gain);
         gain.connect(ctx.destination);
 
-        source.start(startNow, resumeOffset);
+        this.startSeamlessLoop(
+            source,
+            gain,
+            zone,
+            buffer,
+            startNow - resumeOffset
+        );
 
         this.activeLayers.push({
             source,
             gain,
             zone,
-            startedAt:   startNow,
+            startedAt: startNow,
             startOffset: resumeOffset,
             buffer,
         });
@@ -86,32 +102,26 @@ export class AudioEngine {
 
     static stop(): void {
         if (!this.audioCtx) return;
+
         const now = this.audioCtx.currentTime;
-        const fd  = this.crossfadeDuration;
+        const fd = this.crossfadeDuration;
 
         this.snapshotActiveLayers();
 
         for (const layer of this.activeLayers) {
-            layer.gain.gain.cancelScheduledValues(now);
-            layer.gain.gain.setValueAtTime(layer.gain.gain.value, now);
-            layer.gain.gain.linearRampToValueAtTime(0, now + fd);
-            layer.source.stop(now + fd);
+            const g = layer.gain;
+
+            g.gain.cancelScheduledValues(now);
+            g.gain.setValueAtTime(g.gain.value, now);
+            g.gain.linearRampToValueAtTime(0, now + fd);
+
+            try {
+                layer.source.stop(now + fd);
+            } catch {}
         }
 
         this.activeLayers = [];
-        this.currentZone  = null;
-    }
-
-    static setSavedOffset(zone: string, offsetSeconds: number): void {
-        this.zoneRecords.set(zone, {
-            savedOffset: offsetSeconds,
-            snapshotAt:  this.audioCtx?.currentTime ?? 0,
-        });
-    }
-
-    static getSavedOffset(zone: string): number | null {
-        const record = this.zoneRecords.get(zone);
-        return record ? record.savedOffset : null;
+        this.currentZone = null;
     }
 
     static reset(): void {
@@ -120,13 +130,60 @@ export class AudioEngine {
         this.bufferCache.clear();
     }
 
+    static setSavedOffset(zone: string, offsetSeconds: number): void {
+        this.zoneRecords.set(zone, {
+            savedOffset: offsetSeconds,
+            snapshotAt: this.audioCtx?.currentTime ?? 0,
+        });
+    }
+
+    static getSavedOffset(zone: string): number | null {
+        const record = this.zoneRecords.get(zone);
+        return record ? record.savedOffset : null;
+    }
+
+    private static startSeamlessLoop(
+        source: AudioBufferSourceNode,
+        gain: GainNode,
+        zone: string,
+        buffer: AudioBuffer,
+        startTime: number
+    ): void {
+        const ctx = this.audioCtx!;
+        const duration = buffer.duration;
+        const overlap = this.overlapFadeTime;
+
+        source.start(startTime);
+
+        const nextStart = startTime + duration - overlap;
+
+        const timeout = (nextStart - ctx.currentTime) * 1000;
+
+        setTimeout(() => {
+            if (this.currentZone !== zone) return;
+
+            const newSource = ctx.createBufferSource();
+            newSource.buffer = buffer;
+
+            newSource.connect(gain);
+
+            this.startSeamlessLoop(
+                newSource,
+                gain,
+                zone,
+                buffer,
+                nextStart
+            );
+        }, Math.max(0, timeout));
+    }
+
     private static async getBuffer(zone: string): Promise<AudioBuffer> {
         const cached = this.bufferCache.get(zone);
         if (cached) return cached;
 
-        const response    = await fetch(`/sounds/${zone}.mp3`);
+        const response = await fetch(`/sounds/${zone}.mp3`);
         const arrayBuffer = await response.arrayBuffer();
-        const buffer      = await this.audioCtx!.decodeAudioData(arrayBuffer);
+        const buffer = await this.audioCtx!.decodeAudioData(arrayBuffer);
 
         this.bufferCache.set(zone, buffer);
         return buffer;
@@ -134,23 +191,25 @@ export class AudioEngine {
 
     private static snapshotActiveLayers(): void {
         if (!this.audioCtx) return;
+
         const now = this.audioCtx.currentTime;
 
         for (const layer of this.activeLayers) {
-            const elapsed    = now - layer.startedAt;
-            const rawOffset  = layer.startOffset + elapsed;
-            const saved      = rawOffset % layer.buffer.duration;
+            const elapsed = now - layer.startedAt;
+            const rawOffset = layer.startOffset + elapsed;
+            const saved = rawOffset % layer.buffer.duration;
 
             this.zoneRecords.set(layer.zone, {
                 savedOffset: saved,
-                snapshotAt:  now,
+                snapshotAt: now,
             });
         }
     }
 
-    private static getResumeOffset(zone: string, bufferDuration: number): number {
+    private static getResumeOffset(zone: string, duration: number): number {
         const record = this.zoneRecords.get(zone);
         if (!record) return 0;
-        return record.savedOffset % bufferDuration;
+
+        return record.savedOffset % duration;
     }
 }
