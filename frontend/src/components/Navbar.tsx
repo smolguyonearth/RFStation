@@ -1,23 +1,23 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { Menu, X, Map as MapIcon, Monitor } from "lucide-react";
-
-const NAV_LINKS = [
-    { title: "nav.map", path: "/map", icon: MapIcon },
-    { title: "nav.monitor", path: "/monitor", icon: Monitor },
-];
+import { useState } from "react"
+import { Link } from "react-router-dom"
+import { useTranslation } from "react-i18next"
+import { Menu, X } from "lucide-react"
+import { useLocation } from "react-router-dom"
+import { NAV_LINKS } from "@/constants/nav_menu"
 
 export default function Navbar() {
     const { t, i18n } = useTranslation();
+    const location = useLocation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
     const changeLanguage = (lng: string) => i18n.changeLanguage(lng);
+    const isActive = (path: string) => location.pathname === path;
 
     return (
         <header className="bg-brand-primary dark:bg-nav-bg shadow-lg sticky top-0 z-50">
             <nav className="px-6 py-3.5 mx-auto w-full flex items-center justify-between gap-6">
+                {/* Logo */}
                 <Link
                     to="/"
                     className="text-white font-extrabold text-xl tracking-wide hover:text-brand-border transition-colors cursor-pointer shrink-0 flex items-center gap-2"
@@ -29,18 +29,26 @@ export default function Navbar() {
                 </Link>
 
                 {/* Desktop Menu */}
-                <div className="hidden lg:flex gap-6 items-center text-sm font-medium">
+                <div className="hidden lg:flex gap-2 items-center text-sm font-medium">
                     {NAV_LINKS.map((link) => {
                         const Icon = link.icon;
+                        const active = isActive(link.path);
                         return (
                             <Link
                                 key={link.path}
                                 to={link.path}
-                                className="text-brand-border hover:text-white transition-all flex items-center gap-2 group"
+                                className={`
+                                    relative flex items-center gap-2 px-4 py-2 rounded-xl font-semibold
+                                    transition-all duration-200
+                                    ${active
+                                        ? "bg-brand-accent text-white shadow-md shadow-brand-accent/30 scale-[1.03]"
+                                        : "text-brand-border hover:text-white hover:bg-white/10"
+                                    }
+                                `}
                             >
                                 <Icon
-                                    size={16}
-                                    className="text-brand-accent group-hover:text-white transition-colors"
+                                    size={15}
+                                    className={active ? "text-white" : "text-brand-accent"}
                                 />
                                 {t(link.title)}
                             </Link>
@@ -48,31 +56,27 @@ export default function Navbar() {
                     })}
 
                     {/* Language Switcher */}
-                    <div className="flex gap-1 bg-black/20 p-1 rounded-lg">
-                        <button
-                            onClick={() => changeLanguage("en")}
-                            className={`px-2 py-1 rounded-md text-xs font-bold ${i18n.language === "en" ? "bg-brand-accent text-white" : "text-brand-border hover:text-white"}`}
-                        >
-                            EN
-                        </button>
-                        <button
-                            onClick={() => changeLanguage("th")}
-                            className={`px-2 py-1 rounded-md text-xs font-bold ${i18n.language === "th" ? "bg-brand-accent text-white" : "text-brand-border hover:text-white"}`}
-                        >
-                            TH
-                        </button>
-                        <button
-                            onClick={() => changeLanguage("de")}
-                            className={`px-2 py-1 rounded-md text-xs font-bold ${i18n.language === "de" ? "bg-brand-accent text-white" : "text-brand-border hover:text-white"}`}
-                        >
-                            DE
-                        </button>
+                    <div className="ml-4 flex gap-1 bg-black/20 p-1 rounded-lg">
+                        {["en", "th", "de"].map((lng) => (
+                            <button
+                                key={lng}
+                                onClick={() => changeLanguage(lng)}
+                                className={`px-2 py-1 rounded-md text-xs font-bold transition-all ${i18n.language === lng
+                                        ? "bg-brand-accent text-white"
+                                        : "text-brand-border hover:text-white"
+                                    }`}
+                            >
+                                {lng.toUpperCase()}
+                            </button>
+                        ))}
                     </div>
                 </div>
 
+                {/* Mobile Hamburger */}
                 <button
                     onClick={toggleMenu}
                     className="lg:hidden p-2 text-brand-border hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                    aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                 >
                     {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
@@ -85,19 +89,43 @@ export default function Navbar() {
                         <div className="flex flex-col gap-2">
                             {NAV_LINKS.map((link) => {
                                 const Icon = link.icon;
+                                const active = isActive(link.path);
                                 return (
                                     <Link
                                         key={link.path}
                                         to={link.path}
                                         onClick={toggleMenu}
-                                        className="flex items-center gap-4 text-brand-border hover:text-white hover:bg-white/5 p-4 rounded-2xl transition-all active:scale-[0.98]"
+                                        className={`
+                                            flex items-center gap-4 p-4 rounded-2xl transition-all active:scale-[0.98]
+                                            ${active
+                                                ? "bg-brand-accent/20 border border-brand-accent/40 text-white"
+                                                : "text-brand-border hover:text-white hover:bg-white/5 border border-transparent"
+                                            }
+                                        `}
                                     >
-                                        <div className="p-2 bg-white/5 rounded-xl">
-                                            <Icon size={20} className="text-brand-accent" />
+                                        {/* Icon container: filled on active, subtle on inactive */}
+                                        <div
+                                            className={`p-2 rounded-xl transition-colors ${active
+                                                    ? "bg-brand-accent shadow-sm shadow-brand-accent/40"
+                                                    : "bg-white/5"
+                                                }`}
+                                        >
+                                            <Icon
+                                                size={20}
+                                                className={active ? "text-white" : "text-brand-accent"}
+                                            />
                                         </div>
-                                        <span className="font-semibold text-base">
+
+                                        <span className="font-semibold text-base flex-1">
                                             {t(link.title)}
                                         </span>
+
+                                        {/* Active badge on the right */}
+                                        {active && (
+                                            <span className="text-[10px] font-bold uppercase tracking-widest bg-brand-accent text-white px-2 py-0.5 rounded-full">
+                                                Active
+                                            </span>
+                                        )}
                                     </Link>
                                 );
                             })}
