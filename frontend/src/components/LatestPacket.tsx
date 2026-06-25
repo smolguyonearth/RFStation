@@ -4,8 +4,6 @@ import { Radio } from "lucide-react"
 interface Props {
     latest?: DeviceData;
 }
-
-
 export default function LatestPacket({ latest }: Props) {
     return (
         <section className="mb-12">

@@ -1,49 +1,156 @@
-export class AudioEngine {
-    private static audioCtx: AudioContext | null = null;
-    private static currentSource: AudioBufferSourceNode | null = null;
-    private static currentGain: GainNode | null = null;
-    private static currentZone: string | null = null;
+interface ActiveLayer {
+    source: AudioBufferSourceNode;
+    gain: GainNode;
+    zone: string;
+    startedAt: number;
+    startOffset: number;
+    buffer: AudioBuffer;
+}
 
-    static init() {
+interface ZoneRecord {
+    savedOffset: number;
+    snapshotAt: number;
+}
+
+export class AudioEngine {
+    static crossfadeDuration: number = 3;
+    private static audioCtx: AudioContext | null = null;
+    private static activeLayers: ActiveLayer[] = [];
+    private static currentZone: string | null = null;
+    private static zoneRecords: Map<string, ZoneRecord> = new Map();
+    private static bufferCache: Map<string, AudioBuffer> = new Map();
+    static init(): void {
         if (!this.audioCtx) {
-            this.audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+            this.audioCtx = new (
+                window.AudioContext || (window as any).webkitAudioContext
+            )();
         }
     }
+    static async preload(zone: string): Promise<void> {
+        await this.getBuffer(zone);
+    }
 
-    static async playZone(zone: string) {
+    static async playZone(zone: string): Promise<void> {
         if (!this.audioCtx) this.init();
-        if (this.audioCtx!.state === 'suspended') this.audioCtx!.resume();
+        const ctx = this.audioCtx!;
+
+        if (ctx.state === 'suspended') await ctx.resume();
 
         if (this.currentZone === zone) return;
 
-        const response = await fetch(`/sounds/${zone}.mp3`);
-        const arrayBuffer = await response.arrayBuffer();
-        const buffer = await this.audioCtx!.decodeAudioData(arrayBuffer);
+        this.snapshotActiveLayers();
+        this.currentZone = zone;
 
-        const now = this.audioCtx!.currentTime;
-        const fadeTime = 0.5;
+        const now = ctx.currentTime;
+        const fd  = this.crossfadeDuration;
 
-        if (this.currentSource && this.currentGain) {
-            this.currentGain.gain.setValueAtTime(this.currentGain.gain.value, now);
-            this.currentGain.gain.linearRampToValueAtTime(0, now + fadeTime);
-            this.currentSource.stop(now + fadeTime);
+        for (const layer of this.activeLayers) {
+            const g = layer.gain;
+            g.gain.cancelScheduledValues(now);
+            g.gain.setValueAtTime(g.gain.value, now);
+            g.gain.linearRampToValueAtTime(0, now + fd);
+            layer.source.stop(now + fd);
         }
 
-        const newSource = this.audioCtx!.createBufferSource();
-        const newGain = this.audioCtx!.createGain();
+        this.activeLayers = [];
 
-        newSource.buffer = buffer;
-        newSource.loop = true;
-        newGain.gain.setValueAtTime(0, now);
-        newGain.gain.linearRampToValueAtTime(1, now + fadeTime);
+        const buffer = await this.getBuffer(zone);
 
-        newSource.connect(newGain);
-        newGain.connect(this.audioCtx!.destination);
+        if (this.currentZone !== zone) return;
 
-        newSource.start(now);
+        const resumeOffset = this.getResumeOffset(zone, buffer.duration);
+        const source = ctx.createBufferSource();
+        const gain   = ctx.createGain();
 
-        this.currentSource = newSource;
-        this.currentGain = newGain;
-        this.currentZone = zone;
+        source.buffer = buffer;
+        source.loop   = true;
+
+        const startNow = ctx.currentTime;
+        gain.gain.setValueAtTime(0, startNow);
+        gain.gain.linearRampToValueAtTime(1, startNow + fd);
+
+        source.connect(gain);
+        gain.connect(ctx.destination);
+
+        source.start(startNow, resumeOffset);
+
+        this.activeLayers.push({
+            source,
+            gain,
+            zone,
+            startedAt:   startNow,
+            startOffset: resumeOffset,
+            buffer,
+        });
+    }
+
+    static stop(): void {
+        if (!this.audioCtx) return;
+        const now = this.audioCtx.currentTime;
+        const fd  = this.crossfadeDuration;
+
+        this.snapshotActiveLayers();
+
+        for (const layer of this.activeLayers) {
+            layer.gain.gain.cancelScheduledValues(now);
+            layer.gain.gain.setValueAtTime(layer.gain.gain.value, now);
+            layer.gain.gain.linearRampToValueAtTime(0, now + fd);
+            layer.source.stop(now + fd);
+        }
+
+        this.activeLayers = [];
+        this.currentZone  = null;
+    }
+
+    static setSavedOffset(zone: string, offsetSeconds: number): void {
+        this.zoneRecords.set(zone, {
+            savedOffset: offsetSeconds,
+            snapshotAt:  this.audioCtx?.currentTime ?? 0,
+        });
+    }
+
+    static getSavedOffset(zone: string): number | null {
+        const record = this.zoneRecords.get(zone);
+        return record ? record.savedOffset : null;
+    }
+
+    static reset(): void {
+        this.stop();
+        this.zoneRecords.clear();
+        this.bufferCache.clear();
+    }
+
+    private static async getBuffer(zone: string): Promise<AudioBuffer> {
+        const cached = this.bufferCache.get(zone);
+        if (cached) return cached;
+
+        const response    = await fetch(`/sounds/${zone}.mp3`);
+        const arrayBuffer = await response.arrayBuffer();
+        const buffer      = await this.audioCtx!.decodeAudioData(arrayBuffer);
+
+        this.bufferCache.set(zone, buffer);
+        return buffer;
+    }
+
+    private static snapshotActiveLayers(): void {
+        if (!this.audioCtx) return;
+        const now = this.audioCtx.currentTime;
+
+        for (const layer of this.activeLayers) {
+            const elapsed    = now - layer.startedAt;
+            const rawOffset  = layer.startOffset + elapsed;
+            const saved      = rawOffset % layer.buffer.duration;
+
+            this.zoneRecords.set(layer.zone, {
+                savedOffset: saved,
+                snapshotAt:  now,
+            });
+        }
+    }
+
+    private static getResumeOffset(zone: string, bufferDuration: number): number {
+        const record = this.zoneRecords.get(zone);
+        if (!record) return 0;
+        return record.savedOffset % bufferDuration;
     }
 }
