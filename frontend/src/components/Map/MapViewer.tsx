@@ -1,5 +1,5 @@
-import { mockLandmarks } from "../data/map.mock"
-import mapVectorBg from "../assets/Map_final_vecter.webp"
+import { Landmarks } from "@/constants/landmark"
+import mapVectorBg from "@/assets/Map_final_vecter.webp"
 import type { MapLocation } from "@/types/map.types"
 
 const getConquerorColor = (ownerId: string | null) => {
@@ -33,7 +33,7 @@ export default function MapViewer({ selectedLand, onSelect }: MapViewerProps) {
                             preserveAspectRatio="xMidYMid meet"
                         />
                         <g style={{ mixBlendMode: "multiply" }}>
-                            {mockLandmarks.map((lm) => {
+                            {Landmarks.map((lm) => {
                                 const isSelected = selectedLand?.id === lm.id;
                                 return (
                                     <path
