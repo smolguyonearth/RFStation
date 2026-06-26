@@ -21,7 +21,7 @@ Make sure you have the following installed on your machine:
 
 3. **Environment Variables:**
    Make sure you have your environment variables set up. 
-   - Ask a teammate for the `.env` file and place it inside the `backend` directory: `backend/.env`.
+   - Ask a teammate for the `.env` file and place it inside the `backend` and `frontend` directories: `backend/.env` and `frontend/.env`.
 
 4. **Start the Development Environment:**
    Run the following command at the root of the project to build and start the containers:
