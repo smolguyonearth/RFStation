@@ -100,7 +100,7 @@ export const Landmarks: MapLocation[] = [
         resources: ['Nature'],
         d: LANDMARK_PATHS.rolland,
         image: LANDMARK_IMAGES.roland,
-        imageSource: 'Dietmar Rabich / CC BY-SA 4.0'
+        imageSource: 'Nitis Jadipang'
     },
     {
         id: 'lm_13',

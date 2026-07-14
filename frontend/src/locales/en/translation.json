@@ -1,7 +1,8 @@
 {
     "nav": {
         "map": "Map",
-        "monitor": "Monitor"
+        "monitor": "Monitor",
+        "live": "Live"
     },
     "map": {
         "owner": "Owner",
