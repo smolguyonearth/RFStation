@@ -8,7 +8,7 @@ import type { DeviceData } from "@/types/device.types"
 
 export default function Monitor() {
     const [stream, setStream] = useState<DeviceData[]>([]);
-    const [latest, setLatest] = useState<DeviceData | undefined>();
+    const [latestByDevice, setLatestByDevice] = useState<Record<string, DeviceData>>({});
     const [isSystemActive, setIsSystemActive] = useState(false);
 
     const handleStart = () => {
@@ -27,7 +27,16 @@ export default function Monitor() {
 
             if (data) {
                 setStream(data);
-                setLatest(data[0]);
+                
+                // Group the historical data to find the latest packet for each device
+                const latestMap: Record<string, DeviceData> = {};
+                // Since data is ordered descending by id, the first time we see a device, it's the latest
+                for (const packet of data) {
+                    if (!latestMap[packet.device_code]) {
+                        latestMap[packet.device_code] = packet;
+                    }
+                }
+                setLatestByDevice(latestMap);
             }
         }
 
@@ -38,7 +47,12 @@ export default function Monitor() {
         ws.onmessage = (event) => {
             try {
                 const newData = JSON.parse(event.data) as DeviceData;
-                setLatest(newData);
+                
+                setLatestByDevice((prev) => ({
+                    ...prev,
+                    [newData.device_code]: newData
+                }));
+                
                 setStream((prev) => [newData, ...prev]);
 
                 AudioEngine.playZone(newData.zone_code);
@@ -51,6 +65,8 @@ export default function Monitor() {
             ws.close();
         };
     }, [isSystemActive]);
+
+    const activeDevices = Object.values(latestByDevice).sort((a, b) => a.device_code.localeCompare(b.device_code));
 
     return (
         <div className="min-h-screen bg-brand-bg py-8 px-4">
@@ -80,7 +96,15 @@ export default function Monitor() {
                     ) : (
 
                         <div className="space-y-6">
-                            <LatestPacket latest={latest} />
+                            {activeDevices.length > 0 ? (
+                                <div className={`grid gap-6 ${activeDevices.length > 1 ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
+                                    {activeDevices.map(latest => (
+                                        <LatestPacket key={latest.device_code} latest={latest} />
+                                    ))}
+                                </div>
+                            ) : (
+                                <LatestPacket latest={undefined} />
+                            )}
                             <HistoryList stream={stream} />
                         </div>
                     )}

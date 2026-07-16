@@ -6,14 +6,14 @@ interface Props {
 }
 export default function LatestPacket({ latest }: Props) {
     return (
-        <section className="mb-12">
+        <section className="h-full flex flex-col">
             <h2 className="text-xs uppercase tracking-[2px] text-brand-accent mb-4 font-bold flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-brand-accent"></div>
                 Latest Packet
             </h2>
 
             {latest ? (
-                <div className="bg-brand-primary rounded-3xl shadow-lg border border-brand-primary overflow-hidden relative">
+                <div className="bg-brand-primary rounded-3xl shadow-lg border border-brand-primary overflow-hidden relative flex-1 flex flex-col justify-center">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-brand-accent opacity-20 blur-[80px] rounded-full translate-x-1/2 -translate-y-1/2"></div>
 
                     <div className="p-8 md:p-12 relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
@@ -32,7 +32,7 @@ export default function LatestPacket({ latest }: Props) {
                                     Nearest
                                 </div>
                                 <div className="text-2xl font-bold text-white">
-                                    {latest.nearest_device === "X"
+                                    {latest.nearest_device === "X" || !latest.nearest_device
                                         ? "None"
                                         : latest.nearest_device}
                                 </div>
@@ -54,21 +54,11 @@ export default function LatestPacket({ latest }: Props) {
                                 </div>
                             </div>
 
-                            <div className="w-px bg-white/20"></div>
-
-                            <div className="text-center min-w-[80px]">
-                                <div className="text-[10px] uppercase tracking-[1.5px] text-brand-border mb-1.5 font-bold">
-                                    Zone
-                                </div>
-                                <div className="text-2xl font-bold text-white">
-                                    {latest.zone_code}
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
             ) : (
-                <div className="bg-brand-bg rounded-3xl border-2 border-brand-border border-dashed p-16 text-center flex flex-col items-center justify-center min-h-[300px]">
+                <div className="bg-brand-bg rounded-3xl border-2 border-brand-border border-dashed p-16 text-center flex flex-1 flex-col items-center justify-center min-h-[300px]">
                     <div className="bg-brand-border/30 p-4 rounded-full mb-6">
                         <Radio size={40} className="text-brand-accent animate-pulse" />
                     </div>
