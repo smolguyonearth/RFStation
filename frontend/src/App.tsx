@@ -4,6 +4,7 @@ import Home from "@/pages/Home"
 import Map from "@/pages/Map"
 import Monitor from "@/pages/Monitor"
 import Live from "@/pages/Live"
+import LedSimulation from "@/pages/LedSimulation"
 
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
@@ -21,6 +22,7 @@ export default function Root() {
             <Route path="/map" element={<Map />} />
             <Route path="/monitor" element={<Monitor />} />
             <Route path="/live" element={<Live />} />
+            <Route path="/led" element={<LedSimulation />} />
           </Routes>
         </main>
 
