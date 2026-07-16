@@ -223,8 +223,13 @@ void parseCommand()
         } else {
             owner = command.substring(p+1, nextP).toInt();
         }
-        landmarkOwner[i/3][i%3] = owner;
-        battleState[i/3][i%3] = false;
+        
+        if (owner == 3) {
+            battleState[i/3][i%3] = true;
+        } else {
+            landmarkOwner[i/3][i%3] = owner;
+            battleState[i/3][i%3] = false;
+        }
         p = nextP;
     }
     updateMatrix();

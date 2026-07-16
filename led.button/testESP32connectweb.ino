@@ -21,13 +21,13 @@ const char *password = "12345678";
 
 // UPDATE THIS WITH YOUR BACKEND'S LOCAL IP ADDRESS (e.g. 192.168.1.50)
 const char *backendUrl = "http://10.72.220.188:3000/api/led/status/raw";
+const char *actionUrl = "http://10.72.220.188:3000/api/action";
 
 unsigned long lastSyncTime = 0;
 const unsigned long syncInterval = 1000; // Poll backend every 1 second
 
 // Button tracking
 byte button = 255;
-byte lastButton = 255;
 
 // ============================
 // Send SYNC
@@ -77,15 +77,29 @@ void readButton() {
   Wire.requestFrom(BUTTON_ARDUINO_ADDRESS, 1);
   if (Wire.available()) {
     button = Wire.read();
-    if (button != 255 && button != lastButton) {
+    if (button != 255) {
 
       Serial.print("Button pressed: ");
       Serial.println(button);
 
-      // In the future, you can send an HTTP POST to the backend here
-      // to let it know a physical button was pressed.
-
-      lastButton = button;
+      if (WiFi.status() == WL_CONNECTED) {
+        HTTPClient http;
+        http.begin(actionUrl);
+        http.addHeader("Content-Type", "application/json");
+        
+        String jsonPayload = "{\"button_id\":" + String(button) + "}";
+        int httpResponseCode = http.POST(jsonPayload);
+        
+        if (httpResponseCode == 200) {
+          String payload = http.getString();
+          sendSync(payload); // Instant update!
+        } else {
+          Serial.print("Action POST error: ");
+          Serial.println(httpResponseCode);
+        }
+        
+        http.end();
+      }
     }
   }
 }
