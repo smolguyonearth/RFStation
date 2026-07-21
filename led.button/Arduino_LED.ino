@@ -1,30 +1,17 @@
 #include <Wire.h>
 
-
 #define I2C_ADDRESS 0x08
-
 
 #define ROWS 4
 #define COLS 3
-
-
 
 // ======================
 // Matrix Pins
 // ======================
 
-byte rowPins[ROWS] =
-{
-  2,3,4,5
-};
+byte rowPins[ROWS] = {2, 3, 4, 5};
 
-
-byte colPins[COLS] =
-{
-  8,9,10
-};
-
-
+byte colPins[COLS] = {8, 9, 10};
 
 // ======================
 // Landmark Data
@@ -35,152 +22,113 @@ byte colPins[COLS] =
 // 2 = player2
 // ======================
 
-byte landmarkOwner[2][3] =
-{
-  {0,0,0},
-  {0,0,0}
-};
+byte landmarkOwner[2][3] = {{0, 0, 0}, {0, 0, 0}};
 
 // Battle state
 
-bool battleState[2][3] =
-{
-  {false,false,false},
-  {false,false,false}
-};
-
-
+bool battleState[2][3] = {{false, false, false}, {false, false, false}};
 
 // LED Matrix
 
 byte ledState[ROWS][COLS];
 
-
-
 // Command
 
-String command="";
-
-
+String command = "";
 
 // Blink
 
-bool blinkState=false;
+bool blinkState = false;
 
-unsigned long blinkTimer=0;
-
-
+unsigned long blinkTimer = 0;
 
 // ======================
 // Receive I2C
 // ======================
 
-void receiveEvent(int bytes)
-{
+void receiveEvent(int bytes) {
 
-  command="";
+  command = "";
 
-
-  while(Wire.available())
-  {
-    command +=(char)Wire.read();
+  while (Wire.available()) {
+    command += (char)Wire.read();
   }
-
 
   Serial.print("Receive : ");
 
   Serial.println(command);
 
-
-
   parseCommand();
-
 }
-
 
 // ======================
 // Create LED Matrix
 // ======================
 
-void updateMatrix()
-{
+void updateMatrix() {
 
   // clear
 
-  for(int r=0;r<ROWS;r++)
-  {
-    for(int c=0;c<COLS;c++)
-    {
-      ledState[r][c]=0;
+  for (int r = 0; r < ROWS; r++) {
+    for (int c = 0; c < COLS; c++) {
+      ledState[r][c] = 0;
     }
   }
 
-
-
-  for(int r=0;r<2;r++)
-  {
-    for(int c=0;c<3;c++)
-    {
+  for (int r = 0; r < 2; r++) {
+    for (int c = 0; c < 3; c++) {
       // -----------------
       // Battle
       // -----------------
-      if(battleState[r][c])
-      {
-        if(blinkState)
-        {
-          // Player1
-          ledState[r][c]=1;
-          // Player2
-          ledState[r+2][c]=1;
+      if (battleState[r][c]) {
+        if (blinkState) {
+          // Player1 (Blue) - Row 0 and 2
+          ledState[r * 2][c] = 1;
+          // Player2 (Red) - Row 1 and 3
+          ledState[(r * 2) + 1][c] = 1;
         }
       }
       // -----------------
       // Normal Owner
       // -----------------
-      else
-      {
-        if(landmarkOwner[r][c]==1)
-        {
-          ledState[r][c]=1;
-        }
-        else if(landmarkOwner[r][c]==2)
-        {
-          ledState[r+2][c]=1;
+      else {
+        if (landmarkOwner[r][c] == 1) {
+          ledState[r * 2][c] = 1; // Player1 (Blue)
+        } else if (landmarkOwner[r][c] == 2) {
+          ledState[(r * 2) + 1][c] = 1; // Player2 (Red)
         }
       }
     }
   }
-
 }
 
 // ======================
 // Parse Command
 // ======================
 
-void parseCommand()
-{
+void parseCommand() {
   //---------------------
   // LANDMARK,r,c,player
   //---------------------
 
-  if(command.startsWith("LANDMARK"))
-  {
+  if (command.startsWith("LANDMARK")) {
     int p1 = command.indexOf(',');
-    int p2 = command.indexOf(',',p1+1);
-    int p3 = command.indexOf(',',p2+1);
+    int p2 = command.indexOf(',', p1 + 1);
+    int p3 = command.indexOf(',', p2 + 1);
 
-    int r = command.substring(p1+1,p2).toInt();
-    int c = command.substring(p2+1,p3).toInt();
-    int player = command.substring(p3+1).toInt();
+    int r = command.substring(p1 + 1, p2).toInt();
+    int c = command.substring(p2 + 1, p3).toInt();
+    int player = command.substring(p3 + 1).toInt();
 
-    if(r>=0 && r<2 && c>=0 && c<3)
-    {
-      landmarkOwner[r][c]=player;
-      battleState[r][c]=false;
+    if (r >= 0 && r < 2 && c >= 0 && c < 3) {
+      landmarkOwner[r][c] = player;
+      battleState[r][c] = false;
       updateMatrix();
 
       Serial.print("Capture Landmark [");
-      Serial.print(r); Serial.print(","); Serial.print(c);
+      Serial.print(r);
+      Serial.print(",");
+      Serial.print(c);
       Serial.print("] Owner Player ");
       Serial.println(player);
     }
@@ -190,21 +138,21 @@ void parseCommand()
   // BATTLE,r,c
   //---------------------
 
-  else if(command.startsWith("BATTLE"))
-  {
+  else if (command.startsWith("BATTLE")) {
     int p1 = command.indexOf(',');
-    int p2 = command.indexOf(',',p1+1);
+    int p2 = command.indexOf(',', p1 + 1);
 
-    int r = command.substring(p1+1,p2).toInt();
-    int c = command.substring(p2+1).toInt();
+    int r = command.substring(p1 + 1, p2).toInt();
+    int c = command.substring(p2 + 1).toInt();
 
-    if(r>=0 && r<2 && c>=0 && c<3)
-    {
-      battleState[r][c]=true;
+    if (r >= 0 && r < 2 && c >= 0 && c < 3) {
+      battleState[r][c] = true;
       updateMatrix();
 
       Serial.print("Battle Start L[");
-      Serial.print(r); Serial.print(","); Serial.print(c);
+      Serial.print(r);
+      Serial.print(",");
+      Serial.print(c);
       Serial.println("]");
     }
   }
@@ -212,149 +160,106 @@ void parseCommand()
   //---------------------
   // SYNC,o0,o1,o2,o3,o4,o5
   //---------------------
-  else if(command.startsWith("SYNC"))
-  {
+  else if (command.startsWith("SYNC")) {
     int p = command.indexOf(',');
-    for (int i=0; i<6; i++) {
-        int nextP = command.indexOf(',', p+1);
-        int owner;
-        if (nextP == -1) {
-            owner = command.substring(p+1).toInt();
-        } else {
-            owner = command.substring(p+1, nextP).toInt();
-        }
-        
-        if (owner == 3) {
-            battleState[i/3][i%3] = true;
-        } else {
-            landmarkOwner[i/3][i%3] = owner;
-            battleState[i/3][i%3] = false;
-        }
-        p = nextP;
+    for (int i = 0; i < 6; i++) {
+      int nextP = command.indexOf(',', p + 1);
+      int owner;
+      if (nextP == -1) {
+        owner = command.substring(p + 1).toInt();
+      } else {
+        owner = command.substring(p + 1, nextP).toInt();
+      }
+
+      if (owner == 3) {
+        battleState[i / 3][i % 3] = true;
+      } else {
+        landmarkOwner[i / 3][i % 3] = owner;
+        battleState[i / 3][i % 3] = false;
+      }
+      p = nextP;
     }
     updateMatrix();
     Serial.println("SYNC Complete");
   }
-
 }
-
-
-
 
 // ======================
 // Blink Controller
 // ======================
 
-void updateBlink()
-{
+void updateBlink() {
 
-  if(millis()-blinkTimer>300)
-  {
+  if (millis() - blinkTimer > 300) {
 
-    blinkTimer=millis();
+    blinkTimer = millis();
 
-    blinkState=!blinkState;
+    blinkState = !blinkState;
 
     updateMatrix();
-
   }
-
 }
 
 // ======================
 // Matrix Scan
 // ======================
 
-void scanMatrix()
-{
-  for(int r=0;r<ROWS;r++)
-  {
+void scanMatrix() {
+  for (int r = 0; r < ROWS; r++) {
 
     // disable rows
 
-    for(int i=0;i<ROWS;i++)
-    {
-      digitalWrite(rowPins[i],LOW);
+    for (int i = 0; i < ROWS; i++) {
+      digitalWrite(rowPins[i], LOW);
     }
 
-    digitalWrite(rowPins[r],HIGH);
+    digitalWrite(rowPins[r], HIGH);
 
-    for(int c=0;c<COLS;c++)
-    {
-      if(ledState[r][c])
-      {
+    for (int c = 0; c < COLS; c++) {
+      if (ledState[r][c]) {
 
-        digitalWrite(colPins[c],LOW);
+        digitalWrite(colPins[c], LOW);
 
       }
 
-      else
-      {
+      else {
 
-        digitalWrite(colPins[c],HIGH);
-
+        digitalWrite(colPins[c], HIGH);
       }
-
     }
 
     delay(2);
   }
-
 }
-
-
-
 
 // ======================
 // Send Status ESP32
 // ======================
 
-void requestEvent()
-{
+void requestEvent() {
 
-  for(int r=0;r<2;r++)
-  {
-    for(int c=0;c<3;c++)
-    {
+  for (int r = 0; r < 2; r++) {
+    for (int c = 0; c < 3; c++) {
       Wire.write(landmarkOwner[r][c]);
     }
   }
-
 }
 
-
-
-
-
-
-
-
-void setup()
-{
-
+void setup() {
 
   Serial.begin(115200);
 
+  for (int i = 0; i < ROWS; i++) {
 
-
-  for(int i=0;i<ROWS;i++)
-  {
-
-    pinMode(rowPins[i],OUTPUT);
-
+    pinMode(rowPins[i], OUTPUT);
   }
 
+  for (int i = 0; i < COLS; i++) {
 
-
-  for(int i=0;i<COLS;i++)
-  {
-
-    pinMode(colPins[i],OUTPUT);
-
+    pinMode(colPins[i], OUTPUT);
   }
 
   updateMatrix();
-
 
   Wire.begin(I2C_ADDRESS);
 
@@ -363,22 +268,11 @@ void setup()
   Wire.onRequest(requestEvent);
 
   Serial.println("LED Matrix Ready");
-
-
 }
 
-
-
-
-
-void loop()
-{
-
+void loop() {
 
   updateBlink();
 
-
   scanMatrix();
-
-
 }
