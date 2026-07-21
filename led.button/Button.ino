@@ -18,14 +18,11 @@ byte buttonPins[BUTTON_COUNT] ={2,3,4,5,6,7};
 // Button state
 // =======================
 
-byte selectedButton = 255;
-
-byte lastButton = 255;
-
-unsigned long lastDebounceTime = 0;
-
-const unsigned long debounceDelay = 50;
-
+volatile byte selectedButton = 255;
+int lastButtonState[BUTTON_COUNT] = {HIGH, HIGH, HIGH, HIGH, HIGH, HIGH};
+int buttonState[BUTTON_COUNT] = {HIGH, HIGH, HIGH, HIGH, HIGH, HIGH};
+unsigned long lastDebounceTime[BUTTON_COUNT] = {0, 0, 0, 0, 0, 0};
+const unsigned long debounceDelay = 15;
 
 
 // =======================
@@ -41,62 +38,39 @@ void requestEvent()
 }
 
 
-
 // =======================
 // Scan buttons
 // =======================
 
 void scanButtons()
 {
-
  for(int i=0;i<BUTTON_COUNT;i++)
  {
+   int reading = digitalRead(buttonPins[i]);
 
-   int state = digitalRead(buttonPins[i]);
+   // If the switch changed, due to noise or pressing
+   if (reading != lastButtonState[i]) {
+     lastDebounceTime[i] = millis();
+   }
 
+   if ((millis() - lastDebounceTime[i]) > debounceDelay) {
+     // Whatever the reading is at, it's been there for longer than the debounce delay,
+     // so take it as the actual current state:
 
-   // INPUT_PULLUP
-   // pressed = LOW
+     if (reading != buttonState[i]) {
+       buttonState[i] = reading;
 
-   if(state == LOW)
-   {
-
-     if(lastButton != i)
-     {
-
-       if(millis()-lastDebounceTime > debounceDelay)
-       {
-
+       // Only register a press if the new debounced state is LOW
+       if (buttonState[i] == LOW) {
          selectedButton = i;
-
-
          Serial.print("Button pressed : Landmark ");
          Serial.println(i+1);
-
-
-         lastDebounceTime = millis();
-
-
-         lastButton = i;
-
        }
-
      }
-
-   }
-   else
-   {
-
-     // release button
-     if(lastButton == i)
-     {
-       lastButton = 255;
-     }
-
    }
 
+   lastButtonState[i] = reading;
  }
-
 }
 
 

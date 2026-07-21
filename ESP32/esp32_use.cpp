@@ -5,7 +5,7 @@ const char *ssid = "GuGuGaGa";
 const char *password = "12345678";
 
 // Change this to your computer's IP address
-const char *server_host = "10.72.220.188";
+const char *server_host = "10.121.159.188";
 const uint16_t server_port = 3000;
 
 HardwareSerial ArduinoUART(2);

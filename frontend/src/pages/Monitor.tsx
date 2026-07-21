@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
-import { supabase } from "@/lib/supabaseClient"
+// [DB DISABLED] Database is disabled. To re-enable, see docs/DB_ACTIVATE.md
+// import { supabase } from "@/lib/supabaseClient"
 import { AudioEngine } from "@/lib/AudioEngine"
 import Header from "@/components/Monitor/Header"
 import LatestPacket from "@/components/Monitor/LatestPacket"
@@ -19,30 +20,28 @@ export default function Monitor() {
     useEffect(() => {
         if (!isSystemActive) return;
 
-        async function init() {
-            const { data } = await supabase
-                .from("device_history")
-                .select("*")
-                .order("id", { ascending: false });
+        // [DB DISABLED] Previously loaded history from Supabase on page load.
+        // Now starts empty and relies on WebSocket for real-time data.
+        // To re-enable, see docs/DB_ACTIVATE.md
+        // async function init() {
+        //     const { data } = await supabase
+        //         .from("device_history")
+        //         .select("*")
+        //         .order("id", { ascending: false });
+        //     if (data) {
+        //         setStream(data);
+        //         const latestMap: Record<string, DeviceData> = {};
+        //         for (const packet of data) {
+        //             if (!latestMap[packet.device_code]) {
+        //                 latestMap[packet.device_code] = packet;
+        //             }
+        //         }
+        //         setLatestByDevice(latestMap);
+        //     }
+        // }
+        // init();
 
-            if (data) {
-                setStream(data);
-                
-                // Group the historical data to find the latest packet for each device
-                const latestMap: Record<string, DeviceData> = {};
-                // Since data is ordered descending by id, the first time we see a device, it's the latest
-                for (const packet of data) {
-                    if (!latestMap[packet.device_code]) {
-                        latestMap[packet.device_code] = packet;
-                    }
-                }
-                setLatestByDevice(latestMap);
-            }
-        }
-
-        init();
-
-        const ws = new WebSocket("ws://localhost:3000/ws");
+        const ws = new WebSocket(`ws://${window.location.host}/ws`);
 
         ws.onmessage = (event) => {
             try {
@@ -55,7 +54,9 @@ export default function Monitor() {
                 
                 setStream((prev) => [newData, ...prev]);
 
-                AudioEngine.playZone(newData.zone_code);
+                if (newData.nearest_device !== "X") {
+                    AudioEngine.playZone(newData.nearest_device);
+                }
             } catch (err) {
                 console.error("Failed to parse ws message", err);
             }

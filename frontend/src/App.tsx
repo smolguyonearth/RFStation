@@ -3,7 +3,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Home from "@/pages/Home"
 import Map from "@/pages/Map"
 import Monitor from "@/pages/Monitor"
-import Live from "@/pages/Live"
+// [DB DISABLED] Live page removed — it depended on Supabase Realtime. See docs/DB_ACTIVATE.md
+// import Live from "@/pages/Live"
 import Game from "@/pages/Game"
 
 import Navbar from "@/components/Navbar"
@@ -21,7 +22,7 @@ export default function Root() {
             <Route path="/" element={<Home />} />
             <Route path="/map" element={<Map />} />
             <Route path="/monitor" element={<Monitor />} />
-            <Route path="/live" element={<Live />} />
+            {/* [DB DISABLED] <Route path="/live" element={<Live />} /> */}
             <Route path="/game" element={<Game />} />
           </Routes>
         </main>

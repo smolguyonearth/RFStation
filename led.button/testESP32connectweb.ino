@@ -20,89 +20,106 @@ const char *ssid = "GuGuGaGa";
 const char *password = "12345678";
 
 // UPDATE THIS WITH YOUR BACKEND'S LOCAL IP ADDRESS (e.g. 192.168.1.50)
-const char *backendUrl = "http://10.72.220.188:3000/api/led/status/raw";
-const char *actionUrl = "http://10.72.220.188:3000/api/action";
+const char *backendUrl = "http://10.121.159.188:3000/api/led/status/raw";
+const char *actionUrl = "http://10.121.159.188:3000/api/action";
 
-unsigned long lastSyncTime = 0;
 const unsigned long syncInterval = 1000; // Poll backend every 1 second
 
-// Button tracking
-byte button = 255;
+// ============================
+// FreeRTOS shared resources
+// ============================
+
+QueueHandle_t buttonQueue;           // Button presses from Core 1 → Core 0
+SemaphoreHandle_t i2cMutex;          // Protect I2C bus (shared by both cores)
+String lastState = "";               // Cache to skip redundant I2C syncs
+
 
 // ============================
-// Send SYNC
+// Send SYNC to LED Arduino
+// Caller MUST hold i2cMutex
 // ============================
 
 void sendSync(String rawState) {
-  // rawState comes from backend like "0,1,2,0,0,0"
+  // Skip if state hasn't changed
+  if (rawState == lastState) return;
+  lastState = rawState;
+
   String msg = "SYNC," + rawState;
 
   Wire.beginTransmission(LED_ARDUINO_ADDRESS);
   Wire.write((uint8_t *)msg.c_str(), msg.length());
   Wire.endTransmission();
 
-  Serial.print("Synced to Arduino: ");
+  Serial.print("Synced: ");
   Serial.println(msg);
 }
 
-// ============================
-// Fetch State from Backend
-// ============================
-
-void pollBackend() {
-  if (WiFi.status() == WL_CONNECTED) {
-    HTTPClient http;
-    http.begin(backendUrl);
-    int httpResponseCode = http.GET();
-
-    if (httpResponseCode == 200) {
-      String payload = http.getString();
-      sendSync(payload); // Push the new state directly to the Arduino
-    } else {
-      Serial.print("Backend error: ");
-      Serial.println(httpResponseCode);
-    }
-
-    http.end();
-  } else {
-    Serial.println("WiFi Disconnected!");
-  }
-}
 
 // ============================
-// Read Button
+// HTTP Task (runs on Core 0)
+//
+// Handles ALL network I/O so
+// button reading is never blocked
 // ============================
 
-void readButton() {
-  Wire.requestFrom(BUTTON_ARDUINO_ADDRESS, 1);
-  if (Wire.available()) {
-    button = Wire.read();
-    if (button != 255) {
+void httpTask(void *param) {
+  unsigned long lastSync = millis();
 
-      Serial.print("Button pressed: ");
-      Serial.println(button);
-
+  while (true) {
+    // --- 1. Process any pending button press ---
+    byte btn;
+    if (xQueueReceive(buttonQueue, &btn, 0) == pdTRUE) {
       if (WiFi.status() == WL_CONNECTED) {
+        WiFiClient client;
         HTTPClient http;
-        http.begin(actionUrl);
+        http.begin(client, actionUrl);
         http.addHeader("Content-Type", "application/json");
-        
-        String jsonPayload = "{\"button_id\":" + String(button) + "}";
-        int httpResponseCode = http.POST(jsonPayload);
-        
-        if (httpResponseCode == 200) {
+        http.setTimeout(2000);
+
+        String json = "{\"button_id\":" + String(btn) + "}";
+        int code = http.POST(json);
+
+        if (code == 200) {
           String payload = http.getString();
-          sendSync(payload); // Instant update!
+          if (xSemaphoreTake(i2cMutex, pdMS_TO_TICKS(50))) {
+            sendSync(payload);
+            xSemaphoreGive(i2cMutex);
+          }
+          lastSync = millis(); // Reset poll timer — we just got fresh state
         } else {
-          Serial.print("Action POST error: ");
-          Serial.println(httpResponseCode);
+          Serial.printf("Action error: %d\n", code);
         }
-        
         http.end();
       }
     }
+
+    // --- 2. Periodic backend poll ---
+    if (millis() - lastSync > syncInterval) {
+      if (WiFi.status() == WL_CONNECTED) {
+        WiFiClient client;
+        HTTPClient http;
+        http.begin(client, backendUrl);
+        http.setTimeout(1500);
+        int code = http.GET();
+
+        if (code == 200) {
+          String payload = http.getString();
+          if (xSemaphoreTake(i2cMutex, pdMS_TO_TICKS(50))) {
+            sendSync(payload);
+            xSemaphoreGive(i2cMutex);
+          }
+        } else {
+          Serial.printf("Poll error: %d\n", code);
+        }
+        http.end();
+      }
+      lastSync = millis();
+    }
+
+    vTaskDelay(pdMS_TO_TICKS(10)); // Yield to system
   }
 }
+
 
 // ============================
 // SETUP
@@ -111,6 +128,10 @@ void readButton() {
 void setup() {
   Serial.begin(115200);
   Wire.begin(SDA_PIN, SCL_PIN);
+
+  // Create shared resources
+  buttonQueue = xQueueCreate(8, sizeof(byte));   // Up to 8 queued presses
+  i2cMutex = xSemaphoreCreateMutex();
 
   // Connect to Local WiFi
   WiFi.begin(ssid, password);
@@ -123,21 +144,40 @@ void setup() {
   Serial.print("ESP32 IP Address: ");
   Serial.println(WiFi.localIP());
 
-  // Force an immediate sync on startup
-  pollBackend();
+  // Launch HTTP task on Core 0 (WiFi/network core)
+  xTaskCreatePinnedToCore(
+    httpTask,   // Task function
+    "HTTP",     // Name
+    8192,       // Stack size (bytes)
+    NULL,       // Parameter
+    1,          // Priority
+    NULL,       // Task handle (not needed)
+    0           // Core 0
+  );
+
+  Serial.println("Ready — button scan on Core 1, HTTP on Core 0");
 }
 
+
 // ============================
-// LOOP
+// LOOP (runs on Core 1)
+//
+// Only reads buttons via I2C.
+// NEVER blocked by HTTP.
 // ============================
 
 void loop() {
-  // Periodically fetch the latest state from the backend
-  if (millis() - lastSyncTime > syncInterval) {
-    pollBackend();
-    lastSyncTime = millis();
+  if (xSemaphoreTake(i2cMutex, pdMS_TO_TICKS(10))) {
+    Wire.requestFrom(BUTTON_ARDUINO_ADDRESS, 1);
+    if (Wire.available()) {
+      byte btn = Wire.read();
+      if (btn != 255) {
+        Serial.printf("Button %d pressed\n", btn);
+        xQueueSend(buttonQueue, &btn, 0); // Non-blocking enqueue
+      }
+    }
+    xSemaphoreGive(i2cMutex);
   }
 
-  readButton();
-  delay(50);
+  delay(5); // Scan ~200 times/sec
 }

@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Cpu, Swords, Trophy, Play } from "lucide-react";
+import { AudioEngine } from "@/lib/AudioEngine";
 
 interface GameData {
   state: 'setup' | 'playing' | 'battle' | 'game_over';
@@ -12,7 +13,15 @@ interface GameData {
 
 export default function Game() {
   const [game, setGame] = useState<GameData | null>(null);
+  const gameRef = useRef<GameData | null>(null);
+  const latestZones = useRef<{ P1: string | null, P2: string | null }>({ P1: null, P2: null });
+  const [activePlayer, setActivePlayer] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Keep ref in sync for WebSocket
+  useEffect(() => {
+    gameRef.current = game;
+  }, [game]);
 
   // Fetch initial state
   useEffect(() => {
@@ -38,6 +47,21 @@ export default function Game() {
         if (data.type === "game_update" && data.game) {
           setGame(data.game);
         }
+        
+        // Device movement updates (from /api/ingest)
+        if (data.device_code && data.nearest_device) {
+           const code = data.device_code.toUpperCase();
+           if (data.nearest_device !== "X") {
+             if (code === "P1") latestZones.current.P1 = data.nearest_device;
+             if (code === "P2") latestZones.current.P2 = data.nearest_device;
+             
+             const currentGame = gameRef.current;
+             if (currentGame && (currentGame.state === 'playing' || currentGame.state === 'battle')) {
+               if (currentGame.currentPlayer === 1 && code === "P1") AudioEngine.playZone(data.nearest_device);
+               if (currentGame.currentPlayer === 2 && code === "P2") AudioEngine.playZone(data.nearest_device);
+             }
+           }
+        }
       } catch (e) {
         console.error("WS Parse error:", e);
       }
@@ -46,7 +70,28 @@ export default function Game() {
     return () => ws.close();
   }, []);
 
+  // Play audio when turn changes
+  useEffect(() => {
+    if (game && (game.state === 'playing' || game.state === 'battle')) {
+      if (game.currentPlayer !== activePlayer) {
+        setActivePlayer(game.currentPlayer);
+        
+        // When turn switches, instantly play the new active player's latest known zone
+        if (game.currentPlayer === 1 && latestZones.current.P1) {
+          AudioEngine.playZone(latestZones.current.P1);
+        } else if (game.currentPlayer === 2 && latestZones.current.P2) {
+          AudioEngine.playZone(latestZones.current.P2);
+        }
+      }
+    } else if (game && (game.state === 'setup' || game.state === 'game_over')) {
+      AudioEngine.stop();
+      setActivePlayer(null);
+    }
+  }, [game, activePlayer]);
+
   const handleStart = async (player: number) => {
+    AudioEngine.init(); // Initialize audio context on user interaction
+    
     await fetch("/api/game/start", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
