@@ -242,8 +242,8 @@ function MuseumMonitorView({ game, onAction }: { game: GameData, onAction: (r: n
 // GAME MONITOR VIEW
 // ==========================================
 function GameMonitorView({ game, onAction }: { game: GameData, onAction: (r: number, c: number) => void }) {
-  const [p1Zone, setP1Zone] = useState<string>("mahanakhon");
-  const [p2Zone, setP2Zone] = useState<string>("wat_arun");
+  const [p1Zone, setP1Zone] = useState<string>("waiting");
+  const [p2Zone, setP2Zone] = useState<string>("waiting");
 
   useEffect(() => {
     // Listen for Calliope ESP32 hardware updates mapped from WebSocket
@@ -264,9 +264,11 @@ function GameMonitorView({ game, onAction }: { game: GameData, onAction: (r: num
   useEffect(() => {
     // Automatically switch BGM to the current player's zone
     if (game.currentPlayer === 1) {
-      AudioEngine.playZone(p1Zone);
+      if (p1Zone === "waiting") AudioEngine.stop();
+      else AudioEngine.playZone(p1Zone);
     } else if (game.currentPlayer === 2) {
-      AudioEngine.playZone(p2Zone);
+      if (p2Zone === "waiting") AudioEngine.stop();
+      else AudioEngine.playZone(p2Zone);
     }
   }, [game.currentPlayer, p1Zone, p2Zone]);
 
@@ -282,6 +284,7 @@ function GameMonitorView({ game, onAction }: { game: GameData, onAction: (r: num
             onChange={(e) => setP1Zone(e.target.value)}
             className="px-4 py-2 border-2 border-blue-300 rounded bg-blue-50 text-sm font-bold text-blue-700 outline-none cursor-pointer"
           >
+            <option value="waiting">🔄 Waiting for Calliope...</option>
             <option value="mahanakhon">Mahanakhon</option>
             <option value="asiatique">Asiatique</option>
             <option value="giant_swing">Giant Swing</option>
@@ -298,6 +301,7 @@ function GameMonitorView({ game, onAction }: { game: GameData, onAction: (r: num
             onChange={(e) => setP2Zone(e.target.value)}
             className="px-4 py-2 border-2 border-red-300 rounded bg-red-50 text-sm font-bold text-red-700 outline-none cursor-pointer"
           >
+            <option value="waiting">🔄 Waiting for Calliope...</option>
             <option value="mahanakhon">Mahanakhon</option>
             <option value="asiatique">Asiatique</option>
             <option value="giant_swing">Giant Swing</option>
