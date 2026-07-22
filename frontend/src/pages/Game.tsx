@@ -1,31 +1,30 @@
 import { useState, useEffect, useRef } from "react";
-import { Cpu, Swords, Trophy, Play } from "lucide-react";
-import { AudioEngine } from "@/lib/AudioEngine";
+import MapViewer from "@/components/Map/MapViewer";
+import LandmarkDetails from "@/components/Map/LandmarkDetails";
+import { Landmarks } from "@/constants/landmark";
+
+type AppMode = 'IDLE' | 'MUSEUM' | 'GAME';
+type Language = 'EN' | 'TH' | 'DE';
+type GamePhase = 'INIT' | 'TURN' | 'BATTLE' | 'END';
 
 interface GameData {
-  state: 'setup' | 'playing' | 'battle' | 'game_over';
+  mode: AppMode;
+  language: Language;
+  gamePhase: GamePhase;
   currentPlayer: number;
-  turnsLeft: number;
-  matrix: number[][];
+  displayMatrix: number[][]; // The monitor only sees the committed matrix
   battleContext: { row: number, col: number } | null;
   scores: { 1: number, 2: number };
+  activeMuseumLocation: { row: number, col: number } | null;
 }
 
 export default function Game() {
   const [game, setGame] = useState<GameData | null>(null);
-  const gameRef = useRef<GameData | null>(null);
-  const latestZones = useRef<{ P1: string | null, P2: string | null }>({ P1: null, P2: null });
-  const [activePlayer, setActivePlayer] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
-
-  // Keep ref in sync for WebSocket
-  useEffect(() => {
-    gameRef.current = game;
-  }, [game]);
 
   // Fetch initial state
   useEffect(() => {
-    fetch("/api/game/status")
+    fetch(`/api/game/status`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -39,28 +38,14 @@ export default function Game() {
 
   // Listen for WebSocket updates
   useEffect(() => {
-    const ws = new WebSocket(`ws://${window.location.host}/ws`);
+    const wsProto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const ws = new WebSocket(`${wsProto}//${window.location.host}/ws`);
     
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
         if (data.type === "game_update" && data.game) {
           setGame(data.game);
-        }
-        
-        // Device movement updates (from /api/ingest)
-        if (data.device_code && data.nearest_device) {
-           const code = data.device_code.toUpperCase();
-           if (data.nearest_device !== "X") {
-             if (code === "P1") latestZones.current.P1 = data.nearest_device;
-             if (code === "P2") latestZones.current.P2 = data.nearest_device;
-             
-             const currentGame = gameRef.current;
-             if (currentGame && (currentGame.state === 'playing' || currentGame.state === 'battle')) {
-               if (currentGame.currentPlayer === 1 && code === "P1") AudioEngine.playZone(data.nearest_device);
-               if (currentGame.currentPlayer === 2 && code === "P2") AudioEngine.playZone(data.nearest_device);
-             }
-           }
         }
       } catch (e) {
         console.error("WS Parse error:", e);
@@ -70,232 +55,202 @@ export default function Game() {
     return () => ws.close();
   }, []);
 
-  // Play audio when turn changes
-  useEffect(() => {
-    if (game && (game.state === 'playing' || game.state === 'battle')) {
-      if (game.currentPlayer !== activePlayer) {
-        setActivePlayer(game.currentPlayer);
-        
-        // When turn switches, instantly play the new active player's latest known zone
-        if (game.currentPlayer === 1 && latestZones.current.P1) {
-          AudioEngine.playZone(latestZones.current.P1);
-        } else if (game.currentPlayer === 2 && latestZones.current.P2) {
-          AudioEngine.playZone(latestZones.current.P2);
-        }
-      }
-    } else if (game && (game.state === 'setup' || game.state === 'game_over')) {
-      AudioEngine.stop();
-      setActivePlayer(null);
+  const handleSimulateAction = async (row: number, col: number) => {
+    const button_id = (row * 3) + col;
+    try {
+      await fetch('/api/action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ button_id })
+      });
+    } catch (e) {
+      console.error("Simulation failed", e);
     }
-  }, [game, activePlayer]);
-
-  const handleStart = async (player: number) => {
-    AudioEngine.init(); // Initialize audio context on user interaction
-    
-    await fetch("/api/game/start", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ startingPlayer: player })
-    });
-  };
-
-  const handleAction = async (row: number, col: number) => {
-    // We removed the frontend block here so you can ALWAYS debug 
-    // your clicks in the backend terminal! 
-    // The backend gameLogic.ts will safely ignore them if the game isn't playing.
-    
-    // Send action (equivalent to pressing a physical button)
-    const button_id = row * 3 + col;
-    await fetch("/api/action", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ button_id })
-    });
-  };
-
-  const handleResolve = async (winner: number) => {
-    await fetch("/api/game/resolve", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ winner })
-    });
-  };
-
-  const handleReset = async () => {
-    await fetch("/api/game/reset", {
-      method: "POST"
-    });
   };
 
   if (!game) {
-    return <div className="p-8 text-brand-primary font-bold flex justify-center">Loading Game...</div>;
+    return <div className="min-h-screen bg-white text-black flex items-center justify-center font-mono font-bold">Connecting to Game Server...</div>;
   }
 
   return (
-    <div className="flex flex-col items-center justify-center py-12 px-4 animate-in fade-in duration-500 bg-brand-bg min-h-[calc(100vh-80px)] relative">
-      <div className="flex items-center justify-between w-full max-w-2xl mb-8">
-        <div className="flex items-center gap-3">
-          <Cpu size={32} className="text-brand-accent" />
-          <h1 className="text-3xl font-black text-brand-primary tracking-wide">Battle Matrix</h1>
-        </div>
-        
-        {/* Restart Button inside header when playing */}
-        {(game.state === 'playing' || game.state === 'battle') && (
-          <button 
-            onClick={handleReset}
-            className="px-4 py-2 bg-gray-200 text-gray-700 font-bold rounded-lg hover:bg-gray-300 transition-colors"
-          >
-            Restart Game
-          </button>
-        )}
-      </div>
-      
+    <div className="min-h-screen bg-white text-black p-8 font-sans flex flex-col relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-5 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-black via-transparent to-transparent" />
+
       {error && (
-        <div className="bg-red-100 text-red-700 border border-red-300 px-4 py-2 rounded-lg mb-6 shadow-sm">
+        <div className="absolute top-4 bg-red-100 border border-red-500 px-4 py-2 rounded-lg shadow-sm text-red-900">
           {error}
         </div>
       )}
 
-      {/* SETUP STATE */}
-      {game.state === 'setup' && (
-        <div className="bg-white border border-brand-border p-12 rounded-3xl shadow-xl flex flex-col items-center">
-          <h2 className="text-2xl font-bold text-brand-primary mb-8">Start a New Game</h2>
-          <div className="flex gap-6">
-            <button 
-              onClick={() => handleStart(1)}
-              className="flex items-center gap-2 px-6 py-3 bg-blue-500 text-white rounded-xl font-bold hover:bg-blue-600 transition-colors shadow-lg"
-            >
-              <Play size={20} /> Player 1 Starts
-            </button>
-            <button 
-              onClick={() => handleStart(2)}
-              className="flex items-center gap-2 px-6 py-3 bg-red-500 text-white rounded-xl font-bold hover:bg-red-600 transition-colors shadow-lg"
-            >
-              <Play size={20} /> Player 2 Starts
-            </button>
-          </div>
+      {game.mode === 'IDLE' && (
+        <div className="text-center animate-fade-in">
+          <h1 className="text-6xl font-black tracking-widest text-zinc-300 mb-4">SYSTEM IDLE</h1>
+          <p className="text-zinc-500">Awaiting controller input...</p>
         </div>
       )}
 
-      {/* GAME OVER STATE */}
-      {game.state === 'game_over' && (
-        <div className="bg-white border border-brand-border p-12 rounded-3xl shadow-xl flex flex-col items-center mb-8">
-          <Trophy size={64} className="text-yellow-500 mb-6" />
-          <h2 className="text-3xl font-black text-brand-primary mb-2">Game Over!</h2>
-          <p className="text-lg font-bold text-gray-500 mb-8">
-            {game.scores[1] > game.scores[2] ? "Player 1 Wins!" : game.scores[2] > game.scores[1] ? "Player 2 Wins!" : "It's a Tie!"}
-          </p>
-          <div className="flex gap-12 text-2xl font-bold">
-            <div className="flex flex-col items-center">
-              <span className="text-blue-500">Player 1</span>
-              <span>{game.scores[1]}</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="text-red-500">Player 2</span>
-              <span>{game.scores[2]}</span>
-            </div>
+      {game.mode === 'MUSEUM' && <MuseumMonitorView game={game} onAction={handleSimulateAction} />}
+      
+      {game.mode === 'GAME' && <GameMonitorView game={game} onAction={handleSimulateAction} />}
+    </div>
+  );
+}
+
+function MuseumMonitorView({ game, onAction }: { game: GameData, onAction: (r: number, c: number) => void }) {
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  // The 6 physical buttons mapped to specific Landmark IDs
+  const matrixToLandmarkId = [
+    ['lm_01', 'lm_06', 'lm_03'], // Row 0: Mahanakorn, Asiatique, Giant Swing
+    ['lm_10', 'lm_02', 'lm_04']  // Row 1: Wat Arun, Stadium, Townhall
+  ];
+
+  // Compute selected land from active matrix location
+  let selectedLand = null;
+  if (game.activeMuseumLocation) {
+    const { row, col } = game.activeMuseumLocation;
+    if (row >= 0 && row < 2 && col >= 0 && col < 3) {
+      const landId = matrixToLandmarkId[row][col];
+      selectedLand = Landmarks.find(l => l.id === landId) || null;
+    }
+  }
+
+  // Auto-play audio when location changes
+  useEffect(() => {
+    if (audioRef.current && game.activeMuseumLocation) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(e => console.log("Audio autoplay blocked or file missing", e));
+    }
+  }, [game.activeMuseumLocation, game.language]);
+
+  const handleMapSelect = (land: any) => {
+    // Find if the clicked landmark exists in our 2x3 physical grid
+    for (let r = 0; r < 2; r++) {
+      for (let c = 0; c < 3; c++) {
+        if (matrixToLandmarkId[r][c] === land.id) {
+          onAction(r, c);
+          return;
+        }
+      }
+    }
+    console.log("Clicked landmark is outside the 2x3 physical grid");
+  };
+
+  return (
+    <div className="w-full max-w-6xl animate-fade-in flex flex-col flex-grow">
+      <div className="text-center mb-8">
+        <h1 className="text-5xl font-black tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-r from-zinc-200 to-zinc-600">
+          MUSEUM EXHIBIT
+        </h1>
+        <p className="text-zinc-500 font-bold mt-2">Language: {game.language}</p>
+      </div>
+      
+      <div className="bg-white rounded-[3rem] shadow-2xl border-4 border-zinc-200 p-8 flex-grow flex flex-col lg:flex-row gap-8">
+        <MapViewer
+          selectedLand={selectedLand}
+          onSelect={handleMapSelect}
+        />
+        {selectedLand ? (
+          <LandmarkDetails
+            land={selectedLand}
+            onClose={() => {}}
+          />
+        ) : (
+          <div className="w-full lg:w-[45%] flex flex-col items-center justify-center text-center p-8 border-4 border-dashed border-zinc-200 rounded-3xl">
+            <div className="w-24 h-24 border-4 border-zinc-200 border-t-black rounded-full animate-spin mb-8" />
+            <h2 className="text-2xl font-black text-zinc-400">WAITING FOR SELECTION</h2>
+            <p className="text-zinc-500 mt-2 font-bold">Press a physical button on the board or click the map.</p>
           </div>
-          <button 
-            onClick={() => handleStart(1)} // Reset game
-            className="mt-10 px-8 py-3 bg-gray-800 text-white rounded-xl font-bold hover:bg-gray-900 transition-colors shadow-lg"
-          >
-            Play Again
-          </button>
+        )}
+      </div>
+
+      {game.activeMuseumLocation && (
+        <audio 
+          ref={audioRef}
+          src={`/audio/museum_loc_${game.activeMuseumLocation.row}_${game.activeMuseumLocation.col}_${game.language}.mp3`} 
+          autoPlay
+          className="hidden"
+        />
+      )}
+    </div>
+  );
+}
+
+// ==========================================
+// GAME MONITOR VIEW
+// ==========================================
+function GameMonitorView({ game, onAction }: { game: GameData, onAction: (r: number, c: number) => void }) {
+  return (
+    <div className="w-full max-w-5xl animate-fade-in flex flex-col items-center">
+      
+      <div className="flex justify-between w-full items-end mb-16 px-8 border-b-2 border-zinc-200 pb-8">
+        <div className={`flex flex-col items-center transition-all ${game.currentPlayer === 1 ? 'scale-110' : 'opacity-50 grayscale'}`}>
+          <span className="text-sm font-bold tracking-widest text-blue-600 mb-2">PLAYER 1</span>
+          <span className="text-6xl font-black">{game.scores[1]}</span>
         </div>
-      )}
 
-      {/* PLAYING / BATTLE STATE (THE BOARD) */}
-      {(game.state === 'playing' || game.state === 'battle') && (
-        <>
-          <div className="flex justify-between w-full max-w-2xl mb-6 px-4">
-            <div className={`px-4 py-2 rounded-xl font-bold ${game.currentPlayer === 1 ? 'bg-blue-500 text-white shadow-lg' : 'bg-gray-200 text-gray-400'}`}>
-              Player 1 Turn
-            </div>
-            <div className="flex flex-col items-center justify-center font-black text-brand-primary text-xl">
-              <span>{game.turnsLeft}</span>
-              <span className="text-xs uppercase text-gray-400">Turns Left</span>
-            </div>
-            <div className={`px-4 py-2 rounded-xl font-bold ${game.currentPlayer === 2 ? 'bg-red-500 text-white shadow-lg' : 'bg-gray-200 text-gray-400'}`}>
-              Player 2 Turn
-            </div>
+        <div className="flex flex-col items-center">
+          <h1 className="text-2xl font-black tracking-[0.3em] text-zinc-400 mb-2">TERRITORY</h1>
+          <div className="px-6 py-2 border border-zinc-200 rounded-full text-zinc-600 font-bold uppercase tracking-widest bg-zinc-50">
+            {game.gamePhase === 'INIT' ? 'INITIALIZING' : 
+             game.gamePhase === 'BATTLE' ? 'BATTLE PHASE' : 
+             game.gamePhase === 'END' ? 'MATCH COMPLETE' : 'TURN ACTIVE'}
           </div>
+        </div>
 
-          <div className={`bg-white border border-brand-border p-8 rounded-3xl shadow-xl transition-all ${game.state === 'battle' ? 'opacity-50 pointer-events-none blur-sm' : ''}`}>
-            <div className="flex flex-col gap-6">
-              {game.matrix.map((rowData, rowIndex) => (
-                <div key={rowIndex} className="flex gap-6 justify-center">
-                  {rowData.map((owner, colIndex) => (
-                    <div key={`${rowIndex}-${colIndex}`} className="flex flex-col items-center bg-gray-50 p-5 rounded-3xl border border-gray-200 shadow-inner relative">
-                      <span className="text-brand-primary text-[10px] font-black uppercase tracking-widest mb-4 bg-white border border-gray-200 px-3 py-1 rounded-full shadow-sm">
-                        Place [{rowIndex},{colIndex}]
-                      </span>
-                      
-                      {/* Clickable Area for the Place */}
-                      <button 
-                        className="absolute inset-0 z-10 cursor-pointer"
-                        onClick={() => handleAction(rowIndex, colIndex)}
-                        aria-label={`Claim place ${rowIndex}, ${colIndex}`}
-                      />
-                      
-                      <div className="flex gap-4">
-                        {/* Player 1 LED (Blue) */}
-                        <div
-                          className={`
-                            w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 
-                            flex items-center justify-center transition-all duration-300
-                            ${owner === 1 || owner === 3 
-                              ? 'bg-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.6)] border-blue-400 opacity-100 scale-105' 
-                              : 'bg-gray-200 border-gray-300 opacity-50 shadow-inner'
-                            }
-                            ${owner === 3 ? 'animate-pulse' : ''}
-                          `}
-                        />
-                        
-                        {/* Player 2 LED (Red) */}
-                        <div
-                          className={`
-                            w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 
-                            flex items-center justify-center transition-all duration-300
-                            ${owner === 2 || owner === 3
-                              ? 'bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.6)] border-red-400 opacity-100 scale-105' 
-                              : 'bg-gray-200 border-gray-300 opacity-50 shadow-inner'
-                            }
-                            ${owner === 3 ? 'animate-pulse' : ''}
-                          `}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
+        <div className={`flex flex-col items-center transition-all ${game.currentPlayer === 2 ? 'scale-110' : 'opacity-50 grayscale'}`}>
+          <span className="text-sm font-bold tracking-widest text-red-600 mb-2">PLAYER 2</span>
+          <span className="text-6xl font-black">{game.scores[2]}</span>
+        </div>
+      </div>
 
-      {/* BATTLE MODAL */}
-      {game.state === 'battle' && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/50 backdrop-blur-sm">
-          <div className="bg-white p-10 rounded-3xl shadow-2xl border-2 border-brand-accent flex flex-col items-center animate-in zoom-in duration-300">
-            <Swords size={48} className="text-brand-accent mb-4 animate-bounce" />
-            <h2 className="text-3xl font-black text-brand-primary mb-2">BATTLE!</h2>
-            <p className="text-gray-500 font-medium mb-8 text-center max-w-xs">
-              A clash occurred at Place [{game.battleContext?.row}, {game.battleContext?.col}]. Select the winner!
+      <div className={`transition-all duration-1000 ${game.gamePhase === 'BATTLE' ? 'scale-95 opacity-50 blur-[2px]' : ''}`}>
+        <div className="grid grid-cols-3 gap-6">
+          {game.pendingMatrix.map((rowData, rowIndex) => (
+            rowData.map((owner, colIndex) => {
+              let bg = 'bg-white';
+              let border = 'border-zinc-200';
+              if (owner === 1) bg = 'bg-blue-500 border-blue-600';
+              if (owner === 2) bg = 'bg-red-500 border-red-600';
+              if (owner === 3) bg = 'bg-amber-500 border-amber-600';
+
+              return (
+                <button 
+                  key={`game-${rowIndex}-${colIndex}`} 
+                  onClick={() => onAction(rowIndex, colIndex)}
+                  className={`w-40 h-40 flex flex-col items-center justify-center rounded-3xl border-4 ${border} ${bg} relative overflow-hidden transition-all hover:scale-105`}
+                >
+                  <div className="absolute top-4 text-xs font-bold tracking-widest text-black/20">
+                    SEC {rowIndex}{colIndex}
+                  </div>
+                </button>
+              );
+            })
+          ))}
+        </div>
+      </div>
+
+      {game.gamePhase === 'BATTLE' && (
+        <div className="absolute inset-0 flex items-center justify-center z-50 bg-white/80 backdrop-blur-sm">
+          <div className="bg-white border-4 border-black p-12 rounded-3xl shadow-2xl flex flex-col items-center animate-pop">
+            <h2 className="text-5xl font-black text-black mb-4 tracking-widest animate-pulse">
+              BATTLE!
+            </h2>
+            <p className="text-zinc-500 font-bold tracking-widest uppercase">
+              Location [{game.battleContext?.row}, {game.battleContext?.col}] contested
             </p>
-            <div className="flex gap-4">
-              <button 
-                onClick={() => handleResolve(1)}
-                className="px-6 py-3 bg-blue-500 text-white rounded-xl font-bold hover:bg-blue-600 transition-colors shadow-lg"
-              >
-                Player 1 Wins
-              </button>
-              <button 
-                onClick={() => handleResolve(2)}
-                className="px-6 py-3 bg-red-500 text-white rounded-xl font-bold hover:bg-red-600 transition-colors shadow-lg"
-              >
-                Player 2 Wins
-              </button>
-            </div>
+          </div>
+        </div>
+      )}
+      
+      {game.gamePhase === 'END' && (
+        <div className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none bg-black/80 backdrop-blur-sm">
+          <div className="text-center animate-pop">
+            <h2 className="text-7xl font-black text-white mb-6 tracking-widest">
+              {game.scores[1] > game.scores[2] ? 'PLAYER 1 WINS' : 
+               game.scores[2] > game.scores[1] ? 'PLAYER 2 WINS' : 'DRAW'}
+            </h2>
           </div>
         </div>
       )}

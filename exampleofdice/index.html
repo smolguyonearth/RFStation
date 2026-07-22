@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Dice Roller</title>
+    <meta name="description" content="A dynamic, neon-themed dice roller with probability charge mechanics.">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <h1>ROLL<span class="highlight">TUM MAI WA</span></h1>
+            <nav class="mode-selector">
+                <button class="mode-btn active" data-mode="1">1: Standard (D20)</button>
+                <button class="mode-btn" data-mode="2">2: Tube Positional (D6)</button>
+                <button class="mode-btn" data-mode="3">3: Critical Tube (D8)</button>
+            </nav>
+        </header>
+
+        <main class="dice-area">
+            <div class="dice-wrapper">
+                <div class="dice-container" id="diceContainer">
+                    <div class="dice-value" id="diceValue">?</div>
+                </div>
+                <div class="dice-label" id="diceLabel">Ready to roll</div>
+            </div>
+
+            <!-- The charge tube is only visible in modes 2 and 3 -->
+            <div class="tube-container hidden" id="tubeContainer">
+                <div class="tube-track">
+                    <div class="tube-fill" id="tubeFill"></div>
+                    <div class="tube-glow" id="tubeGlow"></div>
+                </div>
+                <div class="tube-labels">
+                    <span class="low-label">Low</span>
+                    <span class="high-label">High</span>
+                </div>
+            </div>
+
+            <div class="controls" id="controlsMode1">
+                <button class="action-btn" id="btnD20">Roll D20</button>
+            </div>
+
+            <div class="controls hidden" id="controlsModeTube">
+                <button class="action-btn pulse-btn" id="btnHold">Hold to Charge</button>
+                <div class="instruction">Release to Roll</div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
