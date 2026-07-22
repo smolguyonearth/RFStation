@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import NeonDice from '@/components/NeonDice';
+import { AudioEngine } from '@/lib/AudioEngine';
 
 // Types from backend
 type AppMode = 'IDLE' | 'MUSEUM' | 'GAME';
@@ -90,7 +91,7 @@ export default function Controller() {
   // --- Render Views Based on Mode ---
   return (
     <div className="min-h-screen w-full bg-white text-black font-sans flex flex-col relative overflow-auto">
-      
+
       {/* GLOBAL AUDIO SLOTS */}
       {/* Idle currently has no sound, but the slot is prepared here */}
       {gameState.mode === 'IDLE' && <audio src="/sounds/bgm_idle.mp3" autoPlay loop className="hidden" />}
@@ -130,8 +131,8 @@ function SetupView({ setMode }: { setMode: (mode: AppMode, lang: Language) => vo
             key={lang}
             onClick={() => setSelectedLang(lang)}
             className={`w-20 h-14 text-lg font-black transition-all border-4 ${selectedLang === lang
-                ? 'bg-black text-white border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] -translate-y-1 -translate-x-1'
-                : 'bg-white text-black border-zinc-200 hover:border-black shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5 hover:-translate-x-0.5'
+              ? 'bg-black text-white border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] -translate-y-1 -translate-x-1'
+              : 'bg-white text-black border-zinc-200 hover:border-black shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5 hover:-translate-x-0.5'
               }`}
           >
             {lang}
@@ -174,35 +175,73 @@ function SetupView({ setMode }: { setMode: (mode: AppMode, lang: Language) => vo
 // MUSEUM CONTROLLER VIEW
 // ==========================================
 function MuseumControllerView({ gameState, setMode }: { gameState: GameState, setMode: (m: AppMode) => void }) {
-  // Helper to map board coordinates to A, B, C, D zones
-  const getZoneId = (row: number, col: number) => {
-    const key = `${row},${col}`;
-    const mapping: Record<string, string> = { "0,0": "A", "0,4": "B", "4,0": "C", "4,4": "D" };
-    return mapping[key] || "A";
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  // Helper to map board coordinates to location names
+  const getLocationName = (row: number, col: number) => {
+    const museumMatrix = [
+      ['mahanakhon', 'asiatique', 'giant_swing'],
+      ['wat_arun', 'bremen_stadium', 'townhall']
+    ];
+    if (row >= 0 && row < 2 && col >= 0 && col < 3) {
+      return museumMatrix[row][col];
+    }
+    return "mahanakhon";
   };
+
+  // Cleanup audio on exit
+  useEffect(() => {
+    return () => {
+      AudioEngine.stop();
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
+  }, []);
+
+  // Auto-play audio when location changes
+  useEffect(() => {
+    let playTimeout: NodeJS.Timeout;
+
+    if (gameState.activeMuseumLocation) {
+      const locName = getLocationName(gameState.activeMuseumLocation.row, gameState.activeMuseumLocation.col);
+
+      // Play BGM with fade effect (lower volume for museum mode so it doesn't overpower narrator)
+      AudioEngine.playZone(locName, 0.7);
+
+      // Play narration after a delay (e.g., 3 seconds)
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+
+        playTimeout = setTimeout(() => {
+          if (audioRef.current) {
+            audioRef.current.play().catch(e => console.log("Audio autoplay blocked or file missing", e));
+          }
+        }, 3000);
+      }
+    } else {
+      AudioEngine.stop();
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    }
+
+    return () => {
+      clearTimeout(playTimeout);
+    };
+  }, [gameState.activeMuseumLocation, gameState.language]);
 
   return (
     <div className="flex-1 p-8 flex flex-col animate-slide-in-right relative">
-      
+
       {/* MUSEUM AUDIO SLOTS */}
       {gameState.activeMuseumLocation && (
-        <>
-          {/* 1. Zone Background Sound (A, B, C, D) */}
-          <audio 
-            key={`bgm-${gameState.activeMuseumLocation.row}-${gameState.activeMuseumLocation.col}`}
-            src={`/sounds/zones/${getZoneId(gameState.activeMuseumLocation.row, gameState.activeMuseumLocation.col)}.mp3`} 
-            autoPlay 
-            loop 
-            className="hidden" 
-          />
-          {/* 2. Description Sound (Language specific) */}
-          <audio 
-            key={`desc-${gameState.language.toLowerCase()}-${gameState.activeMuseumLocation.row}-${gameState.activeMuseumLocation.col}`}
-            src={`/sounds/descriptions/${gameState.language.toLowerCase()}/loc_${gameState.activeMuseumLocation.row}_${gameState.activeMuseumLocation.col}.mp3`} 
-            autoPlay 
-            className="hidden" 
-          />
-        </>
+        <audio
+          ref={audioRef}
+          src={`/sounds/descriptions/${gameState.language.toLowerCase()}/${getLocationName(gameState.activeMuseumLocation.row, gameState.activeMuseumLocation.col)}.mp3`}
+          className="hidden"
+        />
       )}
 
       <div className="flex justify-between items-end mb-8 pb-4 border-b-4 border-black">

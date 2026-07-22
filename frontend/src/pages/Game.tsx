@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import MapViewer from "@/components/Map/MapViewer";
 import LandmarkDetails from "@/components/Map/LandmarkDetails";
 import { Landmarks } from "@/constants/landmark";
+import { AudioEngine } from "@/lib/AudioEngine";
 
 type AppMode = 'IDLE' | 'MUSEUM' | 'GAME';
 type Language = 'EN' | 'TH' | 'DE';
@@ -40,12 +41,28 @@ export default function Game() {
   useEffect(() => {
     const wsProto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const ws = new WebSocket(`${wsProto}//${window.location.host}/ws`);
-    
+
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
         if (data.type === "game_update" && data.game) {
           setGame(data.game);
+        } else if (data.device_code && data.nearest_device && data.nearest_device !== "X") {
+          // Map the nearest_device code (A/B/C/D/E/F) to the full location name
+          const museumMatrix = [
+            ['mahanakhon', 'asiatique', 'giant_swing'],
+            ['wat_arun', 'bremen_stadium', 'townhall']
+          ];
+          const codeMap: Record<string, string> = {
+            "A": "mahanakhon", "B": "asiatique", "C": "giant_swing",
+            "D": "wat_arun", "E": "bremen_stadium", "F": "townhall"
+          };
+          const zoneName = codeMap[data.nearest_device] || data.nearest_device;
+
+          // Dispatch a custom event to update P1/P2 zones inside the GameMonitorView
+          window.dispatchEvent(new CustomEvent('device_zone_update', {
+            detail: { device_code: data.device_code, zone: zoneName }
+          }));
         }
       } catch (e) {
         console.error("WS Parse error:", e);
@@ -90,7 +107,7 @@ export default function Game() {
       )}
 
       {game.mode === 'MUSEUM' && <MuseumMonitorView game={game} onAction={handleSimulateAction} />}
-      
+
       {game.mode === 'GAME' && <GameMonitorView game={game} onAction={handleSimulateAction} />}
     </div>
   );
@@ -115,13 +132,58 @@ function MuseumMonitorView({ game, onAction }: { game: GameData, onAction: (r: n
     }
   }
 
+  const getLocationName = (row: number, col: number) => {
+    const museumMatrix = [
+      ['mahanakhon', 'asiatique', 'giant_swing'],
+      ['wat_arun', 'bremen_stadium', 'townhall']
+    ];
+    if (row >= 0 && row < 2 && col >= 0 && col < 3) {
+      return museumMatrix[row][col];
+    }
+    return "mahanakhon";
+  };
+
+  // Cleanup audio on exit
+  useEffect(() => {
+    return () => {
+      AudioEngine.stop();
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
+  }, []);
+
   // Auto-play audio when location changes
   useEffect(() => {
-    if (audioRef.current && game.activeMuseumLocation) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-      audioRef.current.play().catch(e => console.log("Audio autoplay blocked or file missing", e));
+    let playTimeout: NodeJS.Timeout;
+
+    if (game.activeMuseumLocation) {
+      const locName = getLocationName(game.activeMuseumLocation.row, game.activeMuseumLocation.col);
+
+      // Play BGM with fade effect (lower volume for museum mode so it doesn't overpower narrator)
+      AudioEngine.playZone(locName, 0.3);
+
+      // Play narration after a delay (e.g., 3 seconds)
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+
+        playTimeout = setTimeout(() => {
+          if (audioRef.current) {
+            audioRef.current.play().catch(e => console.log("Audio autoplay blocked or file missing", e));
+          }
+        }, 3000);
+      }
+    } else {
+      AudioEngine.stop();
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
     }
+
+    return () => {
+      clearTimeout(playTimeout);
+    };
   }, [game.activeMuseumLocation, game.language]);
 
   const handleMapSelect = (land: any) => {
@@ -145,7 +207,7 @@ function MuseumMonitorView({ game, onAction }: { game: GameData, onAction: (r: n
         </h1>
         <p className="text-zinc-500 font-bold mt-2">Language: {game.language}</p>
       </div>
-      
+
       <div className="bg-white rounded-[3rem] shadow-2xl border-4 border-zinc-200 p-8 flex-grow flex flex-col lg:flex-row gap-8">
         <MapViewer
           selectedLand={selectedLand}
@@ -154,7 +216,7 @@ function MuseumMonitorView({ game, onAction }: { game: GameData, onAction: (r: n
         {selectedLand ? (
           <LandmarkDetails
             land={selectedLand}
-            onClose={() => {}}
+            onClose={() => { }}
           />
         ) : (
           <div className="w-full lg:w-[45%] flex flex-col items-center justify-center text-center p-8 border-4 border-dashed border-zinc-200 rounded-3xl">
@@ -166,10 +228,9 @@ function MuseumMonitorView({ game, onAction }: { game: GameData, onAction: (r: n
       </div>
 
       {game.activeMuseumLocation && (
-        <audio 
+        <audio
           ref={audioRef}
-          src={`/audio/museum_loc_${game.activeMuseumLocation.row}_${game.activeMuseumLocation.col}_${game.language}.mp3`} 
-          autoPlay
+          src={`/sounds/descriptions/${game.language.toLowerCase()}/${getLocationName(game.activeMuseumLocation.row, game.activeMuseumLocation.col)}.mp3`}
           className="hidden"
         />
       )}
@@ -181,10 +242,73 @@ function MuseumMonitorView({ game, onAction }: { game: GameData, onAction: (r: n
 // GAME MONITOR VIEW
 // ==========================================
 function GameMonitorView({ game, onAction }: { game: GameData, onAction: (r: number, c: number) => void }) {
+  const [p1Zone, setP1Zone] = useState<string>("mahanakhon");
+  const [p2Zone, setP2Zone] = useState<string>("wat_arun");
+
+  useEffect(() => {
+    // Listen for Calliope ESP32 hardware updates mapped from WebSocket
+    const handleDeviceUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      const { device_code, zone } = customEvent.detail;
+      if (device_code === "P1") {
+        setP1Zone(zone);
+      } else if (device_code === "P2") {
+        setP2Zone(zone);
+      }
+    };
+
+    window.addEventListener('device_zone_update', handleDeviceUpdate);
+    return () => window.removeEventListener('device_zone_update', handleDeviceUpdate);
+  }, []);
+
+  useEffect(() => {
+    // Automatically switch BGM to the current player's zone
+    if (game.currentPlayer === 1) {
+      AudioEngine.playZone(p1Zone);
+    } else if (game.currentPlayer === 2) {
+      AudioEngine.playZone(p2Zone);
+    }
+  }, [game.currentPlayer, p1Zone, p2Zone]);
+
   return (
-    <div className="w-full max-w-5xl animate-fade-in flex flex-col items-center">
-      
-      <div className="flex justify-between w-full items-end mb-16 px-8 border-b-2 border-zinc-200 pb-8">
+    <div className="w-full max-w-5xl animate-fade-in flex flex-col items-center relative">
+
+      {/* SIMULATE BGM DROPDOWN (P1 & P2) */}
+      <div className="absolute -top-12 right-0 flex gap-4">
+        <div className="flex flex-col items-end">
+          <label className="text-xs font-bold text-blue-600 mb-1">P1 Simulate Location</label>
+          <select
+            value={p1Zone}
+            onChange={(e) => setP1Zone(e.target.value)}
+            className="px-4 py-2 border-2 border-blue-300 rounded bg-blue-50 text-sm font-bold text-blue-700 outline-none cursor-pointer"
+          >
+            <option value="mahanakhon">Mahanakhon</option>
+            <option value="asiatique">Asiatique</option>
+            <option value="giant_swing">Giant Swing</option>
+            <option value="wat_arun">Wat Arun</option>
+            <option value="bremen_stadium">Bremen Stadium</option>
+            <option value="townhall">Townhall</option>
+          </select>
+        </div>
+
+        <div className="flex flex-col items-end">
+          <label className="text-xs font-bold text-red-600 mb-1">P2 Simulate Location</label>
+          <select
+            value={p2Zone}
+            onChange={(e) => setP2Zone(e.target.value)}
+            className="px-4 py-2 border-2 border-red-300 rounded bg-red-50 text-sm font-bold text-red-700 outline-none cursor-pointer"
+          >
+            <option value="mahanakhon">Mahanakhon</option>
+            <option value="asiatique">Asiatique</option>
+            <option value="giant_swing">Giant Swing</option>
+            <option value="wat_arun">Wat Arun</option>
+            <option value="bremen_stadium">Bremen Stadium</option>
+            <option value="townhall">Townhall</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="flex justify-between w-full items-end mb-16 px-8 border-b-2 border-zinc-200 pb-8 mt-12">
         <div className={`flex flex-col items-center transition-all ${game.currentPlayer === 1 ? 'scale-110' : 'opacity-50 grayscale'}`}>
           <span className="text-sm font-bold tracking-widest text-blue-600 mb-2">PLAYER 1</span>
           <span className="text-6xl font-black">{game.scores[1]}</span>
@@ -193,9 +317,9 @@ function GameMonitorView({ game, onAction }: { game: GameData, onAction: (r: num
         <div className="flex flex-col items-center">
           <h1 className="text-2xl font-black tracking-[0.3em] text-zinc-400 mb-2">TERRITORY</h1>
           <div className="px-6 py-2 border border-zinc-200 rounded-full text-zinc-600 font-bold uppercase tracking-widest bg-zinc-50">
-            {game.gamePhase === 'INIT' ? 'INITIALIZING' : 
-             game.gamePhase === 'BATTLE' ? 'BATTLE PHASE' : 
-             game.gamePhase === 'END' ? 'MATCH COMPLETE' : 'TURN ACTIVE'}
+            {game.gamePhase === 'INIT' ? 'INITIALIZING' :
+              game.gamePhase === 'BATTLE' ? 'BATTLE PHASE' :
+                game.gamePhase === 'END' ? 'MATCH COMPLETE' : 'TURN ACTIVE'}
           </div>
         </div>
 
@@ -216,8 +340,8 @@ function GameMonitorView({ game, onAction }: { game: GameData, onAction: (r: num
               if (owner === 3) bg = 'bg-amber-500 border-amber-600';
 
               return (
-                <button 
-                  key={`game-${rowIndex}-${colIndex}`} 
+                <button
+                  key={`game-${rowIndex}-${colIndex}`}
                   onClick={() => onAction(rowIndex, colIndex)}
                   className={`w-40 h-40 flex flex-col items-center justify-center rounded-3xl border-4 ${border} ${bg} relative overflow-hidden transition-all hover:scale-105`}
                 >
@@ -243,13 +367,13 @@ function GameMonitorView({ game, onAction }: { game: GameData, onAction: (r: num
           </div>
         </div>
       )}
-      
+
       {game.gamePhase === 'END' && (
         <div className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none bg-black/80 backdrop-blur-sm">
           <div className="text-center animate-pop">
             <h2 className="text-7xl font-black text-white mb-6 tracking-widest">
-              {game.scores[1] > game.scores[2] ? 'PLAYER 1 WINS' : 
-               game.scores[2] > game.scores[1] ? 'PLAYER 2 WINS' : 'DRAW'}
+              {game.scores[1] > game.scores[2] ? 'PLAYER 1 WINS' :
+                game.scores[2] > game.scores[1] ? 'PLAYER 2 WINS' : 'DRAW'}
             </h2>
           </div>
         </div>

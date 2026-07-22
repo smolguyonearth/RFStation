@@ -18,7 +18,9 @@ export class AudioEngine {
 
     private static audioCtx: AudioContext | null = null;
     private static activeLayers: ActiveLayer[] = [];
+    private static fadingLayers: ActiveLayer[] = [];
     private static currentZone: string | null = null;
+    private static currentPlayId: number = 0;
     private static zoneRecords: Map<string, ZoneRecord> = new Map();
     private static bufferCache: Map<string, AudioBuffer> = new Map();
 
@@ -34,13 +36,15 @@ export class AudioEngine {
         await this.getBuffer(zone);
     }
 
-    static async playZone(zone: string): Promise<void> {
+    static async playZone(zone: string, targetVolume: number = 1): Promise<void> {
         if (!this.audioCtx) this.init();
         const ctx = this.audioCtx!;
 
         if (ctx.state === "suspended") await ctx.resume();
 
-        if (this.currentZone === zone) return;
+        if (this.currentZone === zone && this.activeLayers.length > 0) return;
+
+        const playId = ++this.currentPlayId;
 
         this.snapshotActiveLayers();
         this.currentZone = zone;
@@ -48,7 +52,17 @@ export class AudioEngine {
         const now = ctx.currentTime;
         const fd = this.crossfadeDuration;
 
-        // fade out old layers
+        // force stop any already fading layers quickly (0.2s) to prevent overlap on rapid clicks
+        for (const layer of this.fadingLayers) {
+            const g = layer.gain;
+            g.gain.cancelScheduledValues(now);
+            g.gain.setValueAtTime(g.gain.value, now);
+            g.gain.linearRampToValueAtTime(0, now + 0.2);
+            try { layer.source.stop(now + 0.2); } catch { }
+        }
+        this.fadingLayers = [];
+
+        // fade out old layers normally
         for (const layer of this.activeLayers) {
             const g = layer.gain;
 
@@ -58,13 +72,15 @@ export class AudioEngine {
 
             try {
                 layer.source.stop(now + fd);
-            } catch {}
+            } catch { }
+            
+            this.fadingLayers.push(layer);
         }
 
         this.activeLayers = [];
 
         const buffer = await this.getBuffer(zone);
-        if (this.currentZone !== zone) return;
+        if (this.currentPlayId !== playId) return;
 
         const resumeOffset = this.getResumeOffset(zone, buffer.duration);
 
@@ -77,7 +93,7 @@ export class AudioEngine {
 
         // fade in
         gain.gain.setValueAtTime(0, startNow);
-        gain.gain.linearRampToValueAtTime(1, startNow + fd);
+        gain.gain.linearRampToValueAtTime(targetVolume, startNow + fd);
 
         source.connect(gain);
         gain.connect(ctx.destination);
@@ -108,6 +124,15 @@ export class AudioEngine {
 
         this.snapshotActiveLayers();
 
+        for (const layer of this.fadingLayers) {
+            const g = layer.gain;
+            g.gain.cancelScheduledValues(now);
+            g.gain.setValueAtTime(g.gain.value, now);
+            g.gain.linearRampToValueAtTime(0, now + 0.2);
+            try { layer.source.stop(now + 0.2); } catch { }
+        }
+        this.fadingLayers = [];
+
         for (const layer of this.activeLayers) {
             const g = layer.gain;
 
@@ -117,7 +142,9 @@ export class AudioEngine {
 
             try {
                 layer.source.stop(now + fd);
-            } catch {}
+            } catch { }
+            
+            this.fadingLayers.push(layer);
         }
 
         this.activeLayers = [];
@@ -177,15 +204,25 @@ export class AudioEngine {
         }, Math.max(0, timeout));
     }
 
+    private static zoneToNameMap: Record<string, string> = {
+        "A": "mahanakhon",
+        "B": "asiatique",
+        "C": "giant_swing",
+        "D": "wat_arun",
+        "E": "bremen_stadium",
+        "F": "townhall"
+    };
+
     private static async getBuffer(zone: string): Promise<AudioBuffer> {
-        const cached = this.bufferCache.get(zone);
+        const mappedZone = this.zoneToNameMap[zone] || zone;
+        const cached = this.bufferCache.get(mappedZone);
         if (cached) return cached;
 
-        const response = await fetch(`/sounds/${zone}.mp3`);
+        const response = await fetch(`/sounds/${mappedZone}.mp3`);
         const arrayBuffer = await response.arrayBuffer();
         const buffer = await this.audioCtx!.decodeAudioData(arrayBuffer);
 
-        this.bufferCache.set(zone, buffer);
+        this.bufferCache.set(mappedZone, buffer);
         return buffer;
     }
 
