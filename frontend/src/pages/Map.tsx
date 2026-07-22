@@ -1,7 +1,7 @@
 import { useState } from "react"
 import type { MapLocation } from "@/types/map.types"
 import LandHeader from "@/components/Map/LandHeader"
-import MapViewer from "@/components/Map/MapViewer"
+import Map from "@/components/Map/Map"
 import LandmarkDetails from "@/components/Map/LandmarkDetails"
 
 export default function ConqueredLandBoard() {
@@ -13,7 +13,7 @@ export default function ConqueredLandBoard() {
                 <div className="bg-white rounded-3xl shadow-sm border border-brand-border/60 p-6 md:p-8 h-fit flex flex-col">
                     <LandHeader />
                     <div className="flex flex-col lg:flex-row gap-8 mt-8 flex-1">
-                        <MapViewer
+                        <Map
                             selectedLand={selectedLand}
                             onSelect={setSelectedLand}
                         />

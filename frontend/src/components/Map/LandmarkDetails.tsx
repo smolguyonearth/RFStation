@@ -1,16 +1,18 @@
-import { useState } from "react"
-import { X, Gem, Shield } from "lucide-react"
-import { useTranslation } from "react-i18next"
-import type { MapLocation } from "@/types/map.types"
+import { useState } from "react";
+import { X, Gem, Shield } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import type { MapLocation } from "@/types/map.types";
 
 interface LandmarkDetailsProps {
   land: MapLocation;
   onClose: () => void;
+  owner?: string; // ใช้แสดงผลเจ้าของที่ส่งมาจาก Game.tsx
 }
 
 export default function LandmarkDetails({
   land,
   onClose,
+  owner,
 }: LandmarkDetailsProps) {
   const { t } = useTranslation();
   const [isFullView, setIsFullView] = useState(false);
@@ -26,9 +28,9 @@ export default function LandmarkDetails({
             <h3 className="text-2xl font-bold text-brand-primary">
               {t(land.name)}
             </h3>
+            {/* แก้ไขให้แสดงผลตามค่า owner (ที่ส่งมาจาก Game.tsx) */}
             <div className="inline-block mt-2 px-3 py-1 bg-brand-bg rounded-full border border-brand-border/50 text-xs font-semibold text-brand-accent uppercase">
-              {t("map.owner")}:{" "}
-              {land.ownerId ? land.ownerId : t("map.unclaimed")}
+              {t("map.owner")}: {owner ? owner : t("map.unclaimed")}
             </div>
           </div>
           <button
@@ -59,13 +61,14 @@ export default function LandmarkDetails({
             <div className="flex items-center gap-2 text-xs font-bold text-brand-accent uppercase mb-1">
               <Shield size={16} className="text-blue-500" /> {t("map.status")}
             </div>
+            {/* แก้ไขให้แสดงสถานะตามค่า owner */}
             <span className="text-lg font-bold text-brand-primary mt-1 block">
-              {land.ownerId ? t("map.secured") : t("map.available")}
+              {owner ? t("map.secured") : t("map.available")}
             </span>
           </div>
         </div>
 
-        {/* Landmark Image Section (Conditional Rendering) */}
+        {/* Landmark Image Section */}
         {landmarkImage && (
           <div
             className="mt-8 text-center cursor-pointer group"
@@ -76,14 +79,11 @@ export default function LandmarkDetails({
               alt={t(land.name)}
               className="mx-auto h-32 rounded-lg"
             />
-
-            {/* แสดงผล Source แบบ Dynamic */}
             {land.imageSource && (
               <p className="text-[10px] text-brand-accent mt-2 italic">
                 Source: {land.imageSource}
               </p>
             )}
-
             <p className="text-xs text-brand-accent mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
               {t("Click to expand")}
             </p>

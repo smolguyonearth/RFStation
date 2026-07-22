@@ -4,4 +4,5 @@ export const NAV_LINKS = [
     { title: "nav.map", path: "/map", icon: MapIcon },
     { title: "nav.monitor", path: "/monitor", icon: Monitor },
     { title: "nav.live", path: "/live", icon: Monitor },
+    { title: "nav.display", path: "/display", icon: Monitor },
 ];
