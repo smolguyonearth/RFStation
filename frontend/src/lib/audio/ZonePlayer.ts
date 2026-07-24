@@ -166,8 +166,26 @@ export class ZonePlayer {
         this.currentZone = null;
     }
 
+    static stopImmediate(): void {
+        const ctx = ContextManager.getContext();
+        if (!ctx) return;
+
+        this.clearAllTimeouts();
+
+        for (const layer of this.activeLayers) {
+            layer.gain.gain.cancelScheduledValues(0);
+            layer.gain.gain.value = 0;
+            try {
+                layer.source.stop(0);
+            } catch { }
+        }
+
+        this.activeLayers = [];
+        this.currentZone = null;
+    }
+
     static reset(): void {
-        this.stop();
+        this.stopImmediate();
         this.clearAllTimeouts();
         this.zoneRecords.clear();
     }
