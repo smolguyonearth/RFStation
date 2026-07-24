@@ -1,6 +1,15 @@
 import LandmarkDetails from "@/components/Map/LandmarkDetails";
 import { Landmarks } from "@/constants/landmark";
 import mapVectorBg from "@/assets/Map_final_vecter.webp";
+import { useEffect, useRef } from "react";
+import { AudioEngine } from "@/lib/AudioEngine";
+
+const matrixToSounds = [
+  ["mahanakhon", "asiatique", "giant_swing"],
+  ["wat_arun", "bremen_stadium", "townhall"],
+];
+
+const NARRATION_DELAY_MS = 1500;
 
 interface GameData {
   mode: "IDLE" | "MUSEUM" | "GAME";
@@ -20,6 +29,64 @@ export default function MuseumMonitorView({
   game: GameData;
   onAction: (r: number, c: number) => void;
 }) {
+  const isMounted = useRef(false);
+  const narrationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const activeLocKey = game.activeMuseumLocation
+    ? `${game.activeMuseumLocation.row}-${game.activeMuseumLocation.col}`
+    : "none";
+
+  useEffect(() => {
+    if (!isMounted.current) {
+      isMounted.current = true;
+      return;
+    }
+
+    // Clear any pending narration timer
+    if (narrationTimerRef.current) {
+      clearTimeout(narrationTimerRef.current);
+      narrationTimerRef.current = null;
+    }
+
+    // Stop narration immediately when switching
+    AudioEngine.stopVoice();
+
+    if (game.activeMuseumLocation) {
+      const zone = matrixToSounds[game.activeMuseumLocation.row][game.activeMuseumLocation.col];
+      const lang = game.language || "EN";
+
+      // Start background sound at full volume (fade in via ZonePlayer)
+      AudioEngine.playZone(zone, 1.0);
+
+      // Delay narration so background comes in first, then duck background to 40%
+      narrationTimerRef.current = setTimeout(() => {
+        AudioEngine.playZone(zone, 0.4); // duck background
+        AudioEngine.playNarration(lang, zone);
+      }, NARRATION_DELAY_MS);
+    } else {
+      // Deselected: fade out background, stop narration
+      AudioEngine.stop();
+    }
+
+    return () => {
+      if (narrationTimerRef.current) {
+        clearTimeout(narrationTimerRef.current);
+        narrationTimerRef.current = null;
+      }
+    };
+  }, [activeLocKey, game.language]);
+
+  // Cleanup on unmount (exit museum mode)
+  useEffect(() => {
+    return () => {
+      if (narrationTimerRef.current) {
+        clearTimeout(narrationTimerRef.current);
+      }
+      AudioEngine.stopVoice();
+      AudioEngine.stopImmediate();
+    };
+  }, []);
+
   const matrixToLandmarkId = [
     ["lm_01", "lm_06", "lm_03"],
     ["lm_10", "lm_02", "lm_04"],
