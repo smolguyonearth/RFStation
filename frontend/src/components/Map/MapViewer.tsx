@@ -16,10 +16,10 @@ interface MapViewerProps {
 
 export default function MapViewer({ selectedLand, onSelect }: MapViewerProps) {
     return (
-        <div className="w-full h-full flex items-center justify-center p-2">
+        <div className="w-full h-full flex items-center justify-center p-2 min-h-0">
             <svg
                 viewBox="0 0 1024 1024"
-                className="w-full h-auto max-h-full object-contain"
+                className="w-auto h-full max-w-full max-h-full object-contain mx-auto"
                 xmlns="http://www.w3.org/2000/svg"
             >
                 <image

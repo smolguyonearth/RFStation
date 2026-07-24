@@ -1,22 +1,24 @@
 import { Map } from "lucide-react";
 
 export default function LandHeader() {
-    return (
-        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-brand-border/40">
-            <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-brand-border/30 rounded-xl text-brand-primary">
-                    <Map size={24} />
-                </div>
-                <div>
-                    <h1 className="text-2xl font-extrabold tracking-tight text-brand-primary">
-                        Conquered
-                        <span className="text-brand-accent font-medium"> Land</span>
-                    </h1>
-                    <p className="text-sm text-brand-accent/80 font-medium">
-                        Territory control overview
-                    </p>
-                </div>
-            </div>
-        </header>
-    );
+  return (
+    <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 select-none">
+      <div className="flex items-center gap-3">
+        <div className="p-3 bg-[#FFEBF0] text-[#FF7899] border border-[#FFD6E0] rounded-2xl shadow-cute-xs">
+          <Map size={20} />
+        </div>
+        <div>
+          <span className="text-[10px] font-extrabold tracking-[0.25em] text-[#FF7899] uppercase">
+            Overview
+          </span>
+          <h1 className="text-2xl font-extrabold tracking-wide text-[#333C4E] uppercase mt-1">
+            Conquered <span className="text-[#FF7899]">Land</span>
+          </h1>
+          <p className="text-zinc-400 text-xs font-bold mt-1 uppercase tracking-wide">
+            Territory control and landmark acquisition progress
+          </p>
+        </div>
+      </div>
+    </header>
+  );
 }

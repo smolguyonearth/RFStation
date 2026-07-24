@@ -1,43 +1,9 @@
 import { useState, useEffect } from "react";
 import MuseumMonitorView from "@/components/Mode/MuseumMonitorView";
 import GameMonitorView from "@/components/Mode/GameMonitorView";
-import { AudioEngine } from "@/lib/AudioEngine";
 
 export default function Game() {
   const [game, setGame] = useState<any>(null);
-  const [isAudioSuspended, setIsAudioSuspended] = useState(false);
-
-  useEffect(() => {
-    const checkAudioStatus = () => {
-      const ctx = (AudioEngine as any).audioCtx;
-      if (ctx && ctx.state === "suspended") {
-        setIsAudioSuspended(true);
-      } else {
-        setIsAudioSuspended(false);
-      }
-    };
-
-    const t = setTimeout(checkAudioStatus, 1000);
-
-    const unlock = () => {
-      AudioEngine.init();
-      const ctx = (AudioEngine as any).audioCtx;
-      if (ctx) {
-        ctx.resume().then(() => {
-          setIsAudioSuspended(false);
-        });
-      }
-    };
-
-    window.addEventListener("click", unlock);
-    window.addEventListener("touchstart", unlock);
-
-    return () => {
-      clearTimeout(t);
-      window.removeEventListener("click", unlock);
-      window.removeEventListener("touchstart", unlock);
-    };
-  }, []);
 
   useEffect(() => {
     fetch(`/api/game/status`)
@@ -45,7 +11,6 @@ export default function Game() {
       .then((data) => {
         if (data.success) {
           setGame(data.game);
-          AudioEngine.handleGameUpdate(data.game);
         }
       });
 
@@ -61,7 +26,6 @@ export default function Game() {
         const data = JSON.parse(e.data);
         if (data.type === "game_update") {
           setGame(data.game);
-          AudioEngine.handleGameUpdate(data.game);
         }
         if (data.nearest_device) {
           const map: Record<string, string> = {
@@ -73,7 +37,7 @@ export default function Game() {
             F: "townhall",
           };
           const zone = map[data.nearest_device];
-          
+
           window.dispatchEvent(
             new CustomEvent("device_zone_update", {
               detail: {
@@ -82,9 +46,6 @@ export default function Game() {
               },
             }),
           );
-          
-          // Push physical location directly to AudioEngine
-          AudioEngine.handlePhysicalZoneUpdate(data.device_code, zone);
         }
       };
 
@@ -103,13 +64,13 @@ export default function Game() {
   }, []);
 
   const handleAction = async (row: number, col: number) => {
-    if (game && game.currentPlayer) {
-      AudioEngine.updateLastInteracted(game.currentPlayer, row, col);
-    }
+    // Close/deselect action (e.g. Museum X button)
+    const buttonId = row < 0 || col < 0 ? -1 : row * 3 + col;
+
     await fetch("/api/action", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ button_id: row * 3 + col }),
+      body: JSON.stringify({ button_id: buttonId }),
     });
   };
 
@@ -149,11 +110,11 @@ export default function Game() {
         )}
       </div>
 
-      {isAudioSuspended && (
+      {/* {isAudioSuspended && (
         <div className="fixed bottom-6 left-6 z-50 bg-slate-900/90 text-white backdrop-blur-md px-5 py-3 rounded-2xl flex items-center gap-3 shadow-2xl border border-slate-800 text-xs font-semibold animate-bounce cursor-pointer">
           <span>🔊</span> Click anywhere to enable sound guide
         </div>
-      )}
+      )} */}
     </div>
   );
 }

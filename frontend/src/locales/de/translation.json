@@ -15,52 +15,52 @@
     },
     "landmarks": {
         "mahanakhon": {
-            "name": "Mahanakhon Tower",
-            "desc": "Das höchste Hochhaus des Viertels."
+            "name": "King Power Mahanakhon",
+            "desc": "Von den farbenfrohen Lichtern und den belebten Straßen Yaowarats führt unsere Reise weiter zum King Power Mahanakhon, einem Wahrzeichen des modernen Bangkoks. Mit einer Höhe von 314 Metern und seiner Eröffnung im Jahr 2016 war das Gebäude einst das höchste in Thailand. Sein markantes, von Pixeln inspiriertes Design symbolisiert den Wandel und das Wachstum der Stadt. Im Inneren vereint es Wohnungen, ein Hotel, Einkaufsmöglichkeiten und eine Aussichtsplattform, die einen beeindruckenden Blick über Bangkok bietet.\n\nVon den Wurzeln traditioneller Kultur bis hin zum Fortschritt einer modernen Metropole erzählen Yaowarat und der King Power Mahanakhon gemeinsam die Geschichte Bangkoks – einer Stadt, die die Erinnerungen an ihre Vergangenheit bewahrt und zugleich entschlossen in die Zukunft blickt."
         },
         "bremen_stadium": {
-            "name": "Bremer Stadion",
-            "desc": "Ein riesiges Stadion, das als Festung dient."
+            "name": "Weserstadion",
+            "desc": "Zwischen dem Jubel der Zuschauer, den gemeinsamen Gesängen der Fans und dem Applaus, der durch das Stadion hallt, wird die Leidenschaft für den Fußball in jedem Augenblick spürbar.\n\nDas Weserstadion ist eines der bekanntesten Fußballstadien Deutschlands und die Heimat des SV Werder Bremen. Es wurde 1947 eröffnet und liegt direkt am Ufer der Weser, was ihm seinen unverwechselbaren Charakter und seine besondere Atmosphäre verleiht. Im Laufe der Jahrzehnte wurden hier unzählige Erinnerungen an spannende Spiele, große Erfolge und die enge Verbundenheit zwischen dem Verein und seinen Anhängern geschaffen. So ist das Weserstadion zu einem festen Bestandteil der Identität und Kultur Bremens geworden."
         },
         "giant_swing": {
-            "name": "Riesenschaukel",
-            "desc": "Ein historisches religiöses Bauwerk."
+            "name": "Große Schaukel (Sao Chingcha)",
+            "desc": "Von den historischen Straßen führt unsere Reise weiter zur Großen Schaukel (Sao Chingcha), einem der bedeutendsten Wahrzeichen Bangkoks. Sie wurde während der Herrschaft von König Rama I. errichtet und diente undsprünglich der Königlichen Schaukelzeremonie, einem brahmanischen Ritual, das Wohlstand und Segen für das Königreich bringen sollte. Obwohl diese Zeremonie später eingestellt wurde, steht die Große Schaukel bis heute als Symbol für den Glauben, die Kultur und die Geschichte Thailands, die über Generationen hinweg bewahrt wurden.\n\nZwischen den Stimmen der Menschen und dem pulsierenden Leben der Stadt stehen Song Wat und die Große Schaukel für die beständige Identität Bangkoks – einer Stadt, die die Erinnerungen ihrer Vergangenheit bewahrt und sich zugleich auf eindrucksvolle Weise in die Zukunft entwickelt."
         },
         "town_hall": {
-            "name": "Rathaus",
-            "desc": "Das traditionelle Verwaltungszentrum."
+            "name": "Bremer Rathaus",
+            "desc": "Zwischen den warmen Klängen europäischer Musik, dem tiefen Läuten der Kirchenglocken und dem leisen Plaudern der Menschen entsteht eine Atmosphäre, die den historischen Charme Bremens lebendig werden lässt.\n\nHier steht das Bremer Rathaus, ein bedeutendes historisches Bauwerk aus dem frühen 15. Jahrhundert, das als eines der herausragendsten Beispiele der Weserrenaissance in Deutschland gilt. Als Symbol für die Unabhängigkeit und den Wohlstand der Stadt gehört das Rathaus zusammen mit dem Bremer Roland zum UNESCO-Weltkulturerbe."
         },
         "asiatique": {
-            "name": "Asiatique",
-            "desc": "Open-Air-Einkaufszentrum und Unterhaltungsviertel am Flussufer."
+            "name": "Asiatique The Riverfront",
+            "desc": "Zwischen den Stimmen der Menschen, dem Lachen und der Begeisterung der Besucher entsteht eine Atmosphäre, die die besondere Verbindung zwischen Geschichten aus der Vergangenheit und dem modernen Stadtleben widerspiegelt.\n\nAsiatique The Riverfront is ein beliebtes Ausflugsziel am Ufer des Chao-Phraya-Flusses. Einst befand sich hier ein Hafen- und Lagerkomplex der East Asiatic Company, die in der Vergangenheit eine wichtige Rolle im Handel spielte. Im Jahr 2012 wurde das Gelände in ein Kultur- und Lifestyle-Viertel umgewandelt, während der Charme der historischen Architektur bewahrt wurde. Heute erzählt Asiatique die Geschichte von Handel, Kultur und dem Leben am Flussufer des Chao Phraya und verbindet historische Erinnerungen mit modernen Erlebnissen."
         },
         "yaowarat": {
             "name": "Chinatown Yaowarat",
-            "desc": "Das pulsierende Herz des Streetfoods und Handels."
+            "desc": "Die Stimmen der Menschen, vorbeieilende Schritte sowie das Geräusch von Autos und Hupen erfüllen die Straßen und spiegeln den lebendigen Rhythmus Bangkoks wider – einer Stadt voller Geschichten aus der Vergangenheit und zugleich auf dem Weg in die Zukunft.\n\nVon einem historischen Viertel, das über Generationen hinweg gewachsen ist, bis hin zu einem Symbol moderner Stadtentwicklung entdecken wir zwei Seiten Bangkoks, die Tradition und Zukunft auf einzigartige Weise miteinander verbinden.\n\nYaowarat ist ein historisches Viertel mit einer über 200-jährigen Geschichte. Seine Entwicklung begann während der Herrschaft von König Rahmen V. und später wurde es zum Zentrum der chinesischen Gemeinschaft in Thailand. Aus einem kleinen Handelsviertel entstand eines der wichtigsten Wirtschaftsgebiete der Stadt, das heute für seine Goldgeschäfte, seine chinesische Küche und die einzigartige Verbindung thailändischer und chinesischer Kultur bekannt ist. Yaowarat ist längst nicht nur ein Handelszentrum, sondern auch ein lebendiges Kulturerbe, das Geschichten, Lebensweisen und Traditionen bewahrt, die seit Generationen weitergegeben werden."
         },
         "grand_palace": {
             "name": "Der Große Palast",
-            "desc": "Das ultimative Symbol der Vorherrschaft."
+            "desc": "Nicht weit von Wat Arun entfernt befindet sich der Große Palast, die königliche Residenz, die 1782 gleichzeitig mit der Gründung des Königreichs Rattanakosin durch König Rama I. errichtet wurde. Der Palast diente als politisches und administratives Zentrum des Landes und beherbergt zudem den Wat Phra Si Rattana Satsadaram, besser bekannt als Tempel des Smaragd-Buddha. Dort wird der Smaragd-Buddha aufbewahrt – eine der heiligsten und am meisten verehrten Buddha-Statuen Thailands.\n\nDie sanften Klänge der klassischen thailändischen Musik schweben weiter über den Chao-Phraya-Fluss und vermitteln ein Gefühl von Ruhe, Spiritualität und lebendiger Geschichte. Gemeinsam spiegeln Wat Arun und der Große Palast die Schönheit, den kulturellen Reichtum und das bis heute bewahrte Erbe des Königreichs Rattanakosin wider."
         },
         "wat_arun": {
             "name": "Wat Arun",
-            "desc": "Der ikonische Tempel am Flussufer."
+            "desc": "Zwischen dem Klang der Glocken, die sanft im Wind erklingen, den Booten, die gemächlich am Ufer des Chao-Phraya-Flusses anlegen, und den leisen Melodien traditioneller thailändischer Musik entsteht eine friedvolle Atmosphäre, die uns in die Anfänge des Königreichs Rattanakosin zurückzuversetzen scheint.\n\nDies ist Wat Arun Ratchawararam, besser bekannt als Wat Arun. Der Tempel stammt ursprünglich aus der Ayutthaya-Zeit und trug einst den Namen Wat Makok Nok. Nachdem König Taksin der Große den Tempel bei Sonnenaufgang erreichte – ein als glücksverheißend angesehenes Ereignis – erhielt er den Namen Wat Chaeng. Später wurde der Tempel restauriert und zu dem Wat Arun Ratchawararam ausgebaut, den wir heute kennen. Sein beeindruckender zentraler Prang, kunstvoll mit chinesischem Porzellan verziert, gilt als Symbol des ersten Morgenlichts und zählt zu den bekanntesten Wahrzeichen Thailands."
         },
         "rolland": {
             "name": "Bremer Roland",
-            "desc": "Statue, die Freiheit und Marktrechte repräsentiert."
+            "desc": "Auf der anderen Seite dieser kulturellen Reise steht die Rolandstatue von Bremen in Deutschland. Die im Jahr 1404 auf dem Marktplatz errichtete Statue symbolisiert Freiheit, Bürgerrechte und die Unabhängigkeit der Stadt im Mittelalter. Roland, the legendary knight symbolizing justice and protection of the people, continues to stand as a historic heritage that reflects the identity and spirit of Bremen for more than six centuries.\n\nSowohl Asiatique The Riverfront und die Rolandstatue stehen für Städte, die ihre Erinnerungen an die Vergangenheit bewahren und gleichzeitig Geschichten von Menschen, Kultur und städtischer Entwicklung miteinander verbinden – von der Geschichte bis zur Gegenwart."
         },
         "musicians": {
             "name": "Bremer Stadtmusikanten",
-            "desc": "Ikonische Statue zur Feier der Folklore."
+            "desc": "Von den Stimmen der Fans im Stadion führt unsere Reise zu einem weiteren Wahrzeichen der Stadt: den Bremer Stadtmusikanten. Inspiriert von dem berühmten Märchen der Brüder Grimm erzählt die Bronzestatue die Geschichte eines Esels, eines Hundes, einer Katze und eines Hahns, die sich gemeinsam auf den Weg machen, um ein neues Leben zu beginnen. Die 1953 geschaffene Skulptur neben dem Bremer Rathaus ist heute ein Symbol für Hoffnung, Zusammenhalt und den Mut, Herausforderungen gemeinsam zu meistern.\n\nGemeinsam spiegeln das Weserstadion und die Bremer Stadtmusikanten den Geist Bremens wider – durch die Klänge des Jubels, zeitlose Geschichten und Erinnerungen, die von Generation zu Generation weitergegeben werden."
         },
-        "iconsiam": {
-            "name": "ICONSIAM",
-            "desc": "Moderner Handel und Luxus."
+        "songwat": {
+            "name": "Song Wat",
+            "desc": "Zwischen den Stimmen der Einkaufenden, den vorbeifahrenden Fahrzeugen und den Schritten, die durch die alten Straßen hallen, bleibt die Atmosphäre des historischen Bangkoks trotz des stetigen Wandels der Stadt lebendig.\n\nSong Wat gehört zu den historischen Vierteln am Ufer des Chao-Phraya-Flusses und blickt auf eine lange Geschichte zurück, die bis in die frühe Rattanakosin-Zeit reicht. Dank seiner Lage in der Nähe des Flusses und wichtiger Anlegestellen entwickelte sich das Viertel zu einem bedeutenden Handelszentrum, insbesondere für die chinesische Gemeinschaft. Einst prägten Geschäfte, Lagerhäuser und historische Gebäude das Stadtbild und erzählten von den Lebensweisen und Geschichten vergangener Generationen. Heute bewahrt Song Wat seinen ursprünglichen Charme und verbindet ihn mit modernen Geschäften, Cafés und kreativen Räumen. So ist ein lebendiges Viertel entstanden, das Bangkoks Vergangenheit und Gegenwart miteinander verbindet."
         },
-        "wallanlagen": {
-            "name": "Wallanlagen",
-            "desc": "Ein historischer Park und ehemaliges Befestigungsgebiet."
+        "schnoor": {
+            "name": "Bremer Schnoorviertel",
+            "desc": "Nicht weit entfernt befindet sich der Schnoor, Bremens ältestes Viertel, dessen Geschichte bis ins Mittelalter zurückreicht. Einst eine Heimat für Fischer und Handwerker an der Weser, besticht das Viertel heute durch historische Fachwerkhäuser und enge, gemütliche Gassen. Der Name Schnoor leitet sich von 'Schnur' ab und erinnert an die Zeit, als hier Seile und Schiffsausrüstungen hergestellt wurden.\n\nDurch die Musik und Geschichten, die Vergangenheit und Gegenwart miteinander verbinden, spiegeln das Bremer Rathaus und der Schnoor das reiche kulturelle Erbe und den lebendigen Geist der Stadt wider."
         }
     },
     "common": {

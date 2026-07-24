@@ -1,23 +1,27 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Geist:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-brand-bg: #F9FAFB;
-  --color-brand-border: #E5E7EB;
-  --color-brand-accent: #6366F1;
-  --color-brand-primary: #1F2937;
+  --color-brand-bg: #FAF9F6;
+  --color-brand-border: #FFF0F3;
+  --color-brand-accent: #FF7899;
+  --color-brand-primary: #333C4E;
 }
 
-@utility minimal-shadow {
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+@utility shadow-cute-xs {
+  box-shadow: 0 2px 8px rgba(255, 120, 153, 0.04);
 }
 
-@utility minimal-shadow-hover {
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+@utility shadow-cute-sm {
+  box-shadow: 0 6px 20px rgba(255, 120, 153, 0.08);
+}
+
+@utility shadow-cute {
+  box-shadow: 0 12px 35px rgba(220, 180, 185, 0.12);
 }
 
 @layer utilities {
   .font-sans {
-    font-family: 'Inter', 'Geist', sans-serif;
+    font-family: 'Quicksand', 'Inter', sans-serif;
   }
 }

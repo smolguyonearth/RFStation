@@ -81,6 +81,11 @@ const app = new Elysia()
     // That's fine, ESP32 will pick up the 0,0,0,0,0,0 on next poll.
     return { success: true };
   })
+  .post('/api/game/skip-intro', ({ server }) => {
+    game.introActive = false;
+    server?.publish('live-data', JSON.stringify({ type: 'game_update', game: game.getSnapshot() }));
+    return { success: true };
+  })
   .post('/api/action', ({ body, server }) => {
     const { button_id } = body;
 
@@ -102,6 +107,15 @@ const app = new Elysia()
 
       // Always return raw state back to ESP32 for instant sync
       return game.matrix.flat().join(',');
+    }
+
+    // Special: button_id < 0 means "close / deselect" (e.g. Museum X button)
+    if (button_id < 0) {
+      const changed = game.handleAction(-1, -1);
+      if (changed) {
+        server?.publish('live-data', JSON.stringify({ type: 'game_update', game: game.getSnapshot() }));
+      }
+      return "OK";
     }
 
     return "INVALID";

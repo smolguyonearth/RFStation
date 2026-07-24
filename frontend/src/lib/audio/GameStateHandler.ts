@@ -7,6 +7,7 @@ export class GameStateHandler {
     private static prevMode: string | null = null;
     private static prevPhase: string | null = null;
     private static prevMatrix: string | null = null;
+    private static prevIntroActive: boolean = false;
 
     // Background source tracker
     private static bgSource: AudioBufferSourceNode | null = null;
@@ -83,6 +84,7 @@ export class GameStateHandler {
         this.prevMode = null;
         this.prevPhase = null;
         this.prevMatrix = null;
+        this.prevIntroActive = false;
         this.stopBgSource();
         this.p1LastLocation = null;
         this.p2LastLocation = null;
@@ -182,9 +184,15 @@ export class GameStateHandler {
             if (currentMode === "IDLE") {
                 ZonePlayer.stop();
                 this.stopBgSource();
+                this.p1LastLocation = null;
+                this.p2LastLocation = null;
+                this.p1PhysicalZone = null;
+                this.p2PhysicalZone = null;
                 if (typeof window !== "undefined" && window.localStorage) {
                     localStorage.removeItem("player1_last_location");
                     localStorage.removeItem("player2_last_location");
+                    localStorage.removeItem("p1_last_interacted");
+                    localStorage.removeItem("p2_last_interacted");
                 }
             } else if (currentMode === "MUSEUM") {
                 // Let views handle Museum mode audio locally to avoid clashes
@@ -201,8 +209,18 @@ export class GameStateHandler {
 
         // 4. Game mode scoreboard logic
         if (currentMode === "GAME") {
+            const introActive = !!gameState.introActive;
+            if (!introActive && this.prevIntroActive) {
+                VoicePlayer.stopIntro();
+            }
+            this.prevIntroActive = introActive;
+
             // Battle phase changes
+
             if (currentPhase === "BATTLE" && this.prevPhase !== "BATTLE") {
+                // VoicePlayer.stopIntro();
+                VoicePlayer.stopIntro();
+                VoicePlayer.stopVoice();
                 VoicePlayer.startBattleMusic();
             } else if (currentPhase !== "BATTLE" && this.prevPhase === "BATTLE") {
                 VoicePlayer.stopBattleMusic();
@@ -210,15 +228,13 @@ export class GameStateHandler {
 
             // Capture SFX alerts & Handover transitions
             if (this.prevPhase === "BATTLE" && currentPhase === "TURN") {
-                // Battle resolved: play transition from conquer_sound to active player BGM loop
-                const activeSoundKey = this.getActivePlayerLatestSoundKey(gameState);
-                AudioTransition.playTransition("conquer_sound", activeSoundKey, 0.7);
+                // Play conquer sound as non-ducking SFX, allowing BGM to play immediately
+                VoicePlayer.playSFX("conquer_sound", true, false);
             } else if (currentPhase === "TURN" && this.prevPhase === "TURN") {
                 const currentMatrixStr = JSON.stringify(gameState.matrix);
                 if (this.prevMatrix && currentMatrixStr !== this.prevMatrix) {
-                    // Direct grid capture: play transition from conquer_sound to active player BGM loop
-                    const activeSoundKey = this.getActivePlayerLatestSoundKey(gameState);
-                    AudioTransition.playTransition("conquer_sound", activeSoundKey, 0.7);
+                    // Play conquer sound as non-ducking SFX, allowing BGM to play immediately
+                    VoicePlayer.playSFX("conquer_sound", true, false);
                 }
                 this.prevMatrix = currentMatrixStr;
             } else if (currentPhase === "TURN" && this.prevPhase !== "TURN") {
@@ -262,7 +278,7 @@ export class GameStateHandler {
         const currentPlayer = this.currentGameState.currentPlayer;
 
         if (currentMode === "GAME" && currentPhase === "TURN") {
-            if ((deviceCode === "P1" && currentPlayer === 1) || 
+            if ((deviceCode === "P1" && currentPlayer === 1) ||
                 (deviceCode === "P2" && currentPlayer === 2)) {
                 if (!AudioTransition.isActive() && zone && zone !== "waiting") {
                     ZonePlayer.playZone(zone, 0.7);

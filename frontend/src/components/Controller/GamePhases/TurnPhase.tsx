@@ -29,38 +29,35 @@ export default function TurnPhase({ gameState, endTurn }: any) {
       {step === "ROLL" && (
         <div
           key="roll"
-          className="absolute inset-0 flex flex-col items-center justify-center animate-slide-in-right z-10 p-8 rounded-2xl border border-zinc-200 bg-white shadow-sm"
+          className="w-full flex flex-col items-center justify-center animate-fade-in"
         >
-          <span className={`text-[10px] font-bold tracking-[0.2em] uppercase mb-4 px-3 py-1 rounded-full ${
-            isP1 ? "text-indigo-600 bg-indigo-50 border border-indigo-100" : "text-rose-600 bg-rose-50 border border-rose-100"
+          <span className={`text-[10px] font-extrabold tracking-[0.2em] uppercase mb-4 px-4 py-2 rounded-full border shadow-cute-xs ${
+            isP1 ? "text-[#4F46E5] bg-[#EEF2FF] border-[#C7D2FE]" : "text-[#FF7899] bg-[#FFEBF0] border-[#FFD6E0]"
           }`}>
             Active Player
           </span>
-          <h2
-            className={`text-xl font-medium mb-8 tracking-wide uppercase text-center ${
-              isP1 ? "text-indigo-950" : "text-rose-950"
-            }`}
-          >
+          
+          <h2 className="text-2xl md:text-3xl font-extrabold mb-4 tracking-widest uppercase text-center text-[#333C4E]">
             Player {gameState.currentPlayer} Turn
           </h2>
           
-          <div className="scale-100">
+          <div className="my-4">
             <Dice mode="D6" label="ROLL TO MOVE" onRoll={handleRoll} />
           </div>
 
           {hasRolled && (
-            <div className="mt-8 flex flex-col items-center">
+            <div className="mt-6 flex flex-col items-center">
               <button
                 onClick={() => setStep("ACTION")}
-                className={`px-6 py-2.5 text-white font-medium text-xs uppercase tracking-wider rounded-lg active:scale-95 transition-all shadow-sm animate-pop ${
+                className={`px-8 py-3.5 font-extrabold text-xs uppercase tracking-widest rounded-2xl transition-all shadow-cute border-2 ${
                   isP1 
-                    ? "bg-indigo-600 hover:bg-indigo-700" 
-                    : "bg-rose-600 hover:bg-rose-700"
+                    ? "bg-[#EEF2FF] hover:bg-[#C7D2FE] text-[#4F46E5] border-[#C7D2FE]" 
+                    : "bg-[#FFEBF0] hover:bg-[#FFD6E0] text-[#FF7899] border-[#FFD6E0]"
                 }`}
               >
                 Next: Move Piece →
               </button>
-              <p className="mt-2 text-[9px] text-zinc-400 tracking-wider">
+              <p className="mt-2 text-[10px] text-zinc-400 font-bold tracking-wider">
                 (Or Swipe Left)
               </p>
             </div>
@@ -71,40 +68,37 @@ export default function TurnPhase({ gameState, endTurn }: any) {
       {step === "ACTION" && (
         <div
           key="action"
-          className="absolute inset-0 flex flex-col items-center justify-center animate-slide-in-right z-10 p-8 rounded-2xl border border-zinc-200 bg-white shadow-sm"
+          className="w-full max-w-md flex flex-col items-center justify-center animate-fade-in"
         >
-          <span className={`text-[10px] font-bold tracking-[0.2em] uppercase mb-4 px-3 py-1 rounded-full ${
-            isP1 ? "text-indigo-600 bg-indigo-50 border border-indigo-100" : "text-rose-600 bg-rose-50 border border-rose-100"
+          <span className={`text-[10px] font-extrabold tracking-[0.2em] uppercase mb-4 px-4 py-2 rounded-full border shadow-cute-xs ${
+            isP1 ? "text-[#4F46E5] bg-[#EEF2FF] border-[#C7D2FE]" : "text-[#FF7899] bg-[#FFEBF0] border-[#FFD6E0]"
           }`}>
             Board Action
           </span>
-          <h2
-            className={`text-xl font-medium mb-6 tracking-wide uppercase text-center ${
-              isP1 ? "text-indigo-950" : "text-rose-950"
-            }`}
-          >
+          
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-8 tracking-widest uppercase text-center text-[#333C4E]">
             Move Piece
           </h2>
 
-          <div className="w-full max-w-md bg-zinc-50 border border-zinc-200/60 rounded-xl p-5 shadow-inner mb-6 text-left">
-            <span className="text-[9px] font-bold tracking-[0.2em] text-zinc-400 uppercase">
+          <div className="w-full bg-white border border-[#FFF0F3] rounded-[2rem] p-6 shadow-cute mb-8 text-left">
+            <span className="text-[9px] font-extrabold tracking-[0.2em] text-[#FF7899] uppercase">
               Operational Checklist
             </span>
-            <h3 className="text-xs font-semibold mt-1 mb-3 uppercase tracking-wide text-zinc-700">
+            <h3 className="text-xs font-bold mt-1 mb-4 uppercase tracking-wider text-zinc-500">
               Complete on physical board:
             </h3>
             
-            <ul className="text-xs font-light space-y-2.5 text-zinc-600 tracking-wide">
+            <ul className="text-xs space-y-3.5 text-zinc-500 font-bold">
               <li className="flex items-start gap-2.5">
-                <span className="w-1 h-1 rounded-full bg-zinc-400 mt-1.5" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FF7899] mt-1.5" />
                 <span>Move your piece to the destination square.</span>
               </li>
               <li className="flex items-start gap-2.5">
-                <span className="w-1 h-1 rounded-full bg-zinc-400 mt-1.5" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FF7899] mt-1.5" />
                 <span>If landing on a landmark, press its physical button sensor.</span>
               </li>
-              <li className="flex items-start gap-2.5 text-zinc-700 bg-white px-3 py-2 rounded-lg border border-zinc-200">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5" />
+              <li className="flex items-start gap-2.5 text-[#333C4E] bg-[#FAF9F6] px-3.5 py-3 rounded-xl border border-[#FFF0F3]">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5 animate-pulse" />
                 <span>If landing on path grid, click the button below.</span>
               </li>
             </ul>
@@ -112,10 +106,10 @@ export default function TurnPhase({ gameState, endTurn }: any) {
 
           <button
             onClick={() => endTurn()}
-            className={`w-full max-w-md py-3 text-xs font-semibold uppercase tracking-wider rounded-lg active:scale-95 transition-all text-white ${
+            className={`w-full py-4 text-xs font-extrabold uppercase tracking-widest rounded-2xl transition-all border-2 shadow-cute active:scale-95 ${
               isP1 
-                ? "bg-indigo-600 hover:bg-indigo-700" 
-                : "bg-rose-600 hover:bg-rose-700"
+                ? "bg-[#EEF2FF] hover:bg-[#C7D2FE] text-[#4F46E5] border-[#C7D2FE]" 
+                : "bg-[#FFEBF0] hover:bg-[#FFD6E0] text-[#FF7899] border-[#FFD6E0]"
             }`}
           >
             End Turn

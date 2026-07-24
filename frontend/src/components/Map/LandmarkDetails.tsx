@@ -25,15 +25,16 @@ export default function LandmarkDetails({
 
   return (
     <div className={`${className} animate-in fade-in slide-in-from-bottom-8 duration-500`}>
-      <div className={flat ? "h-full flex flex-col justify-between" : "bg-white rounded-2xl border border-brand-border shadow-sm p-6 lg:p-8 h-full flex flex-col justify-between"}>
+      <div className={flat ? "h-full flex flex-col justify-between" : "bg-white rounded-[2rem] border border-[#FFF0F3] shadow-cute p-6 lg:p-8 h-full flex flex-col justify-between"}>
+        
         {/* Header Section */}
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h3 className="text-2xl font-bold text-brand-primary">
+            <h3 className="text-xl font-extrabold text-[#333C4E] tracking-wide uppercase">
               {t(land.name)}
             </h3>
             {!hideGameplayDetails && (
-              <div className="inline-block mt-2 px-3 py-1 bg-brand-bg rounded-full border border-brand-border/50 text-xs font-semibold text-brand-accent uppercase">
+              <div className="inline-block mt-2 px-3 py-1 bg-[#FFEBF0] rounded-xl border border-[#FFD6E0] text-[10px] font-bold text-[#FF7899] uppercase tracking-wider shadow-cute-xs">
                 {t("map.owner")}:{" "}
                 {land.ownerId ? land.ownerId : t("map.unclaimed")}
               </div>
@@ -41,60 +42,60 @@ export default function LandmarkDetails({
           </div>
           <button
             onClick={onClose}
-            className="p-2 bg-brand-bg rounded-xl hover:bg-brand-border/50 transition-colors"
+            className="p-2 bg-[#FFEBF0] text-[#FF7899] border border-[#FFD6E0] rounded-xl shadow-cute-xs hover:bg-[#FFD6E0] transition-colors"
             aria-label={t("common.close")}
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
         {/* Description */}
-        <div className="text-sm text-brand-primary/80 mb-8 max-h-[35vh] overflow-y-auto pr-2">
+        <div className="text-xs text-zinc-500 font-bold leading-relaxed mb-6 max-h-[30vh] overflow-y-auto pr-2">
           {land.description ? t(land.description) : t("map.no_description")}
         </div>
 
         {/* Stats Grid */}
         {!hideGameplayDetails && (
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-brand-bg p-4 rounded-xl border border-brand-border/50">
-              <div className="flex items-center gap-2 text-xs font-bold text-brand-accent uppercase mb-1">
-                <Gem size={16} className="text-emerald-500" /> {t("map.points")}
+            <div className="bg-[#FFEBF0] p-4 rounded-xl border border-[#FFD6E0] shadow-cute-xs">
+              <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#FF7899] uppercase mb-1 tracking-wider">
+                <Gem size={14} /> {t("map.points")}
               </div>
-              <span className="text-2xl font-extrabold text-brand-primary">
+              <span className="text-2xl font-extrabold text-[#FF7899] font-mono">
                 {land.points || 0}
               </span>
             </div>
-            <div className="bg-brand-bg p-4 rounded-xl border border-brand-border/50">
-              <div className="flex items-center gap-2 text-xs font-bold text-brand-accent uppercase mb-1">
-                <Shield size={16} className="text-blue-500" /> {t("map.status")}
+            <div className="bg-[#E1F7EC] p-4 rounded-xl border border-[#C2F0D9] shadow-cute-xs">
+              <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#2BB673] uppercase mb-1 tracking-wider">
+                <Shield size={14} /> {t("map.status")}
               </div>
-              <span className="text-lg font-bold text-brand-primary mt-1 block">
+              <span className="text-xs font-bold text-[#2BB673] mt-1 block uppercase">
                 {land.ownerId ? t("map.secured") : t("map.available")}
               </span>
             </div>
           </div>
         )}
 
-        {/* Landmark Image Section (Conditional Rendering) */}
+        {/* Landmark Image Section */}
         {landmarkImage && (
           <div
-            className="mt-8 text-center cursor-pointer group"
+            className="mt-6 text-center cursor-pointer group"
             onClick={() => setIsFullView(true)}
           >
             <img
               src={landmarkImage}
               alt={t(land.name)}
-              className="mx-auto h-32 rounded-lg"
+              className="mx-auto h-28 rounded-2xl object-cover border border-[#FFF0F3] shadow-cute-sm group-hover:scale-[1.02] transition-transform duration-300 w-full"
             />
 
-            {/* แสดงผล Source แบบ Dynamic */}
+            {/* Source Display */}
             {land.imageSource && (
-              <p className="text-[10px] text-brand-accent mt-2 italic">
+              <p className="text-[9px] text-zinc-400 font-bold uppercase mt-3 italic">
                 Source: {land.imageSource}
               </p>
             )}
 
-            <p className="text-xs text-brand-accent mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <p className="text-[10px] text-[#FF7899] font-bold mt-2 opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-wider">
               {t("Click to expand")}
             </p>
           </div>
@@ -108,15 +109,15 @@ export default function LandmarkDetails({
           onClick={() => setIsFullView(false)}
         >
           <button
-            className="absolute top-5 right-5 text-white bg-white/10 p-2 rounded-full hover:bg-white/20 transition-colors"
+            className="absolute top-5 right-5 text-white bg-[#FF7899] border border-[#FFD6E0] p-2 rounded-full hover:bg-[#FFD6E0] transition-colors shadow-sm"
             onClick={() => setIsFullView(false)}
           >
-            <X size={32} />
+            <X size={24} />
           </button>
           <img
             src={landmarkImage}
             alt={t(land.name)}
-            className="max-w-full max-h-[90vh] object-contain rounded-xl"
+            className="max-w-full max-h-[90vh] object-contain rounded-2xl border-[3px] border-white shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           />
         </div>

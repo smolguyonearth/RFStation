@@ -15,6 +15,7 @@ export class GameLogic {
   battleContext: { row: number, col: number, attacker: number, defender: number } | null = null;
   scores = { 1: 0, 2: 0 };
   activeMuseumLocation: { row: number, col: number } | null = null;
+  introActive: boolean = false;
 
   state: GameState = 'setup'; // Keep backward compatibility for the old /game page
   p1ClaimHistory: { row: number, col: number }[] = [];
@@ -48,12 +49,15 @@ export class GameLogic {
       this.activeMuseumLocation = null;
       this.p1ClaimHistory = [];
       this.p2ClaimHistory = [];
+      this.introActive = true;
     } else if (mode === 'MUSEUM') {
       this.activeMuseumLocation = null;
       this.state = 'setup';
+      this.introActive = false;
     } else {
       this.state = 'setup';
       this.activeMuseumLocation = null;
+      this.introActive = false;
     }
   }
 
@@ -71,6 +75,7 @@ export class GameLogic {
     this.activeMuseumLocation = null;
     this.p1ClaimHistory = [];
     this.p2ClaimHistory = [];
+    this.introActive = false;
   }
 
   resetGame() {
@@ -87,6 +92,7 @@ export class GameLogic {
     this.activeMuseumLocation = null;
     this.p1ClaimHistory = [];
     this.p2ClaimHistory = [];
+    this.introActive = false;
   }
 
   endTurn(): boolean {
@@ -186,18 +192,31 @@ export class GameLogic {
   }
 
   private finishTurn() {
-    if (this.currentTurn >= 10) {
-      this.state = 'game_over';
-      this.gamePhase = 'END';
-      this.calculateScores();
-    } else {
+    const nextPlayer = this.currentPlayer === 1 ? 2 : 1;
+
+    // A full round = both players have played.
+    // Increment round counter only after the second player in the round finishes.
+    // turnPhase tracks which half of the round we're on: 0 = first player, 1 = second player.
+    if (this.turnPhase === 1) {
+      // Both players have played — end of round
+      if (this.currentTurn >= 10) {
+        // 10 rounds × 2 players = 20 total actions
+        this.state = 'game_over';
+        this.gamePhase = 'END';
+        this.calculateScores();
+        return;
+      }
       this.currentTurn++;
       this.turnsLeft = 10 - this.currentTurn;
-      // Swap turn
-      this.currentPlayer = this.currentPlayer === 1 ? 2 : 1;
-      if (this.mode === 'GAME') {
-        this.gamePhase = 'TURN';
-      }
+      this.turnPhase = 0;
+    } else {
+      this.turnPhase = 1;
+    }
+
+    // Swap turn
+    this.currentPlayer = nextPlayer;
+    if (this.mode === 'GAME') {
+      this.gamePhase = 'TURN';
     }
   }
 
@@ -229,7 +248,8 @@ export class GameLogic {
       activeMuseumLocation: this.activeMuseumLocation,
       state: this.state,
       p1ClaimHistory: this.p1ClaimHistory,
-      p2ClaimHistory: this.p2ClaimHistory
+      p2ClaimHistory: this.p2ClaimHistory,
+      introActive: this.introActive
     };
   }
 }

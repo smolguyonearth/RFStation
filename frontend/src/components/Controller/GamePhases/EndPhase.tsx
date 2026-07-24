@@ -3,41 +3,41 @@ export default function EndPhase({ gameState, resetGame }: any) {
   const p2 = gameState.scores[2];
   let msg = "Tie Game";
   let bg = "bg-white border-zinc-200";
-  let labelColor = "text-zinc-500";
-  let winColor = "text-[#1F2937]";
+  let labelColor = "text-zinc-400";
+  let winColor = "text-zinc-900";
 
   if (p1 > p2) {
     msg = "Player 1 Wins";
-    bg = "bg-indigo-50/20 border-indigo-100";
+    bg = "bg-[#EEF2FF] border-indigo-100/60";
     labelColor = "text-indigo-600";
-    winColor = "text-indigo-950";
+    winColor = "text-indigo-900";
   } else if (p2 > p1) {
     msg = "Player 2 Wins";
-    bg = "bg-rose-50/20 border-rose-100";
+    bg = "bg-[#FFF1F2] border-rose-100/60";
     labelColor = "text-rose-600";
-    winColor = "text-rose-950";
+    winColor = "text-rose-900";
   }
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center animate-pop py-4">
       <div
-        className={`p-10 rounded-2xl border text-center ${bg} mb-8 shadow-sm w-full max-w-xs bg-white`}
+        className={`p-10 rounded-3xl border ${bg} mb-8 shadow-sm w-full max-w-xs bg-white text-center`}
       >
-        <span className={`text-[10px] font-bold tracking-[0.2em] ${labelColor} uppercase mb-3 block`}>
+        <span className={`text-[10px] font-bold tracking-[0.25em] ${labelColor} uppercase mb-3 block`}>
           Conquest Complete
         </span>
-        <h2 className={`text-xl font-light tracking-wide mb-8 uppercase ${winColor}`}>{msg}</h2>
+        <h2 className={`text-2xl font-light tracking-wider mb-8 uppercase ${winColor}`}>{msg}</h2>
         
-        <div className="flex justify-center items-center gap-6 font-mono text-zinc-500 text-xs bg-zinc-50 py-3 rounded-xl border border-zinc-200/50 shadow-inner">
-          <span>P1: <strong className="text-indigo-600 font-semibold">{p1}</strong></span>
-          <span className="text-zinc-300">|</span>
-          <span>P2: <strong className="text-rose-600 font-semibold">{p2}</strong></span>
+        <div className="flex justify-center items-center gap-6 font-mono text-zinc-600 text-xs bg-zinc-50 py-3.5 rounded-xl border border-zinc-200/60 shadow-inner">
+          <span>P1: <strong className="text-indigo-600 font-bold">{p1}</strong></span>
+          <span className="text-zinc-300 font-medium">|</span>
+          <span>P2: <strong className="text-rose-600 font-bold">{p2}</strong></span>
         </div>
       </div>
 
       <button
         onClick={() => resetGame()}
-        className="px-6 py-3 bg-zinc-800 text-white font-medium text-xs uppercase tracking-wider rounded-lg hover:bg-zinc-900 active:scale-95 transition-all shadow-sm"
+        className="px-6 py-3 bg-[#0C1227] hover:bg-[#1E294A] text-white font-semibold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md"
       >
         Play Again
       </button>

@@ -125,7 +125,7 @@ export class VoicePlayer {
         DuckingManager.performDucking(false);
     }
 
-    static async playSFX(sfxName: string, enableTailFade: boolean = true): Promise<void> {
+    static async playSFX(sfxName: string, enableTailFade: boolean = true, enableDucking: boolean = true): Promise<void> {
         ContextManager.init();
         const ctx = ContextManager.getContext()!;
         if (ctx.state === "suspended") await ctx.resume();
@@ -150,10 +150,14 @@ export class VoicePlayer {
             localGain.gain.setValueAtTime(0, now);
             localGain.gain.linearRampToValueAtTime(1, now + 0.01);
 
-            DuckingManager.performDucking(true);
+            if (enableDucking) {
+                DuckingManager.performDucking(true);
+            }
 
             source.onended = () => {
-                DuckingManager.performDucking(false);
+                if (enableDucking) {
+                    DuckingManager.performDucking(false);
+                }
             };
 
             source.start(0);
@@ -164,7 +168,9 @@ export class VoicePlayer {
             }
         } catch (e) {
             console.error("Failed to play SFX", e);
-            DuckingManager.performDucking(false);
+            if (enableDucking) {
+                DuckingManager.performDucking(false);
+            }
         }
     }
 

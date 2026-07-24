@@ -115,8 +115,8 @@ export const Landmarks: MapLocation[] = [
     },
     {
         id: 'lm_14',
-        name: 'landmarks.iconsiam.name',
-        description: 'landmarks.iconsiam.desc',
+        name: 'landmarks.songwat.name',
+        description: 'landmarks.songwat.desc',
         ownerId: null,
         points: 85,
         resources: ['Luxury Goods', 'Gold'],
@@ -126,8 +126,8 @@ export const Landmarks: MapLocation[] = [
     },
     {
         id: 'lm_15',
-        name: 'landmarks.wallanlagen.name',
-        description: 'landmarks.wallanlagen.desc',
+        name: 'landmarks.schnoor.name',
+        description: 'landmarks.schnoor.desc',
         ownerId: null,
         points: 40,
         resources: ['Nature', 'History'],

@@ -7,9 +7,10 @@ interface NeonDiceProps {
   onRoll: (result: number) => void;
   label?: string;
   onBeforeRoll?: () => boolean;
+  resetTrigger?: any;
 }
 
-export default function Dice({ mode, onRoll, label, onBeforeRoll }: NeonDiceProps) {
+export default function Dice({ mode, onRoll, label, onBeforeRoll, resetTrigger }: NeonDiceProps) {
   const [isRolling, setIsRolling] = useState(false);
   const [isHolding, setIsHolding] = useState(false);
   const [diceValue, setDiceValue] = useState<string | number>("?");
@@ -28,6 +29,14 @@ export default function Dice({ mode, onRoll, label, onBeforeRoll }: NeonDiceProp
     };
   }, []);
 
+  useEffect(() => {
+    setDiceValue("?");
+    setPop(false);
+    if (tubeFillRef.current) tubeFillRef.current.style.width = '0%';
+    tubeValueRef.current = 0;
+    setIsRolling(false);
+  }, [resetTrigger]);
+
   const animateRoll = (
     finalValue: number,
     sides: number,
@@ -35,6 +44,8 @@ export default function Dice({ mode, onRoll, label, onBeforeRoll }: NeonDiceProp
   ) => {
     setIsRolling(true);
     setPop(false);
+    if (tubeFillRef.current) tubeFillRef.current.style.width = '0%';
+    tubeValueRef.current = 0;
 
     let rolls = 0;
     const maxRolls = 12;
@@ -138,31 +149,32 @@ export default function Dice({ mode, onRoll, label, onBeforeRoll }: NeonDiceProp
   };
 
   return (
-    <div className="flex flex-col items-center w-full max-w-xs mx-auto">
+    <div className="flex flex-col items-center w-full max-w-[280px] mx-auto select-none px-2">
+      {/* Moderately Sized Dice Container to fit on Screen */}
       <div
-        className={`w-36 h-36 bg-white border border-zinc-200 rounded-[2rem] flex flex-col justify-center items-center shadow-xl shadow-zinc-150/40 relative transition-transform duration-100 ${isRolling ? "animate-shake" : ""}`}
+        className={`w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 bg-white border border-[#FFF0F3] rounded-[2.5rem] flex flex-col justify-center items-center shadow-cute relative transition-transform duration-100 ${isRolling ? "animate-shake" : ""}`}
       >
         <div
-          className={`text-5xl font-extralight text-zinc-900 leading-none ${pop ? "animate-pop" : ""}`}
+          className={`text-5xl sm:text-6xl md:text-7xl font-extrabold text-[#333C4E] leading-none ${pop ? "animate-pop" : ""}`}
         >
           {diceValue}
         </div>
-        <div className="absolute bottom-4 font-bold text-zinc-400 text-[9px] tracking-[0.2em] uppercase">
+        <div className="absolute bottom-4 font-extrabold text-[#FF7899] text-[9px] sm:text-[10px] tracking-[0.2em] uppercase">
           {label || mode}
         </div>
       </div>
 
       {(mode === "D6" || mode === "D8") && (
-        <div className="w-full mt-8 flex flex-col gap-2">
-          {/* Minimal thin charge tube */}
-          <div className="w-full h-1.5 bg-zinc-200/60 rounded-full overflow-hidden relative">
+        <div className="w-full mt-6 flex flex-col gap-2">
+          {/* Cozy pastel pink charge tube */}
+          <div className="w-full h-2 bg-[#FAF9F6] border border-[#FFF0F3] rounded-full overflow-hidden relative shadow-inner">
             <div
               ref={tubeFillRef}
-              className="absolute top-0 left-0 h-full bg-zinc-800 rounded-full transition-colors duration-75"
+              className="absolute top-0 left-0 h-full bg-[#FF7899] rounded-full transition-colors duration-75"
               style={{ width: `0%` }}
             />
           </div>
-          <div className="flex justify-between text-[9px] text-zinc-400 font-bold tracking-widest px-1">
+          <div className="flex justify-between text-[9px] sm:text-[10px] text-zinc-400 font-bold tracking-widest px-1">
             <span>MIN</span>
             <span>MAX</span>
           </div>
@@ -170,7 +182,7 @@ export default function Dice({ mode, onRoll, label, onBeforeRoll }: NeonDiceProp
           <button
             onMouseDown={startHolding}
             onTouchStart={startHolding}
-            className="mt-4 w-full py-4 bg-zinc-900 text-white font-bold text-xs tracking-widest uppercase rounded-xl hover:bg-zinc-800 active:scale-95 transition-all shadow-md shadow-zinc-900/10"
+            className="mt-4 w-full py-3.5 px-6 bg-[#FFEBF0] text-[#FF7899] border-2 border-[#FFD6E0] font-extrabold text-xs tracking-wider uppercase rounded-2xl hover:bg-[#FFD6E0] hover:text-white active:scale-95 transition-all shadow-cute-xs cursor-pointer text-center"
           >
             {isHolding ? "Charging..." : `Hold to Charge ${mode}`}
           </button>
@@ -180,7 +192,7 @@ export default function Dice({ mode, onRoll, label, onBeforeRoll }: NeonDiceProp
       {mode === "D20" && (
         <button
           onClick={rollD20}
-          className="mt-6 w-full py-4 bg-zinc-900 text-white font-bold text-xs tracking-widest uppercase rounded-xl hover:bg-zinc-800 active:scale-95 transition-all shadow-md shadow-zinc-900/10"
+          className="mt-6 w-full py-3.5 px-6 bg-[#FFEBF0] text-[#FF7899] border-2 border-[#FFD6E0] font-extrabold text-xs tracking-wider uppercase rounded-2xl hover:bg-[#FFD6E0] hover:text-white active:scale-95 transition-all shadow-cute-xs cursor-pointer text-center"
         >
           Roll {mode}
         </button>
