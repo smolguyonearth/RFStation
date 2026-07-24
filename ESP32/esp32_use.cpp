@@ -1,11 +1,11 @@
 #include <HTTPClient.h>
 #include <WiFi.h>
 
-const char *ssid = "GuGuGaGa";
+const char *ssid = "Station_ESP32s";
 const char *password = "12345678";
 
 // Change this to your computer's IP address
-const char *server_host = "10.121.159.188";
+const char *server_host = "192.168.4.4";
 const uint16_t server_port = 3000;
 
 HardwareSerial ArduinoUART(2);

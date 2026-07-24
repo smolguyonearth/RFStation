@@ -3,7 +3,7 @@ version: "3.8"
 services:
   # Container 1: Backend
   backend:
-    build: 
+    build:
       context: ./backend
     ports:
       - "3000:3000"
@@ -17,7 +17,7 @@ services:
 
   # Container 2: Frontend
   frontend:
-    build: 
+    build:
       context: ./frontend
     ports:
       - "5173:5173"

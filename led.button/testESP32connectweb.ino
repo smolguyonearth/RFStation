@@ -20,8 +20,8 @@ const char *ssid = "Station_ESP32";
 const char *password = "12345678";
 
 // UPDATE THIS WITH YOUR BACKEND'S LOCAL IP ADDRESS (e.g. 192.168.1.50)
-const char *backendUrl = "http://192.168.4.2:3000/api/led/status/raw";
-const char *actionUrl = "http://192.168.4.2:3000/api/action";
+const char *backendUrl = "http://192.168.4.4:3000/api/led/status/raw";
+const char *actionUrl = "http://192.168.4.4:3000/api/action";
 
 const unsigned long syncInterval = 1000; // Poll backend every 1 second
 

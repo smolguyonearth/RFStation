@@ -150,5 +150,9 @@ export class AudioEngine {
     static updateLastInteracted(player: number, row: number, col: number): void {
         GameStateHandler.updateLastInteracted(player, row, col);
     }
+
+    static handlePhysicalZoneUpdate(deviceCode: string, zone: string): void {
+        GameStateHandler.handlePhysicalZoneUpdate(deviceCode, zone);
+    }
 }
 export type { ActiveLayer, ZoneRecord };

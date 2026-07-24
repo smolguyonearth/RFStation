@@ -4,6 +4,7 @@ import { Elysia, t } from 'elysia'
 import { GameLogic } from './gameLogic'
 
 const game = new GameLogic()
+let packageCounter = 0;
 
 const app = new Elysia()
   .ws('/ws', {
@@ -113,6 +114,11 @@ const app = new Elysia()
   .post('/api/ingest', ({ body, server }) => {
     // Broadcast to all connected frontends via WebSocket (instant, in-memory)
     server?.publish('live-data', JSON.stringify(body));
+
+    packageCounter++;
+    if (packageCounter % 10 === 0) {
+      console.log(`[Backend] Received ${packageCounter} packages from Calliope beacons (Last: ${body.device_code} at ${body.zone_code})`);
+    }
 
     // [DB DISABLED] Database writes are disabled.
     // To re-enable persistent storage, see docs/DB_ACTIVATE.md

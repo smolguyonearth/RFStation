@@ -72,14 +72,19 @@ export default function Game() {
             E: "bremen_stadium",
             F: "townhall",
           };
+          const zone = map[data.nearest_device];
+          
           window.dispatchEvent(
             new CustomEvent("device_zone_update", {
               detail: {
                 device_code: data.device_code,
-                zone: map[data.nearest_device],
+                zone: zone,
               },
             }),
           );
+          
+          // Push physical location directly to AudioEngine
+          AudioEngine.handlePhysicalZoneUpdate(data.device_code, zone);
         }
       };
 

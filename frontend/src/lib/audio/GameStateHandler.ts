@@ -15,6 +15,11 @@ export class GameStateHandler {
     private static p1LastLocation: { row: number, col: number } | null = null;
     private static p2LastLocation: { row: number, col: number } | null = null;
 
+    // Physical zone trackers from Calliope beacons
+    private static p1PhysicalZone: string | null = null;
+    private static p2PhysicalZone: string | null = null;
+    private static currentGameState: any = null;
+
     static getBgSource(): AudioBufferSourceNode | null {
         return this.bgSource;
     }
@@ -81,6 +86,9 @@ export class GameStateHandler {
         this.stopBgSource();
         this.p1LastLocation = null;
         this.p2LastLocation = null;
+        this.p1PhysicalZone = null;
+        this.p2PhysicalZone = null;
+        this.currentGameState = null;
         if (typeof window !== "undefined" && window.localStorage) {
             localStorage.removeItem("player1_last_location");
             localStorage.removeItem("player2_last_location");
@@ -102,7 +110,13 @@ export class GameStateHandler {
             ["wat_arun", "bremen_stadium", "townhall"],
         ];
 
-        // 1. Prioritize lastInteractedLocation state
+        // 1. Prioritize real-time physical zone from Calliope
+        const physicalZone = currentPlayer === 1 ? this.p1PhysicalZone : this.p2PhysicalZone;
+        if (physicalZone && physicalZone !== "waiting") {
+            return physicalZone;
+        }
+
+        // 2. Fallback to lastInteractedLocation state
         if (lastInteracted && lastInteracted.row != null && lastInteracted.col != null) {
             if (matrixToSounds[lastInteracted.row] && matrixToSounds[lastInteracted.row][lastInteracted.col]) {
                 return matrixToSounds[lastInteracted.row][lastInteracted.col];
@@ -145,6 +159,7 @@ export class GameStateHandler {
 
     static handleGameUpdate(gameState: any): void {
         if (!gameState) return;
+        this.currentGameState = gameState;
         ContextManager.init();
 
         const currentMode = gameState.mode;
@@ -234,5 +249,25 @@ export class GameStateHandler {
         // Sync values
         this.prevMode = currentMode;
         this.prevPhase = currentPhase;
+    }
+
+    static handlePhysicalZoneUpdate(deviceCode: string, zone: string): void {
+        if (deviceCode === "P1") this.p1PhysicalZone = zone;
+        else if (deviceCode === "P2") this.p2PhysicalZone = zone;
+
+        if (!this.currentGameState) return;
+
+        const currentMode = this.currentGameState.mode;
+        const currentPhase = this.currentGameState.gamePhase;
+        const currentPlayer = this.currentGameState.currentPlayer;
+
+        if (currentMode === "GAME" && currentPhase === "TURN") {
+            if ((deviceCode === "P1" && currentPlayer === 1) || 
+                (deviceCode === "P2" && currentPlayer === 2)) {
+                if (!AudioTransition.isActive() && zone && zone !== "waiting") {
+                    ZonePlayer.playZone(zone, 0.7);
+                }
+            }
+        }
     }
 }
