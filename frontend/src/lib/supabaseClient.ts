@@ -8,8 +8,6 @@ const supabaseKey = isServer
     ? import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY
     : import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseKey) {
-    throw new Error("Missing Supabase environment variables!");
-}
-
-export const supabase = createClient(supabaseUrl, supabaseKey);
+export const supabase = (supabaseUrl && supabaseKey) 
+    ? createClient(supabaseUrl, supabaseKey) 
+    : null;
