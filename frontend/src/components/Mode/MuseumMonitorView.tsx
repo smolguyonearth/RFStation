@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 import { AudioEngine } from "@/lib/AudioEngine";
 
 const matrixToSounds = [
-  ["mahanakhon", "asiatique", "giant_swing"],
+  ["asiatique", "mahanakhon", "giant_swing"],
   ["wat_arun", "bremen_stadium", "townhall"],
 ];
 
