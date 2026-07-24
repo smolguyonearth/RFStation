@@ -48,7 +48,7 @@ rssi_window = {}
 previous_rssi = {}
 
 # Ultrasonic state
-us_buffer = [999] * US_BUFFER_SIZE
+us_buffer = [999.0] * US_BUFFER_SIZE
 us_index = 0
 was_triggered = False
 # ---
