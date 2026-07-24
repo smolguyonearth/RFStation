@@ -108,7 +108,7 @@ export class GameStateHandler {
         const lastInteracted = currentPlayer === 1 ? this.getP1LastLocation() : this.getP2LastLocation();
 
         const matrixToSounds = [
-            ["mahanakhon", "asiatique", "giant_swing"],
+            ["asiatique", "mahanakhon", "giant_swing"],
             ["wat_arun", "bremen_stadium", "townhall"],
         ];
 

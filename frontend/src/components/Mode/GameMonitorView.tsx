@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Landmarks } from "@/constants/landmark";
+import { Shield, Swords, Zap, Loader2, MapPin, Trophy, Sparkles } from "lucide-react";
 
 type AppMode = "IDLE" | "MUSEUM" | "GAME";
 type Language = "EN" | "TH" | "DE";
@@ -22,6 +25,7 @@ export default function GameMonitorView({
   game: GameData;
   onAction: (r: number, c: number) => void;
 }) {
+  const { t } = useTranslation();
   const [p1Zone, setP1Zone] = useState<string>("waiting");
   const [p2Zone, setP2Zone] = useState<string>("waiting");
 
@@ -48,126 +52,255 @@ export default function GameMonitorView({
     townhall: "Townhall",
   };
 
+  const matrixToLandmarkId = [
+    ["lm_06", "lm_01", "lm_03"],
+    ["lm_10", "lm_02", "lm_04"],
+  ];
+
   return (
-    <div className="w-full max-w-4xl animate-fade-in flex flex-col items-center relative font-sans text-[#333C4E] p-8 bg-white border border-[#FFF0F3] rounded-[2.5rem] shadow-cute mt-8 select-none">
-      
-      {/* Simulation Selectors */}
-      <div className="absolute -top-16 right-0 flex gap-4">
-        {[
-          { label: "P1", val: p1Zone, set: setP1Zone },
-          { label: "P2", val: p2Zone, set: setP2Zone },
-        ].map((s) => (
-          <div key={s.label} className="flex flex-col items-end">
-            <span className="text-[9px] font-bold text-zinc-400 uppercase mb-1 tracking-wider">
-              {s.label} SIMULATOR
-            </span>
-            <select
-              value={s.val}
-              onChange={(e) => s.set(e.target.value)}
-              className="px-3 py-1.5 border border-[#FFF0F3] rounded-xl bg-[#FAF9F6] text-xs font-bold text-zinc-600 shadow-cute-xs focus:outline-none"
-            >
-              <option value="waiting">🔄 Searching...</option>
-              <option value="mahanakhon">Mahanakhon</option>
-              <option value="asiatique">Asiatique</option>
-              <option value="giant_swing">Giant Swing</option>
-              <option value="wat_arun">Wat Arun</option>
-              <option value="bremen_stadium">Bremen Stadium</option>
-              <option value="townhall">Townhall</option>
-            </select>
+    <div className="w-full max-w-6xl mx-auto flex flex-col items-center relative select-none px-4 py-6 font-sans text-[#333C4E]">
+      {/* Background Decorative Ambient Blobs */}
+      <div className="absolute top-10 left-10 w-72 h-72 rounded-full bg-[#FF7899]/3 blur-[100px] animate-float-slow pointer-events-none" />
+      <div className="absolute bottom-10 right-10 w-72 h-72 rounded-full bg-[#2BB673]/3 blur-[100px] animate-float-medium pointer-events-none" />
+
+      {/* Header Panel (Dropdowns removed) */}
+      <div className="w-full flex justify-between items-center mb-6 z-10">
+        <div className="flex items-center gap-3">
+          <div className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF7899] opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FF7899]"></span>
           </div>
-        ))}
+          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400">
+            EXHIBITION CONSOLE • LIVE
+          </span>
+        </div>
+        <div className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">
+          RFSTATION V3.2
+        </div>
       </div>
 
-      {/* Scoreboard Header */}
-      <div className="flex justify-between w-full items-center mb-12 px-6 border-b border-[#FFF0F3] pb-8 mt-4">
+      {/* Main Glass HUD Dashboard */}
+      <div className="w-full bg-white border border-[#FFF0F3] rounded-[2.5rem] p-8 shadow-cute flex flex-col items-center gap-10 z-10 relative overflow-hidden">
         
-        {/* Player 1 Info */}
-        <div
-          className={`flex flex-col items-center transition-all duration-300 ${game.currentPlayer === 1 ? "scale-105" : "opacity-40"}`}
-        >
-          <span className="text-[10px] font-bold tracking-[0.25em] text-[#FF7899] mb-2">
-            PLAYER 1
-          </span>
-          <span className="text-5xl font-extrabold text-zinc-800 font-mono">{game.scores[1]}</span>
+        {/* Scoreboard Row */}
+        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
           
-          <div className={`mt-3 px-3.5 py-1.5 rounded-xl text-[10px] font-bold flex items-center gap-1.5 border transition-all shadow-cute-xs ${
-            p1Zone === "waiting"
-              ? "bg-[#FAF9F6] text-zinc-400 border-zinc-100"
-              : "bg-[#FFEBF0] text-[#FF7899] border-[#FFD6E0]"
-          }`}>
-            <span>{p1Zone === "waiting" ? "🔍" : "📍"}</span>
-            <span>{(zoneNameMap[p1Zone] || p1Zone).toUpperCase()}</span>
+          {/* Player 1 Box (Neon Pink Theme) */}
+          <div
+            className={`relative rounded-3xl p-6 border transition-all duration-300 overflow-hidden flex items-center justify-between ${
+              game.currentPlayer === 1
+                ? "border-[#FFD6E0] bg-[#FFEBF0]/40 shadow-cute-sm scale-102"
+                : "border-transparent bg-transparent opacity-40"
+            }`}
+          >
+            <div className="flex flex-col gap-1.5">
+              <span className="text-[10px] font-black tracking-[0.25em] text-[#FF7899] uppercase flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FF7899] animate-pulse" />
+                PLAYER 1
+              </span>
+              <div className="flex items-baseline">
+                <span className="text-6xl font-black text-zinc-800 font-mono leading-none tracking-tight">
+                  {game.scores[1]}
+                </span>
+              </div>
+              <div className={`mt-2 px-3 py-1 rounded-xl text-[9px] font-black inline-flex items-center gap-1.5 border transition-all duration-300 w-fit ${
+                p1Zone === "waiting"
+                  ? "bg-[#FAF9F6] text-zinc-400 border-zinc-100"
+                  : "bg-[#FFEBF0] text-[#FF7899] border-[#FFD6E0]"
+              }`}>
+                <span>{p1Zone === "waiting" ? <Loader2 size={10} className="animate-spin text-zinc-400" /> : "📍"}</span>
+                <span>{(zoneNameMap[p1Zone] || p1Zone).toUpperCase()}</span>
+              </div>
+            </div>
+            {game.currentPlayer === 1 && (
+              <div className="absolute right-6 top-6 bg-[#FF7899] text-white px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider animate-pulse shadow-sm">
+                ACTIVE TURN
+              </div>
+            )}
           </div>
-        </div>
 
-        {/* Phase Header */}
-        <div className="text-center">
-          <h2 className="text-[9px] font-bold tracking-[0.25em] text-zinc-400 uppercase mb-2">
-            Territory Conquest
-          </h2>
-          <div className="px-5 py-2 border border-[#FFF0F3] rounded-xl text-zinc-600 text-xs font-bold uppercase tracking-widest bg-[#FAF9F6] shadow-cute-xs">
-            {game.gamePhase} PHASE
-          </div>
-        </div>
-
-        {/* Player 2 Info */}
-        <div
-          className={`flex flex-col items-center transition-all duration-300 ${game.currentPlayer === 2 ? "scale-105" : "opacity-40"}`}
-        >
-          <span className="text-[10px] font-bold tracking-[0.25em] text-[#2BB673] mb-2">
-            PLAYER 2
-          </span>
-          <span className="text-5xl font-extrabold text-zinc-800 font-mono">{game.scores[2]}</span>
-
-          <div className={`mt-3 px-3.5 py-1.5 rounded-xl text-[10px] font-bold flex items-center gap-1.5 border transition-all shadow-cute-xs ${
-            p2Zone === "waiting"
-              ? "bg-[#FAF9F6] text-zinc-400 border-zinc-100"
-              : "bg-[#E1F7EC] text-[#2BB673] border-[#C2F0D9]"
-          }`}>
-            <span>{p2Zone === "waiting" ? "🔍" : "📍"}</span>
-            <span>{(zoneNameMap[p2Zone] || p2Zone).toUpperCase()}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Grid Board */}
-      <div
-        className={`w-full max-w-sm transition-all duration-1000 ${game.gamePhase === "BATTLE" ? "scale-98 opacity-45 blur-[1px]" : ""}`}
-      >
-        <div className="grid grid-cols-3 gap-5">
-          {game.displayMatrix.map((row, r) =>
-            row.map((val, c) => (
-              <button
-                key={`${r}-${c}`}
-                onClick={() => onAction(r, c)}
-                className={`w-full aspect-square rounded-[1.8rem] border transition-all duration-300 shadow-cute-xs hover:scale-102 active:scale-[0.96] ${
-                  val === 1
-                    ? "bg-[#FFEBF0] border-[#FFD6E0] text-[#FF7899]"
-                    : val === 2
-                      ? "bg-[#E1F7EC] border-[#C2F0D9] text-[#2BB673]"
-                      : val === 3
-                        ? "bg-[#FFFBE6] border-[#FFE3B5] animate-pulse text-amber-500"
-                        : "bg-white border-[#FFF0F3] hover:bg-[#FAF9F6]"
-                }`}
-              />
-            )),
-          )}
-        </div>
-      </div>
-
-      {/* Battle Mode Backdrop Banner */}
-      {game.gamePhase === "BATTLE" && (
-        <div className="absolute inset-0 flex items-center justify-center z-50 bg-[#FAF9F6]/85 backdrop-blur-xs rounded-3xl animate-fade-in">
-          <div className="text-center px-10 py-8 bg-white border border-[#FFF0F3] rounded-[2rem] shadow-cute max-w-xs animate-pop">
-            <span className="text-[10px] font-bold tracking-[0.25em] text-[#FF7899] bg-[#FFEBF0] border border-[#FFD6E0] px-4 py-2 rounded-xl uppercase shadow-sm">
-              Combat Event
-            </span>
-            <h2 className="text-3xl font-extrabold tracking-widest text-[#333C4E] uppercase mt-6 animate-pulse">
-              BATTLE!
+          {/* Central Game Phase/Status Panel */}
+          <div className="flex flex-col items-center text-center p-4">
+            <h2 className="text-[10px] font-black tracking-[0.35em] text-zinc-400 uppercase mb-2">
+              TERRITORY CONQUEST
             </h2>
+            <div className="px-5 py-2 border border-[#FFF0F3] bg-[#FAF9F6] rounded-xl text-zinc-600 text-xs font-bold uppercase tracking-widest shadow-cute-xs flex items-center gap-2">
+              {game.gamePhase === "BATTLE" ? (
+                <>
+                  <Swords size={14} className="text-amber-500 animate-bounce" />
+                  <span className="text-amber-500 font-sans tracking-[0.1em]">{game.gamePhase} PHASE</span>
+                </>
+              ) : game.gamePhase === "END" ? (
+                <>
+                  <Trophy size={14} className="text-yellow-500 animate-bounce" />
+                  <span className="text-yellow-500 font-sans tracking-[0.1em]">{game.gamePhase} PHASE</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles size={14} className="text-[#FF7899]" />
+                  <span className="text-zinc-600 font-sans tracking-[0.1em]">{game.gamePhase} PHASE</span>
+                </>
+              )}
+            </div>
+            
+            {/* Dynamic Turn Detail Description */}
+            <p className="text-[10px] text-zinc-400 font-bold uppercase mt-3 tracking-widest leading-relaxed">
+              {game.gamePhase === "TURN"
+                ? `Player ${game.currentPlayer}'s turn to claim territory`
+                : game.gamePhase === "BATTLE"
+                ? "Combat event initiated! Resolve battle on table"
+                : game.gamePhase === "END"
+                ? "Game Over! Calculating champion"
+                : "System initializing match data"}
+            </p>
+          </div>
+
+          {/* Player 2 Box (Neon Emerald/Green Theme) */}
+          <div
+            className={`relative rounded-3xl p-6 border transition-all duration-300 overflow-hidden flex items-center justify-between ${
+              game.currentPlayer === 2
+                ? "border-[#C2F0D9] bg-[#E1F7EC]/40 shadow-cute-sm scale-102"
+                : "border-transparent bg-transparent opacity-40"
+            }`}
+          >
+            <div className="flex flex-col gap-1.5">
+              <span className="text-[10px] font-black tracking-[0.25em] text-[#2BB673] uppercase flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#2BB673] animate-pulse" />
+                PLAYER 2
+              </span>
+              <div className="flex items-baseline">
+                <span className="text-6xl font-black text-zinc-800 font-mono leading-none tracking-tight">
+                  {game.scores[2]}
+                </span>
+              </div>
+              <div className={`mt-2 px-3 py-1 rounded-xl text-[9px] font-black inline-flex items-center gap-1.5 border transition-all duration-300 w-fit ${
+                p2Zone === "waiting"
+                  ? "bg-[#FAF9F6] text-zinc-400 border-zinc-100"
+                  : "bg-[#E1F7EC] text-[#2BB673] border-[#C2F0D9]"
+              }`}>
+                <span>{p2Zone === "waiting" ? <Loader2 size={10} className="animate-spin text-zinc-400" /> : "📍"}</span>
+                <span>{(zoneNameMap[p2Zone] || p2Zone).toUpperCase()}</span>
+              </div>
+            </div>
+            {game.currentPlayer === 2 && (
+              <div className="absolute right-6 top-6 bg-[#2BB673] text-white px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider animate-pulse shadow-sm">
+                ACTIVE TURN
+              </div>
+            )}
           </div>
         </div>
-      )}
+
+        {/* Dynamic Game Board Grid */}
+        <div
+          className={`w-full max-w-4xl transition-all duration-700 ${
+            game.gamePhase === "BATTLE" ? "scale-[0.97] opacity-40 blur-[1px] pointer-events-none" : ""
+          }`}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {game.displayMatrix.map((row, r) =>
+              row.map((val, c) => {
+                const landmarkId = matrixToLandmarkId[r][c];
+                const landmark = Landmarks.find((l) => l.id === landmarkId);
+                
+                // Styling classes according to ownership state (val)
+                let borderClass = "border-[#FFF0F3] bg-white hover:border-[#FFD6E0] hover:shadow-cute-xs";
+                let badgeContent = null;
+                let colorWash = null;
+
+                if (val === 1) {
+                  borderClass = "border-[#FF7899] shadow-cute-sm";
+                  badgeContent = (
+                    <div className="absolute top-3 right-3 bg-[#FF7899] text-white px-2.5 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider shadow-sm">
+                      P1 SECURED
+                    </div>
+                  );
+                  colorWash = <div className="absolute inset-0 bg-[#FF7899]/5 mix-blend-color pointer-events-none" />;
+                } else if (val === 2) {
+                  borderClass = "border-[#2BB673] shadow-cute-sm";
+                  badgeContent = (
+                    <div className="absolute top-3 right-3 bg-[#2BB673] text-white px-2.5 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider shadow-sm">
+                      P2 SECURED
+                    </div>
+                  );
+                  colorWash = <div className="absolute inset-0 bg-[#2BB673]/5 mix-blend-color pointer-events-none" />;
+                } else if (val === 3) {
+                  borderClass = "border-amber-400 shadow-cute-sm animate-pulse";
+                  badgeContent = (
+                    <div className="absolute top-3 right-3 bg-amber-500 text-white px-2.5 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider animate-pulse shadow-sm">
+                      CONTESTED
+                    </div>
+                  );
+                  colorWash = <div className="absolute inset-0 bg-amber-500/5 mix-blend-color pointer-events-none" />;
+                }
+
+                return (
+                  <button
+                    key={`${r}-${c}`}
+                    onClick={() => onAction(r, c)}
+                    className={`relative w-full aspect-[4/3] rounded-[2rem] overflow-hidden border-2 transition-all duration-300 group shadow-cute-xs active:scale-[0.97] cursor-pointer ${borderClass}`}
+                  >
+                    {/* Landmark Image Background */}
+                    {landmark?.image ? (
+                      <img
+                        src={landmark.image}
+                        alt=""
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-108"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-slate-100" />
+                    )}
+
+                    {/* Dark Vignette Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent group-hover:from-black/80 transition-all duration-300" />
+
+                    {/* Team Color Wash */}
+                    {colorWash}
+
+                    {/* Points Tag Removed */}
+
+                    {/* Ownership Status Badge */}
+                    {badgeContent}
+
+                    {/* Landmark Metadata Overlay */}
+                    <div className="absolute bottom-4 left-4 right-4 text-left">
+                      <h4 className="text-sm font-extrabold tracking-wide text-white uppercase truncate drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
+                        {t(landmark?.name || "")}
+                      </h4>
+                      <p className="text-[8px] text-zinc-200 font-bold uppercase tracking-widest mt-0.5 truncate drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]">
+                        {landmark?.resources?.join(" • ")}
+                      </p>
+                    </div>
+                  </button>
+                );
+              })
+            )}
+          </div>
+        </div>
+
+        {/* Battle Phase Alert Overlay */}
+        {game.gamePhase === "BATTLE" && (
+          <div className="absolute inset-0 flex items-center justify-center z-50 bg-[#FAF9F6]/90 backdrop-blur-xs rounded-[2.5rem] animate-fade-in p-6">
+            <div className="text-center px-10 py-12 bg-white border border-[#FFF0F3] rounded-[2.5rem] shadow-cute max-w-sm w-full animate-pop flex flex-col items-center relative overflow-hidden">
+              
+              {/* Danger Accents */}
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#FF7899] via-amber-400 to-[#2BB673]" />
+
+              <div className="p-4 bg-amber-500/10 rounded-full border border-amber-500/20 text-amber-500 mb-6 animate-pulse">
+                <Swords size={40} className="text-amber-500" />
+              </div>
+              <span className="text-[10px] font-bold tracking-[0.25em] text-[#FF7899] bg-[#FFEBF0] border border-[#FFD6E0] px-4 py-1.5 rounded-xl uppercase shadow-cute-xs">
+                Combat Encounter
+              </span>
+              <h2 className="text-3xl font-extrabold tracking-widest text-[#333C4E] uppercase mt-6 mb-3 animate-pulse">
+                BATTLE !
+              </h2>
+              <p className="text-zinc-500 text-xs font-bold leading-relaxed max-w-xs mt-2 uppercase tracking-widest leading-relaxed">
+                A clash is detected! Resolve the territorial skirmish on the interactive physical game board now.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

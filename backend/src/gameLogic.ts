@@ -79,7 +79,7 @@ export class GameLogic {
   }
 
   resetGame() {
-    this.mode = 'IDLE';
+    this.mode = 'GAME';
     this.gamePhase = 'INIT';
     this.state = 'setup';
     this.currentPlayer = 1;
@@ -92,7 +92,7 @@ export class GameLogic {
     this.activeMuseumLocation = null;
     this.p1ClaimHistory = [];
     this.p2ClaimHistory = [];
-    this.introActive = false;
+    this.introActive = true;
   }
 
   endTurn(): boolean {

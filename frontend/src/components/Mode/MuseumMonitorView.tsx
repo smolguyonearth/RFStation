@@ -21,7 +21,7 @@ export default function MuseumMonitorView({
   onAction: (r: number, c: number) => void;
 }) {
   const matrixToLandmarkId = [
-    ["lm_01", "lm_06", "lm_03"],
+    ["lm_06", "lm_01", "lm_03"],
     ["lm_10", "lm_02", "lm_04"],
   ];
 
@@ -60,6 +60,7 @@ export default function MuseumMonitorView({
               flat={true}
               hideGameplayDetails={true}
               className="w-full text-zinc-800"
+              layout="split"
             />
           </div>
         ) : (

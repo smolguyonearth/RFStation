@@ -9,6 +9,7 @@ interface LandmarkDetailsProps {
   className?: string;
   hideGameplayDetails?: boolean;
   flat?: boolean;
+  layout?: "vertical" | "split";
 }
 
 export default function LandmarkDetails({
@@ -17,6 +18,7 @@ export default function LandmarkDetails({
   className = "w-full lg:w-[45%]",
   hideGameplayDetails = false,
   flat = false,
+  layout = "vertical",
 }: LandmarkDetailsProps) {
   const { t } = useTranslation();
   const [isFullView, setIsFullView] = useState(false);
@@ -49,55 +51,111 @@ export default function LandmarkDetails({
           </button>
         </div>
 
-        {/* Description */}
-        <div className="text-xs text-zinc-500 font-bold leading-relaxed mb-6 max-h-[30vh] overflow-y-auto pr-2">
-          {land.description ? t(land.description) : t("map.no_description")}
-        </div>
+        {layout === "split" ? (
+          /* Split Layout (2 Columns for wide displays) */
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start flex-grow">
+            {/* Left Column: Details */}
+            <div className="lg:col-span-3 flex flex-col justify-between h-full">
+              <div className="text-xs text-zinc-500 font-bold leading-relaxed mb-6 overflow-y-auto pr-2 max-h-[40vh]">
+                {land.description ? t(land.description) : t("map.no_description")}
+              </div>
 
-        {/* Stats Grid */}
-        {!hideGameplayDetails && (
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-[#FFEBF0] p-4 rounded-xl border border-[#FFD6E0] shadow-cute-xs">
-              <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#FF7899] uppercase mb-1 tracking-wider">
-                <Gem size={14} /> {t("map.points")}
-              </div>
-              <span className="text-2xl font-extrabold text-[#FF7899] font-mono">
-                {land.points || 0}
-              </span>
+              {!hideGameplayDetails && (
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-[#FFEBF0] p-4 rounded-xl border border-[#FFD6E0] shadow-cute-xs">
+                    <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#FF7899] uppercase mb-1 tracking-wider">
+                      <Gem size={14} /> {t("map.points")}
+                    </div>
+                    <span className="text-2xl font-extrabold text-[#FF7899] font-mono">
+                      {land.points || 0}
+                    </span>
+                  </div>
+                  <div className="bg-[#E1F7EC] p-4 rounded-xl border border-[#C2F0D9] shadow-cute-xs">
+                    <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#2BB673] uppercase mb-1 tracking-wider">
+                      <Shield size={14} /> {t("map.status")}
+                    </div>
+                    <span className="text-xs font-bold text-[#2BB673] mt-1 block uppercase">
+                      {land.ownerId ? t("map.secured") : t("map.available")}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
-            <div className="bg-[#E1F7EC] p-4 rounded-xl border border-[#C2F0D9] shadow-cute-xs">
-              <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#2BB673] uppercase mb-1 tracking-wider">
-                <Shield size={14} /> {t("map.status")}
+
+            {/* Right Column: Image */}
+            {landmarkImage && (
+              <div
+                className="lg:col-span-2 text-center cursor-pointer group w-full"
+                onClick={() => setIsFullView(true)}
+              >
+                <img
+                  src={landmarkImage}
+                  alt={t(land.name)}
+                  className="mx-auto rounded-3xl object-cover border border-[#FFF0F3] shadow-cute group-hover:scale-[1.02] transition-transform duration-300 w-full aspect-[4/3] max-h-[300px]"
+                />
+
+                {land.imageSource && (
+                  <p className="text-[9px] text-zinc-400 font-bold uppercase mt-3 italic">
+                    Source: {land.imageSource}
+                  </p>
+                )}
+
+                <p className="text-[10px] text-[#FF7899] font-bold mt-2 opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-wider">
+                  {t("Click to expand")}
+                </p>
               </div>
-              <span className="text-xs font-bold text-[#2BB673] mt-1 block uppercase">
-                {land.ownerId ? t("map.secured") : t("map.available")}
-              </span>
-            </div>
+            )}
           </div>
-        )}
+        ) : (
+          /* Standard Vertical Layout */
+          <div className="flex flex-col flex-grow justify-between">
+            <div className="text-xs text-zinc-500 font-bold leading-relaxed mb-6 max-h-[30vh] overflow-y-auto pr-2">
+              {land.description ? t(land.description) : t("map.no_description")}
+            </div>
 
-        {/* Landmark Image Section */}
-        {landmarkImage && (
-          <div
-            className="mt-6 text-center cursor-pointer group"
-            onClick={() => setIsFullView(true)}
-          >
-            <img
-              src={landmarkImage}
-              alt={t(land.name)}
-              className="mx-auto h-28 rounded-2xl object-cover border border-[#FFF0F3] shadow-cute-sm group-hover:scale-[1.02] transition-transform duration-300 w-full"
-            />
-
-            {/* Source Display */}
-            {land.imageSource && (
-              <p className="text-[9px] text-zinc-400 font-bold uppercase mt-3 italic">
-                Source: {land.imageSource}
-              </p>
+            {!hideGameplayDetails && (
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="bg-[#FFEBF0] p-4 rounded-xl border border-[#FFD6E0] shadow-cute-xs">
+                  <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#FF7899] uppercase mb-1 tracking-wider">
+                    <Gem size={14} /> {t("map.points")}
+                  </div>
+                  <span className="text-2xl font-extrabold text-[#FF7899] font-mono">
+                    {land.points || 0}
+                  </span>
+                </div>
+                <div className="bg-[#E1F7EC] p-4 rounded-xl border border-[#C2F0D9] shadow-cute-xs">
+                  <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#2BB673] uppercase mb-1 tracking-wider">
+                    <Shield size={14} /> {t("map.status")}
+                  </div>
+                  <span className="text-xs font-bold text-[#2BB673] mt-1 block uppercase">
+                    {land.ownerId ? t("map.secured") : t("map.available")}
+                  </span>
+                </div>
+              </div>
             )}
 
-            <p className="text-[10px] text-[#FF7899] font-bold mt-2 opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-wider">
-              {t("Click to expand")}
-            </p>
+            {landmarkImage && (
+              <div
+                className="mt-4 text-center cursor-pointer group"
+                onClick={() => setIsFullView(true)}
+              >
+                <img
+                  src={landmarkImage}
+                  alt={t(land.name)}
+                  className="mx-auto rounded-2xl object-cover border border-[#FFF0F3] shadow-cute-sm group-hover:scale-[1.02] transition-transform duration-300 w-full aspect-[16/10] max-h-36"
+                />
+
+                {land.imageSource && (
+                  <p className="text-[9px] text-zinc-400 font-bold uppercase mt-3 italic">
+                    Source: {land.imageSource}
+                  </p>
+                )}
+
+                <p className="text-[10px] text-[#FF7899] font-bold mt-2 opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-wider">
+                  {t("Click to expand")}
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>

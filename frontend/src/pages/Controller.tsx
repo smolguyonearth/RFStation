@@ -45,7 +45,7 @@ export default function Controller() {
             AudioEngine.reset();
             AudioEngine.handleGameUpdate(gameRef.current);
           }
-        }).catch(() => {});
+        }).catch(() => { });
       }
     };
 

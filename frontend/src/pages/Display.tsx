@@ -87,8 +87,8 @@ export default function Game() {
     );
 
   return (
-    <div className="min-h-screen bg-[#F9F9FB] text-zinc-800 flex flex-col relative overflow-hidden font-sans select-none font-light">
-      <div className="w-full flex-grow flex flex-col p-4 md:p-8 bg-[#F9F9FB]">
+    <div className="min-h-screen flex flex-col relative overflow-hidden font-sans select-none font-light bg-[#FAF9F6] text-zinc-800">
+      <div className="w-full flex-grow flex flex-col p-4 md:p-8 bg-[#FAF9F6]">
         {game.mode === "IDLE" && (
           <div className="flex flex-col items-center justify-center flex-grow py-24 text-center">
             <div className="w-20 h-20 rounded-full bg-white border border-zinc-200 flex items-center justify-center shadow-md animate-pulse mb-6 text-2xl">
@@ -109,12 +109,6 @@ export default function Game() {
           <GameMonitorView game={game} onAction={handleAction} />
         )}
       </div>
-
-      {/* {isAudioSuspended && (
-        <div className="fixed bottom-6 left-6 z-50 bg-slate-900/90 text-white backdrop-blur-md px-5 py-3 rounded-2xl flex items-center gap-3 shadow-2xl border border-slate-800 text-xs font-semibold animate-bounce cursor-pointer">
-          <span>🔊</span> Click anywhere to enable sound guide
-        </div>
-      )} */}
     </div>
   );
 }

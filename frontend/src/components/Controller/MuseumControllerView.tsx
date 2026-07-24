@@ -17,7 +17,7 @@ export default function MuseumControllerView({
   const isMounted = useRef(false);
 
   const matrixToLandmarkId = [
-    ["lm_01", "lm_06", "lm_03"],
+    ["lm_06", "lm_01", "lm_03"],
     ["lm_10", "lm_02", "lm_04"],
   ];
 
@@ -137,7 +137,7 @@ export default function MuseumControllerView({
         <audio
           ref={audioRef}
           src={`/sounds/descriptions/${gameState.language.toLowerCase()}/${[
-            ["mahanakhon", "asiatique", "giant_swing"],
+            ["asiatique", "mahanakhon", "giant_swing"],
             ["wat_arun", "bremen_stadium", "townhall"],
           ][gameState.activeMuseumLocation.row][gameState.activeMuseumLocation.col]
             }.mp3`}
