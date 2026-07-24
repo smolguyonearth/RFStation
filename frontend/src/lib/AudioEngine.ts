@@ -119,6 +119,11 @@ export class AudioEngine {
         ZonePlayer.stop();
     }
 
+    static stopImmediate(): void {
+        AudioTransition.cancel();
+        ZonePlayer.stopImmediate();
+    }
+
     static reset(): void {
         AudioTransition.cancel();
         ZonePlayer.reset();

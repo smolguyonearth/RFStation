@@ -182,7 +182,7 @@ export class GameStateHandler {
             VoicePlayer.stopIntro();
 
             if (currentMode === "IDLE") {
-                ZonePlayer.stop();
+                ZonePlayer.stopImmediate();
                 this.stopBgSource();
                 this.p1LastLocation = null;
                 this.p2LastLocation = null;

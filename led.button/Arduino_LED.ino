@@ -75,28 +75,38 @@ void updateMatrix() {
     }
   }
 
-  for (int r = 0; r < 2; r++) {
-    for (int c = 0; c < 3; c++) {
-      // -----------------
-      // Battle
-      // -----------------
-      if (battleState[r][c]) {
-        if (blinkState) {
-          // Player1 (Blue) - Row 0 and 2
-          ledState[r * 2][c] = 1;
-          // Player2 (Red) - Row 1 and 3
-          ledState[(r * 2) + 1][c] = 1;
-        }
+  // Physical mappings for logical indices 0 to 5
+  // Index: 0=Mahanakhon, 1=Asiatique, 2=Giant Swing, 3=Wat Arun, 4=Stadium, 5=Townhall
+  // RowGroup: 0 = Top rows (0,1), 1 = Bottom rows (2,3)
+  const int physRowGroup[6] = {0, 1, 1, 0, 1, 0}; 
+  const int physCol[6]      = {1, 1, 0, 0, 2, 2};
+
+  for (int i = 0; i < 6; i++) {
+    int logicalR = i / 3;
+    int logicalC = i % 3;
+    
+    int pRowGroup = physRowGroup[i];
+    int pCol = physCol[i];
+    
+    // -----------------
+    // Battle
+    // -----------------
+    if (battleState[logicalR][logicalC]) {
+      if (blinkState) {
+        // Player1 (Blue)
+        ledState[pRowGroup * 2][pCol] = 1;
+        // Player2 (Red)
+        ledState[(pRowGroup * 2) + 1][pCol] = 1;
       }
-      // -----------------
-      // Normal Owner
-      // -----------------
-      else {
-        if (landmarkOwner[r][c] == 1) {
-          ledState[r * 2][c] = 1; // Player1 (Blue)
-        } else if (landmarkOwner[r][c] == 2) {
-          ledState[(r * 2) + 1][c] = 1; // Player2 (Red)
-        }
+    }
+    // -----------------
+    // Normal Owner
+    // -----------------
+    else {
+      if (landmarkOwner[logicalR][logicalC] == 1) {
+        ledState[pRowGroup * 2][pCol] = 1; // Player1
+      } else if (landmarkOwner[logicalR][logicalC] == 2) {
+        ledState[(pRowGroup * 2) + 1][pCol] = 1; // Player2
       }
     }
   }

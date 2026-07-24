@@ -6,13 +6,11 @@ export default function InitRollPhase({ gameState, startGame }: any) {
     const [step, setStep] = useState<"P1_ROLL" | "P2_ROLL" | "RESULT">("P1_ROLL");
     const [p1Roll, setP1Roll] = useState<number | null>(null);
     const [p2Roll, setP2Roll] = useState<number | null>(null);
-    const [showIntroPopup, setShowIntroPopup] = useState(false);
+    const [skippedIntro, setSkippedIntro] = useState(!!sessionStorage.getItem("skipped_intro"));
+
+    const isIntroActive = gameState?.introActive && !skippedIntro;
 
     const handleBeforeRoll = () => {
-        if (gameState?.introActive) {
-            setShowIntroPopup(true);
-            return false;
-        }
         return true;
     };
 
@@ -34,6 +32,13 @@ export default function InitRollPhase({ gameState, startGame }: any) {
         }
     };
 
+    const handleSkipIntro = () => {
+        fetch("/api/game/skip-intro", { method: "POST" })
+            .catch(err => console.error(err));
+        sessionStorage.setItem("skipped_intro", "true");
+        setSkippedIntro(true);
+    };
+
     const swipeHandlers = useSwipe(
         () => {
             // Swipe Left (Next)
@@ -43,6 +48,33 @@ export default function InitRollPhase({ gameState, startGame }: any) {
         () => { }, // Swipe Right (Ignore)
     );
 
+    // ========== INTRO SCREEN ==========
+    if (isIntroActive) {
+        return (
+            <div className="w-full h-full flex flex-col items-center justify-center relative py-4 select-none">
+                <div className="w-16 h-16 bg-[#FFFBE6] border border-[#FFE3B5] flex items-center justify-center rounded-full text-2xl mb-6 shadow-cute-sm animate-pulse">
+                    🔊
+                </div>
+                <span className="text-[10px] font-extrabold tracking-[0.25em] text-[#FF7899] bg-[#FFEBF0] border border-[#FFD6E0] px-4 py-2 rounded-full uppercase mb-4 shadow-cute-xs">
+                    Phase 0: Introduction
+                </span>
+                <h2 className="text-2xl md:text-3xl font-extrabold text-[#333C4E] mb-2 tracking-widest uppercase text-center">
+                    Playing Guide
+                </h2>
+                <p className="text-xs text-zinc-400 font-bold max-w-[220px] text-center leading-relaxed mb-10 uppercase">
+                    Please listen to the instructions on the main display...
+                </p>
+                <button
+                    onClick={handleSkipIntro}
+                    className="px-8 py-3.5 bg-white border border-[#FFF0F3] text-zinc-500 font-extrabold text-xs uppercase tracking-widest rounded-2xl hover:bg-[#FFEBF0] hover:text-[#FF7899] transition-all shadow-cute-sm active:scale-95"
+                >
+                    Skip Intro
+                </button>
+            </div>
+        );
+    }
+
+    // ========== DICE ROLL SCREEN ==========
     return (
         <div
             {...swipeHandlers}
@@ -59,11 +91,11 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                     <h2 className="text-2xl md:text-3xl font-extrabold text-[#333C4E] mb-4 tracking-widest uppercase text-center">
                         Player 1 Roll
                     </h2>
-                    
+
                     <div className="my-4">
                         <Dice mode="D20" label="ROLL D20" onRoll={handleP1Roll} onBeforeRoll={handleBeforeRoll} />
                     </div>
-                    
+
                     {p1Roll !== null && (
                         <div className="mt-6 flex flex-col items-center">
                             <button
@@ -91,11 +123,11 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                     <h2 className="text-2xl md:text-3xl font-extrabold text-[#333C4E] mb-4 tracking-widest uppercase text-center">
                         Player 2 Roll
                     </h2>
-                    
+
                     <div className="my-4">
                         <Dice mode="D20" label="ROLL D20" onRoll={handleP2Roll} onBeforeRoll={handleBeforeRoll} />
                     </div>
-                    
+
                     {p2Roll !== null && (
                         <div className="mt-6 flex flex-col items-center">
                             <button
@@ -123,7 +155,7 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                     <h2 className="text-3xl font-extrabold text-[#333C4E] mb-8 tracking-widest uppercase">
                         Results
                     </h2>
-                    
+
                     <div className="flex justify-center items-center gap-12 w-full max-w-sm mb-8 bg-white border border-[#FFF0F3] p-6 rounded-3xl shadow-cute">
                         <div className="flex flex-col items-center gap-2 flex-1">
                             <span className="text-[11px] font-bold text-indigo-500 uppercase tracking-wider">Player 1</span>
@@ -152,42 +184,6 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                     >
                         {p1Roll === p2Roll ? "Roll Again" : "Start Game"}
                     </button>
-                </div>
-            )}
-
-            {showIntroPopup && (
-                <div className="absolute inset-0 z-50 bg-[#FAF9F6]/95 backdrop-blur-sm flex flex-col items-center justify-center p-8 text-center animate-fade-in rounded-[2.5rem] border border-[#FFF0F3] shadow-cute">
-                    <div className="w-14 h-14 bg-[#FFFBE6] border border-[#FFE3B5] flex items-center justify-center rounded-2xl text-lg mb-4 shadow-sm">
-                        🔊
-                    </div>
-                    <h3 className="text-lg font-bold text-[#333C4E] mb-2 uppercase tracking-wide">
-                        Intro Audio Active
-                    </h3>
-                    <p className="text-xs text-zinc-400 font-bold max-w-xs leading-relaxed mb-8 uppercase">
-                        The tutorial and intro sequence is playing on the main display.
-                    </p>
-                    <div className="flex flex-col gap-3 w-full max-w-xs">
-                        <button
-                            onClick={() => {
-                                fetch("/api/game/skip-intro", { method: "POST" })
-                                    .catch(err => console.error(err));
-                                sessionStorage.setItem("skipped_intro", "true");
-                                setShowIntroPopup(false);
-                            }}
-                            className="w-full py-3 bg-[#FF7899] hover:bg-[#ff688c] text-white font-bold text-xs uppercase tracking-wider rounded-2xl transition-all shadow-md active:scale-95"
-                        >
-                            Skip & Start
-                        </button>
-                        <button
-                            onClick={() => {
-                                sessionStorage.setItem("skipped_intro", "true");
-                                setShowIntroPopup(false);
-                            }}
-                            className="w-full py-3 bg-white border border-[#FFF0F3] text-zinc-500 font-bold text-xs uppercase tracking-wider rounded-2xl hover:bg-[#FAF9F6] transition-all shadow-sm"
-                        >
-                            Let Intro Play
-                        </button>
-                    </div>
                 </div>
             )}
         </div>

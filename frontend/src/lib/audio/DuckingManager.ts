@@ -10,7 +10,7 @@ export class DuckingManager {
 
         const now = ctx.currentTime;
         const targetBg = active ? 0.03 : 0.15;
-        const targetBgm = active ? 0.05 : 0.7;
+        const targetBgm = active ? 0.4 : 0.7;
 
         bgGain.gain.cancelScheduledValues(now);
         bgGain.gain.setTargetAtTime(targetBg, now, 0.15);
