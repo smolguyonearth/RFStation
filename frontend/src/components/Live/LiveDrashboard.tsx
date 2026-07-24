@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
-    Trophy,
     Users,
     History,
     PlayCircle,
@@ -10,7 +9,7 @@ import {
 } from "lucide-react";
 
 export default function App() {
-    const [activePlayer, setActivePlayer] = useState("Soe");
+    const [activePlayer] = useState("Soe");
 
     // Data for 2 players
     const players = [

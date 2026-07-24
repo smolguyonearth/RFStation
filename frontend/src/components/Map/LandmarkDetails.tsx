@@ -6,11 +6,17 @@ import type { MapLocation } from "@/types/map.types"
 interface LandmarkDetailsProps {
   land: MapLocation;
   onClose: () => void;
+  className?: string;
+  hideGameplayDetails?: boolean;
+  flat?: boolean;
 }
 
 export default function LandmarkDetails({
   land,
   onClose,
+  className = "w-full lg:w-[45%]",
+  hideGameplayDetails = false,
+  flat = false,
 }: LandmarkDetailsProps) {
   const { t } = useTranslation();
   const [isFullView, setIsFullView] = useState(false);
@@ -18,18 +24,20 @@ export default function LandmarkDetails({
   const landmarkImage = land.image;
 
   return (
-    <div className="w-full lg:w-[45%] animate-in fade-in slide-in-from-bottom-8 duration-500">
-      <div className="bg-white rounded-2xl border border-brand-border shadow-sm p-6 lg:p-8 h-full">
+    <div className={`${className} animate-in fade-in slide-in-from-bottom-8 duration-500`}>
+      <div className={flat ? "h-full flex flex-col justify-between" : "bg-white rounded-2xl border border-brand-border shadow-sm p-6 lg:p-8 h-full flex flex-col justify-between"}>
         {/* Header Section */}
         <div className="flex items-start justify-between mb-6">
           <div>
             <h3 className="text-2xl font-bold text-brand-primary">
               {t(land.name)}
             </h3>
-            <div className="inline-block mt-2 px-3 py-1 bg-brand-bg rounded-full border border-brand-border/50 text-xs font-semibold text-brand-accent uppercase">
-              {t("map.owner")}:{" "}
-              {land.ownerId ? land.ownerId : t("map.unclaimed")}
-            </div>
+            {!hideGameplayDetails && (
+              <div className="inline-block mt-2 px-3 py-1 bg-brand-bg rounded-full border border-brand-border/50 text-xs font-semibold text-brand-accent uppercase">
+                {t("map.owner")}:{" "}
+                {land.ownerId ? land.ownerId : t("map.unclaimed")}
+              </div>
+            )}
           </div>
           <button
             onClick={onClose}
@@ -46,24 +54,26 @@ export default function LandmarkDetails({
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-brand-bg p-4 rounded-xl border border-brand-border/50">
-            <div className="flex items-center gap-2 text-xs font-bold text-brand-accent uppercase mb-1">
-              <Gem size={16} className="text-emerald-500" /> {t("map.points")}
+        {!hideGameplayDetails && (
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-brand-bg p-4 rounded-xl border border-brand-border/50">
+              <div className="flex items-center gap-2 text-xs font-bold text-brand-accent uppercase mb-1">
+                <Gem size={16} className="text-emerald-500" /> {t("map.points")}
+              </div>
+              <span className="text-2xl font-extrabold text-brand-primary">
+                {land.points || 0}
+              </span>
             </div>
-            <span className="text-2xl font-extrabold text-brand-primary">
-              {land.points || 0}
-            </span>
-          </div>
-          <div className="bg-brand-bg p-4 rounded-xl border border-brand-border/50">
-            <div className="flex items-center gap-2 text-xs font-bold text-brand-accent uppercase mb-1">
-              <Shield size={16} className="text-blue-500" /> {t("map.status")}
+            <div className="bg-brand-bg p-4 rounded-xl border border-brand-border/50">
+              <div className="flex items-center gap-2 text-xs font-bold text-brand-accent uppercase mb-1">
+                <Shield size={16} className="text-blue-500" /> {t("map.status")}
+              </div>
+              <span className="text-lg font-bold text-brand-primary mt-1 block">
+                {land.ownerId ? t("map.secured") : t("map.available")}
+              </span>
             </div>
-            <span className="text-lg font-bold text-brand-primary mt-1 block">
-              {land.ownerId ? t("map.secured") : t("map.available")}
-            </span>
           </div>
-        </div>
+        )}
 
         {/* Landmark Image Section (Conditional Rendering) */}
         {landmarkImage && (

@@ -1,215 +1,154 @@
-interface ActiveLayer {
-    source: AudioBufferSourceNode;
-    gain: GainNode;
-    zone: string;
-    startedAt: number;
-    startOffset: number;
-    buffer: AudioBuffer;
-}
-
-interface ZoneRecord {
-    savedOffset: number;
-    snapshotAt: number;
-}
+import { ContextManager } from "./audio/ContextManager";
+import { BufferCache } from "./audio/BufferCache";
+import { ZonePlayer } from "./audio/ZonePlayer";
+import type { ActiveLayer, ZoneRecord } from "./audio/ZonePlayer";
+import { VoicePlayer } from "./audio/VoicePlayer";
+import { GameStateHandler } from "./audio/GameStateHandler";
+import { AudioTransition } from "./audio/AudioTransition";
 
 export class AudioEngine {
-    static crossfadeDuration: number = 3;
-    static overlapFadeTime: number = 3;
+    static get crossfadeDuration(): number {
+        return ZonePlayer.crossfadeDuration;
+    }
+    static set crossfadeDuration(val: number) {
+        ZonePlayer.crossfadeDuration = val;
+    }
 
-    private static audioCtx: AudioContext | null = null;
-    private static activeLayers: ActiveLayer[] = [];
-    private static currentZone: string | null = null;
-    private static zoneRecords: Map<string, ZoneRecord> = new Map();
-    private static bufferCache: Map<string, AudioBuffer> = new Map();
+    static get overlapFadeTime(): number {
+        return ZonePlayer.overlapFadeTime;
+    }
+    static set overlapFadeTime(val: number) {
+        ZonePlayer.overlapFadeTime = val;
+    }
+
+    static get audioCtx(): AudioContext | null {
+        return ContextManager.getContext();
+    }
+
+    static get activeLayers(): ActiveLayer[] {
+        return ZonePlayer.getActiveLayers();
+    }
+
+    static get currentZone(): string | null {
+        return ZonePlayer.getCurrentZone();
+    }
+
+    static get zoneRecords(): Map<string, ZoneRecord> {
+        return ZonePlayer.getZoneRecords();
+    }
+
+    static get masterGain(): GainNode | null {
+        return ContextManager.getMasterGain();
+    }
+
+    static get bgGain(): GainNode | null {
+        return ContextManager.getBgGain();
+    }
+
+    static get bgmGain(): GainNode | null {
+        return ContextManager.getBgmGain();
+    }
+
+    static get voiceGain(): GainNode | null {
+        return ContextManager.getVoiceGain();
+    }
+
+    static get bgSource(): AudioBufferSourceNode | null {
+        return GameStateHandler.getBgSource();
+    }
+
+    static get voiceSource(): AudioBufferSourceNode | null {
+        return VoicePlayer.getVoiceSource();
+    }
+
+    static get battleSource(): AudioBufferSourceNode | null {
+        return VoicePlayer.getBattleSource();
+    }
+
+    static get introSource(): AudioBufferSourceNode | null {
+        return VoicePlayer.getIntroSource();
+    }
 
     static init(): void {
-        if (!this.audioCtx) {
-            this.audioCtx = new (
-                window.AudioContext || (window as any).webkitAudioContext
-            )();
-        }
+        ContextManager.init();
     }
 
     static async preload(zone: string): Promise<void> {
-        await this.getBuffer(zone);
+        await BufferCache.getBuffer(zone);
     }
 
-    static async playZone(zone: string): Promise<void> {
-        if (!this.audioCtx) this.init();
-        const ctx = this.audioCtx!;
+    static async playNarration(lang: string, locationKey: string): Promise<void> {
+        await VoicePlayer.playNarration(lang, locationKey);
+    }
 
-        if (ctx.state === "suspended") await ctx.resume();
+    static stopVoice(): void {
+        VoicePlayer.stopVoice();
+    }
 
-        if (this.currentZone === zone) return;
+    static async playSFX(sfxName: string): Promise<void> {
+        await VoicePlayer.playSFX(sfxName);
+    }
 
-        this.snapshotActiveLayers();
-        this.currentZone = zone;
+    static async startBattleMusic(): Promise<void> {
+        await VoicePlayer.startBattleMusic();
+    }
 
-        const now = ctx.currentTime;
-        const fd = this.crossfadeDuration;
+    static stopBattleMusic(): void {
+        VoicePlayer.stopBattleMusic();
+    }
 
-        // fade out old layers
-        for (const layer of this.activeLayers) {
-            const g = layer.gain;
+    static async playIntro(lang: string): Promise<void> {
+        await VoicePlayer.playIntro(lang);
+    }
 
-            g.gain.cancelScheduledValues(now);
-            g.gain.setValueAtTime(g.gain.value, now);
-            g.gain.linearRampToValueAtTime(0, now + fd);
+    static isIntroPlaying(): boolean {
+        return VoicePlayer.isIntroPlaying();
+    }
 
-            try {
-                layer.source.stop(now + fd);
-            } catch {}
-        }
+    static stopIntro(): void {
+        VoicePlayer.stopIntro();
+    }
 
-        this.activeLayers = [];
-
-        const buffer = await this.getBuffer(zone);
-        if (this.currentZone !== zone) return;
-
-        const resumeOffset = this.getResumeOffset(zone, buffer.duration);
-
-        const source = ctx.createBufferSource();
-        const gain = ctx.createGain();
-
-        source.buffer = buffer;
-
-        const startNow = ctx.currentTime;
-
-        // fade in
-        gain.gain.setValueAtTime(0, startNow);
-        gain.gain.linearRampToValueAtTime(1, startNow + fd);
-
-        source.connect(gain);
-        gain.connect(ctx.destination);
-
-        this.startSeamlessLoop(
-            source,
-            gain,
-            zone,
-            buffer,
-            startNow - resumeOffset
-        );
-
-        this.activeLayers.push({
-            source,
-            gain,
-            zone,
-            startedAt: startNow,
-            startOffset: resumeOffset,
-            buffer,
-        });
+    static async playZone(zone: string, volume: number = 0.7): Promise<void> {
+        AudioTransition.cancel();
+        await ZonePlayer.playZone(zone, volume);
     }
 
     static stop(): void {
-        if (!this.audioCtx) return;
-
-        const now = this.audioCtx.currentTime;
-        const fd = this.crossfadeDuration;
-
-        this.snapshotActiveLayers();
-
-        for (const layer of this.activeLayers) {
-            const g = layer.gain;
-
-            g.gain.cancelScheduledValues(now);
-            g.gain.setValueAtTime(g.gain.value, now);
-            g.gain.linearRampToValueAtTime(0, now + fd);
-
-            try {
-                layer.source.stop(now + fd);
-            } catch {}
-        }
-
-        this.activeLayers = [];
-        this.currentZone = null;
+        AudioTransition.cancel();
+        ZonePlayer.stop();
     }
 
     static reset(): void {
-        this.stop();
-        this.zoneRecords.clear();
-        this.bufferCache.clear();
+        AudioTransition.cancel();
+        ZonePlayer.reset();
+        VoicePlayer.reset();
+        GameStateHandler.reset();
+        BufferCache.clear();
+    }
+
+    static async playTransition(sfxName: string, bgmZone: string | null, bgmVolume: number = 0.7): Promise<void> {
+        await AudioTransition.playTransition(sfxName, bgmZone, bgmVolume);
+    }
+
+    static cancelTransition(): void {
+        AudioTransition.cancel();
     }
 
     static setSavedOffset(zone: string, offsetSeconds: number): void {
-        this.zoneRecords.set(zone, {
-            savedOffset: offsetSeconds,
-            snapshotAt: this.audioCtx?.currentTime ?? 0,
-        });
+        ZonePlayer.setSavedOffset(zone, offsetSeconds);
     }
 
     static getSavedOffset(zone: string): number | null {
-        const record = this.zoneRecords.get(zone);
-        return record ? record.savedOffset : null;
+        return ZonePlayer.getSavedOffset(zone);
     }
 
-    private static startSeamlessLoop(
-        source: AudioBufferSourceNode,
-        gain: GainNode,
-        zone: string,
-        buffer: AudioBuffer,
-        startTime: number
-    ): void {
-        const ctx = this.audioCtx!;
-        const duration = buffer.duration;
-        const overlap = this.overlapFadeTime;
-
-        source.start(startTime);
-
-        const nextStart = startTime + duration - overlap;
-
-        const timeout = (nextStart - ctx.currentTime) * 1000;
-
-        setTimeout(() => {
-            if (this.currentZone !== zone) return;
-
-            const newSource = ctx.createBufferSource();
-            newSource.buffer = buffer;
-
-            newSource.connect(gain);
-
-            this.startSeamlessLoop(
-                newSource,
-                gain,
-                zone,
-                buffer,
-                nextStart
-            );
-        }, Math.max(0, timeout));
+    static handleGameUpdate(gameState: any): void {
+        GameStateHandler.handleGameUpdate(gameState);
     }
 
-    private static async getBuffer(zone: string): Promise<AudioBuffer> {
-        const cached = this.bufferCache.get(zone);
-        if (cached) return cached;
-
-        const response = await fetch(`/sounds/${zone}.mp3`);
-        const arrayBuffer = await response.arrayBuffer();
-        const buffer = await this.audioCtx!.decodeAudioData(arrayBuffer);
-
-        this.bufferCache.set(zone, buffer);
-        return buffer;
-    }
-
-    private static snapshotActiveLayers(): void {
-        if (!this.audioCtx) return;
-
-        const now = this.audioCtx.currentTime;
-
-        for (const layer of this.activeLayers) {
-            const elapsed = now - layer.startedAt;
-            const rawOffset = layer.startOffset + elapsed;
-            const saved = rawOffset % layer.buffer.duration;
-
-            this.zoneRecords.set(layer.zone, {
-                savedOffset: saved,
-                snapshotAt: now,
-            });
-        }
-    }
-
-    private static getResumeOffset(zone: string, duration: number): number {
-        const record = this.zoneRecords.get(zone);
-        if (!record) return 0;
-
-        return record.savedOffset % duration;
+    static updateLastInteracted(player: number, row: number, col: number): void {
+        GameStateHandler.updateLastInteracted(player, row, col);
     }
 }
+export type { ActiveLayer, ZoneRecord };

@@ -15,7 +15,6 @@ export default function Game() {
   const [game, setGame] = useState<GameData | null>(null);
   const gameRef = useRef<GameData | null>(null);
   const latestZones = useRef<{ P1: string | null, P2: string | null }>({ P1: null, P2: null });
-  const [activePlayer, setActivePlayer] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   // Keep ref in sync for WebSocket
@@ -30,6 +29,7 @@ export default function Game() {
       .then((data) => {
         if (data.success) {
           setGame(data.game);
+          AudioEngine.handleGameUpdate(data.game);
         } else {
           setError("Failed to load game state");
         }
@@ -37,57 +37,50 @@ export default function Game() {
       .catch((err) => setError(err.message));
   }, []);
 
-  // Listen for WebSocket updates
+  // Listen for WebSocket updates with auto-reconnect
   useEffect(() => {
-    const ws = new WebSocket(`ws://${window.location.host}/ws`);
-    
-    ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        if (data.type === "game_update" && data.game) {
-          setGame(data.game);
+    let ws: WebSocket;
+    let reconnectTimeout: NodeJS.Timeout;
+
+    const connect = () => {
+      ws = new WebSocket(`ws://${window.location.host}/ws`);
+      
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === "game_update" && data.game) {
+            setGame(data.game);
+            AudioEngine.handleGameUpdate(data.game);
+          }
+          
+              // Device movement updates (from /api/ingest)
+              if (data.device_code && data.nearest_device) {
+                 const code = data.device_code.toUpperCase();
+                 if (data.nearest_device !== "X") {
+                   if (code === "P1") latestZones.current.P1 = data.nearest_device;
+                   if (code === "P2") latestZones.current.P2 = data.nearest_device;
+                 }
+              }
+        } catch (e) {
+          console.error("WS Parse error:", e);
         }
-        
-        // Device movement updates (from /api/ingest)
-        if (data.device_code && data.nearest_device) {
-           const code = data.device_code.toUpperCase();
-           if (data.nearest_device !== "X") {
-             if (code === "P1") latestZones.current.P1 = data.nearest_device;
-             if (code === "P2") latestZones.current.P2 = data.nearest_device;
-             
-             const currentGame = gameRef.current;
-             if (currentGame && (currentGame.state === 'playing' || currentGame.state === 'battle')) {
-               if (currentGame.currentPlayer === 1 && code === "P1") AudioEngine.playZone(data.nearest_device);
-               if (currentGame.currentPlayer === 2 && code === "P2") AudioEngine.playZone(data.nearest_device);
-             }
-           }
-        }
-      } catch (e) {
-        console.error("WS Parse error:", e);
-      }
+      };
+
+      ws.onclose = () => {
+        console.log("Game WS Disconnected, reconnecting...");
+        reconnectTimeout = setTimeout(connect, 1000);
+      };
     };
 
-    return () => ws.close();
+    connect();
+
+    return () => {
+      if (ws) ws.close();
+      clearTimeout(reconnectTimeout);
+    };
   }, []);
 
-  // Play audio when turn changes
-  useEffect(() => {
-    if (game && (game.state === 'playing' || game.state === 'battle')) {
-      if (game.currentPlayer !== activePlayer) {
-        setActivePlayer(game.currentPlayer);
-        
-        // When turn switches, instantly play the new active player's latest known zone
-        if (game.currentPlayer === 1 && latestZones.current.P1) {
-          AudioEngine.playZone(latestZones.current.P1);
-        } else if (game.currentPlayer === 2 && latestZones.current.P2) {
-          AudioEngine.playZone(latestZones.current.P2);
-        }
-      }
-    } else if (game && (game.state === 'setup' || game.state === 'game_over')) {
-      AudioEngine.stop();
-      setActivePlayer(null);
-    }
-  }, [game, activePlayer]);
+  // Redundant turn audio trigger removed in favor of handleGameUpdate state machine
 
   const handleStart = async (player: number) => {
     AudioEngine.init(); // Initialize audio context on user interaction
@@ -103,6 +96,9 @@ export default function Game() {
     // We removed the frontend block here so you can ALWAYS debug 
     // your clicks in the backend terminal! 
     // The backend gameLogic.ts will safely ignore them if the game isn't playing.
+    if (game && game.currentPlayer) {
+      AudioEngine.updateLastInteracted(game.currentPlayer, row, col);
+    }
     
     // Send action (equivalent to pressing a physical button)
     const button_id = row * 3 + col;

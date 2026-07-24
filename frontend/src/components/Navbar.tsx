@@ -62,8 +62,8 @@ export default function Navbar() {
                                 key={lng}
                                 onClick={() => changeLanguage(lng)}
                                 className={`px-2 py-1 rounded-md text-xs font-bold transition-all ${i18n.language === lng
-                                        ? "bg-brand-accent text-white"
-                                        : "text-brand-border hover:text-white"
+                                    ? "bg-brand-accent text-white"
+                                    : "text-brand-border hover:text-white"
                                     }`}
                             >
                                 {lng.toUpperCase()}
@@ -106,8 +106,8 @@ export default function Navbar() {
                                         {/* Icon container: filled on active, subtle on inactive */}
                                         <div
                                             className={`p-2 rounded-xl transition-colors ${active
-                                                    ? "bg-brand-accent shadow-sm shadow-brand-accent/40"
-                                                    : "bg-white/5"
+                                                ? "bg-brand-accent shadow-sm shadow-brand-accent/40"
+                                                : "bg-white/5"
                                                 }`}
                                         >
                                             <Icon
@@ -142,8 +142,8 @@ export default function Navbar() {
                                         key={lng}
                                         onClick={() => changeLanguage(lng)}
                                         className={`py-3 rounded-xl text-xs font-bold transition-all ${i18n.language === lng
-                                                ? "bg-brand-accent text-white shadow-lg"
-                                                : "text-brand-border hover:bg-white/5"
+                                            ? "bg-brand-accent text-white shadow-lg"
+                                            : "text-brand-border hover:bg-white/5"
                                             }`}
                                     >
                                         {lng.toUpperCase()}

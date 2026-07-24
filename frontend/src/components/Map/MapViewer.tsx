@@ -16,48 +16,42 @@ interface MapViewerProps {
 
 export default function MapViewer({ selectedLand, onSelect }: MapViewerProps) {
     return (
-        <div
-            className={`transition-all duration-500 w-full ${selectedLand ? "lg:w-[55%]" : "max-w-3xl mx-auto"}`}
-        >
-            <div className="w-full h-full flex items-center justify-center">
-                <div className="aspect-4/3 w-full flex items-center justify-center">
-                    <svg
-                        viewBox="0 0 1024 1024"
-                        className="h-full w-auto"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <image
-                            href={mapVectorBg}
-                            width="1024"
-                            height="1024"
-                            preserveAspectRatio="xMidYMid meet"
-                        />
-                        <g style={{ mixBlendMode: "multiply" }}>
-                            {Landmarks.map((lm) => {
-                                const isSelected = selectedLand?.id === lm.id;
-                                return (
-                                    <path
-                                        key={lm.id}
-                                        d={lm.d}
-                                        fill={getConquerorColor(lm.ownerId)}
-                                        stroke={
-                                            isSelected
-                                                ? "#F59E0B"
-                                                : lm.ownerId
-                                                    ? "#ffffff"
-                                                    : "transparent"
-                                        }
-                                        strokeWidth={isSelected ? "8" : "3"}
-                                        opacity={selectedLand ? (isSelected ? "1" : "0.3") : "1"}
-                                        className="cursor-pointer transition-all duration-300"
-                                        onClick={() => onSelect(lm)}
-                                    />
-                                );
-                            })}
-                        </g>
-                    </svg>
-                </div>
-            </div>
+        <div className="w-full h-full flex items-center justify-center p-2">
+            <svg
+                viewBox="0 0 1024 1024"
+                className="w-full h-auto max-h-full object-contain"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <image
+                    href={mapVectorBg}
+                    width="1024"
+                    height="1024"
+                    preserveAspectRatio="xMidYMid meet"
+                />
+                <g style={{ mixBlendMode: "multiply" }}>
+                    {Landmarks.map((lm) => {
+                        const isSelected = selectedLand?.id === lm.id;
+                        return (
+                            <path
+                                key={lm.id}
+                                d={lm.d}
+                                fill={getConquerorColor(lm.ownerId)}
+                                stroke={
+                                    isSelected
+                                        ? "#F59E0B"
+                                        : lm.ownerId
+                                            ? "#ffffff"
+                                            : "transparent"
+                                }
+                                strokeWidth={isSelected ? "8" : "3"}
+                                opacity={selectedLand ? (isSelected ? "1" : "0.3") : "1"}
+                                className="cursor-pointer transition-all duration-300"
+                                onClick={() => onSelect(lm)}
+                            />
+                        );
+                    })}
+                </g>
+            </svg>
         </div>
     );
 }
