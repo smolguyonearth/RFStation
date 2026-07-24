@@ -105,20 +105,27 @@ export default function Controller() {
 
   // --- Render Views Based on Mode ---
   return (
-    <div className="min-h-screen w-full bg-brand-bg text-brand-primary font-sans flex flex-col relative overflow-auto">
-      {gameState.mode === "IDLE" && <SetupView setMode={setMode} />}
-      {gameState.mode === "MUSEUM" && (
-        <MuseumControllerView gameState={gameState} setMode={setMode} />
-      )}
-      {gameState.mode === "GAME" && (
-        <GameControllerView
-          gameState={gameState}
-          startGame={startGame}
-          endTurn={endTurn}
-          resetGame={resetGame}
-          setMode={setMode}
-        />
-      )}
+    <div className="min-h-screen w-full bg-[#07080d] text-white font-sans flex flex-col relative overflow-x-hidden overflow-y-auto cyber-grid">
+      {/* Decorative neon background glows */}
+      <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-[400px] h-[400px] bg-rose-600/10 rounded-full blur-[130px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-cyan-600/5 rounded-full blur-[150px] pointer-events-none" />
+
+      <div className="relative z-10 flex-1 flex flex-col w-full">
+        {gameState.mode === "IDLE" && <SetupView setMode={setMode} />}
+        {gameState.mode === "MUSEUM" && (
+          <MuseumControllerView gameState={gameState} setMode={setMode} />
+        )}
+        {gameState.mode === "GAME" && (
+          <GameControllerView
+            gameState={gameState}
+            startGame={startGame}
+            endTurn={endTurn}
+            resetGame={resetGame}
+            setMode={setMode}
+          />
+        )}
+      </div>
     </div>
   );
 }

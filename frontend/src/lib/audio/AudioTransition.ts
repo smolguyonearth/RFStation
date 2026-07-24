@@ -13,7 +13,7 @@ import { ZonePlayer } from "./ZonePlayer";
  */
 export class AudioTransition {
     /** Duration in seconds of the overlap crossfade window */
-    static overlapWindow: number = 0.45;
+    static overlapWindow: number = 1.5;
 
     /** Active transition state */
     private static isTransitioning: boolean = false;
@@ -107,7 +107,7 @@ export class AudioTransition {
 
             const now = ctx.currentTime;
             const duration = sfxBuffer.duration;
-            const overlap = Math.min(this.overlapWindow, duration * 0.5); // don't overlap more than half
+            const overlap = Math.min(this.overlapWindow, duration * 0.8); // allow up to 80% overlap
 
             // Anti-pop micro-fade in (10ms)
             sfxGain.gain.setValueAtTime(0, now);
@@ -142,8 +142,10 @@ export class AudioTransition {
                 this.transitionTimeout = setTimeout(() => {
                     this.transitionTimeout = null;
                     this.isTransitioning = false;
-                    // Start the BGM zone with matching fade-in duration
-                    ZonePlayer.playZone(bgmZone, bgmVolume, overlap);
+                    // Clear the BGM offset history so it starts from the very beginning (the first part of BGM)
+                    ZonePlayer.clearZoneOffset(bgmZone);
+                    // Start the BGM zone instantly (using a 8ms micro-attack to prevent clicking/popping)
+                    ZonePlayer.playZone(bgmZone, bgmVolume, 0.008);
                 }, delayMs);
             } else {
                 this.isTransitioning = false;

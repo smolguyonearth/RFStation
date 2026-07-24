@@ -16,8 +16,8 @@ export interface ZoneRecord {
 }
 
 export class ZonePlayer {
-    static crossfadeDuration: number = 3;
-    static overlapFadeTime: number = 1;
+    static crossfadeDuration: number = 0.008;
+    static overlapFadeTime: number = 0.008;
 
     private static activeLayers: ActiveLayer[] = [];
     private static currentZone: string | null = null;
@@ -56,6 +56,10 @@ export class ZonePlayer {
         return record ? record.savedOffset : null;
     }
 
+    static clearZoneOffset(zone: string): void {
+        this.zoneRecords.delete(zone);
+    }
+
     static async playZone(zone: string, volume: number = 0.7, fadeDuration?: number): Promise<void> {
         ContextManager.init();
         const ctx = ContextManager.getContext();
@@ -69,7 +73,7 @@ export class ZonePlayer {
         if (this.currentZone === zone) {
             const now = ctx.currentTime;
             bgmGain.gain.cancelScheduledValues(now);
-            bgmGain.gain.linearRampToValueAtTime(volume, now + (fadeDuration ?? 1));
+            bgmGain.gain.linearRampToValueAtTime(volume, now + (fadeDuration ?? 0.008));
             return;
         }
 

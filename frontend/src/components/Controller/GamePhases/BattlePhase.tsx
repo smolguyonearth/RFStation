@@ -65,7 +65,7 @@ export default function BattlePhase({ gameState }: any) {
   return (
     <div
       {...swipeHandlers}
-      className={`w-full h-full flex flex-col items-center justify-center relative py-12 select-none ${swipeHandlers.className}`}
+      className={`w-full h-full flex flex-col items-center justify-center relative py-6 select-none ${swipeHandlers.className}`}
     >
       {/* --- AUDIO SLOTS --- */}
       {step !== "RESULT" && (
@@ -88,7 +88,7 @@ export default function BattlePhase({ gameState }: any) {
       {/* ------------------- */}
 
       <div className="absolute top-0 text-center z-50">
-        <span className="text-[9px] font-bold tracking-[0.25em] text-amber-600 bg-amber-50 border border-amber-100/60 px-4 py-1.5 rounded-full uppercase">
+        <span className="text-[10px] font-black tracking-[0.3em] text-amber-400 bg-amber-950/40 border border-amber-800/30 px-5 py-1.5 rounded-full uppercase">
           Territory Battle
         </span>
         <p className="text-zinc-500 font-bold text-xs uppercase tracking-widest mt-4">
@@ -99,34 +99,36 @@ export default function BattlePhase({ gameState }: any) {
       {step === "ATTACKER_ROLL" && (
         <div
           key="bp_attacker"
-          className={`absolute inset-0 flex flex-col items-center justify-center animate-slide-in-right rounded-[2.5rem] border z-10 p-8 shadow-sm ${
-            attacker === 1 ? "bg-indigo-50/20 border-indigo-100/60" : "bg-rose-50/20 border-rose-100/60"
+          className={`absolute inset-0 flex flex-col items-center justify-center animate-slide-in-right rounded-[2.5rem] border bg-white/[0.02] backdrop-blur-md z-10 p-8 shadow-2xl ${
+            attacker === 1 ? "border-indigo-500/20 neon-glow-p1" : "border-rose-500/20 neon-glow-p2"
           }`}
         >
-          <span className={`text-[9px] font-bold tracking-[0.25em] uppercase mb-3 ${
-            attacker === 1 ? "text-indigo-400" : "text-rose-400"
+          <span className={`text-[10px] font-black tracking-[0.3em] uppercase mb-4 px-4 py-1.5 rounded-full ${
+            attacker === 1 ? "text-indigo-400 bg-indigo-950/40 border border-indigo-800/30" : "text-rose-400 bg-rose-950/40 border border-rose-800/30"
           }`}>
             COMBAT ROUND — ATTACKER
           </span>
-          <h2 className={`text-3xl font-extralight mb-10 tracking-widest uppercase ${
-            attacker === 1 ? "text-indigo-600" : "text-rose-600"
+          <h2 className={`text-3xl font-black mb-8 tracking-widest uppercase text-center ${
+            attacker === 1 ? "text-indigo-300" : "text-rose-300"
           }`}>
-            P{attacker} Attack
+            PLAYER {attacker} ATTACK
           </h2>
           <div className="scale-110 transform">
             <Dice mode="D8" label="ROLL D8" onRoll={handleAttackerRoll} />
           </div>
           {attackerRoll !== null && (
-            <div className="mt-10 flex flex-col items-center">
+            <div className="mt-8 flex flex-col items-center">
               <button
                 onClick={() => setStep("DEFENDER_ROLL")}
-                className={`px-8 py-3.5 text-white font-bold text-xs uppercase tracking-widest rounded-xl active:scale-95 transition-all shadow-md animate-pop ${
-                  attacker === 1 ? "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-600/10" : "bg-rose-600 hover:bg-rose-700 shadow-rose-600/10"
+                className={`px-8 py-3.5 text-white font-extrabold text-xs uppercase tracking-widest rounded-xl active:scale-95 transition-all shadow-lg animate-pop ${
+                  attacker === 1 
+                    ? "bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 shadow-indigo-600/25" 
+                    : "bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 shadow-rose-600/25"
                 }`}
               >
                 Next: P{defender} Defend →
               </button>
-              <p className="mt-4 text-[9px] text-zinc-400 font-bold uppercase tracking-widest">
+              <p className="mt-3 text-[9px] text-zinc-500 font-bold uppercase tracking-widest">
                 (Or Swipe Left)
               </p>
             </div>
@@ -137,34 +139,36 @@ export default function BattlePhase({ gameState }: any) {
       {step === "DEFENDER_ROLL" && (
         <div
           key="bp_defender"
-          className={`absolute inset-0 flex flex-col items-center justify-center animate-slide-in-right rounded-[2.5rem] border z-10 p-8 shadow-sm ${
-            defender === 1 ? "bg-indigo-50/20 border-indigo-100/60" : "bg-rose-50/20 border-rose-100/60"
+          className={`absolute inset-0 flex flex-col items-center justify-center animate-slide-in-right rounded-[2.5rem] border bg-white/[0.02] backdrop-blur-md z-10 p-8 shadow-2xl ${
+            defender === 1 ? "border-indigo-500/20 neon-glow-p1" : "border-rose-500/20 neon-glow-p2"
           }`}
         >
-          <span className={`text-[9px] font-bold tracking-[0.25em] uppercase mb-3 ${
-            defender === 1 ? "text-indigo-400" : "text-rose-400"
+          <span className={`text-[10px] font-black tracking-[0.3em] uppercase mb-4 px-4 py-1.5 rounded-full ${
+            defender === 1 ? "text-indigo-400 bg-indigo-950/40 border border-indigo-800/30" : "text-rose-400 bg-rose-950/40 border border-rose-800/30"
           }`}>
             COMBAT ROUND — DEFENDER
           </span>
-          <h2 className={`text-3xl font-extralight mb-10 tracking-widest uppercase ${
-            defender === 1 ? "text-indigo-600" : "text-rose-600"
+          <h2 className={`text-3xl font-black mb-8 tracking-widest uppercase text-center ${
+            defender === 1 ? "text-indigo-300" : "text-rose-300"
           }`}>
-            P{defender} Defend
+            PLAYER {defender} DEFEND
           </h2>
           <div className="scale-110 transform">
             <Dice mode="D8" label="ROLL D8" onRoll={handleDefenderRoll} />
           </div>
           {defenderRoll !== null && (
-            <div className="mt-10 flex flex-col items-center">
+            <div className="mt-8 flex flex-col items-center">
               <button
                 onClick={() => setStep("RESULT")}
-                className={`px-8 py-3.5 text-white font-bold text-xs uppercase tracking-widest rounded-xl active:scale-95 transition-all shadow-md animate-pop ${
-                  defender === 1 ? "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-600/10" : "bg-rose-600 hover:bg-rose-700 shadow-rose-600/10"
+                className={`px-8 py-3.5 text-white font-extrabold text-xs uppercase tracking-widest rounded-xl active:scale-95 transition-all shadow-lg animate-pop ${
+                  defender === 1 
+                    ? "bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 shadow-indigo-600/25" 
+                    : "bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 shadow-rose-600/25"
                 }`}
               >
                 Show Results →
               </button>
-              <p className="mt-4 text-[9px] text-zinc-400 font-bold uppercase tracking-widest">
+              <p className="mt-3 text-[9px] text-zinc-500 font-bold uppercase tracking-widest">
                 (Or Swipe Left)
               </p>
             </div>
@@ -175,45 +179,45 @@ export default function BattlePhase({ gameState }: any) {
       {step === "RESULT" && (
         <div
           key="bres"
-          className="absolute inset-0 flex flex-col items-center justify-center animate-pop bg-white rounded-[2.5rem] border border-zinc-200/80 z-20 p-10 shadow-xl shadow-zinc-100/50"
+          className="absolute inset-0 flex flex-col items-center justify-center animate-pop bg-black/40 backdrop-blur-md rounded-[2.5rem] border border-zinc-800 z-20 p-8 shadow-2xl"
         >
-          <span className="text-[9px] font-bold tracking-[0.25em] text-zinc-400 uppercase mb-3">
-            COMBAT ROUND
+          <span className="text-[10px] font-black tracking-[0.3em] text-cyan-400 bg-cyan-950/40 border border-cyan-800/30 px-4 py-1.5 rounded-full uppercase mb-4">
+            COMBAT OVERVIEW
           </span>
-          <h2 className="text-3xl font-extralight text-zinc-800 mb-10 tracking-widest uppercase">
-            Battle Outcome
+          <h2 className="text-3xl font-black text-white mb-8 tracking-widest uppercase">
+            BATTLE OUTCOME
           </h2>
           
-          <div className="flex space-x-16 text-3xl font-light mb-10">
-            <div className="flex flex-col items-center gap-1">
+          <div className="flex justify-center items-center gap-12 w-full max-w-sm mb-8 bg-white/[0.02] border border-white/[0.04] p-6 rounded-3xl">
+            <div className="flex flex-col items-center gap-1.5 flex-1">
               <span className={`text-[9px] font-bold uppercase tracking-widest ${
                 attacker === 1 ? "text-indigo-400" : "text-rose-400"
               }`}>
-                P{attacker} (Attacker)
+                P{attacker} (Attack)
               </span>
-              <span className={`text-4xl font-extrabold ${
-                attacker === 1 ? "text-indigo-600" : "text-rose-600"
+              <span className={`text-4xl font-black font-mono ${
+                attacker === 1 ? "text-indigo-300 drop-shadow-[0_0_8px_rgba(99,102,241,0.4)]" : "text-rose-300 drop-shadow-[0_0_8px_rgba(244,63,94,0.4)]"
               }`}>{attackerRoll}</span>
             </div>
-            <div className="w-[1px] bg-zinc-200" />
-            <div className="flex flex-col items-center gap-1">
+            <div className="w-[1px] h-14 bg-zinc-800" />
+            <div className="flex flex-col items-center gap-1.5 flex-1">
               <span className={`text-[9px] font-bold uppercase tracking-widest ${
                 defender === 1 ? "text-indigo-400" : "text-rose-400"
               }`}>
-                P{defender} (Defender)
+                P{defender} (Defend)
               </span>
-              <span className={`text-4xl font-extrabold ${
-                defender === 1 ? "text-indigo-600" : "text-rose-600"
+              <span className={`text-4xl font-black font-mono ${
+                defender === 1 ? "text-indigo-300 drop-shadow-[0_0_8px_rgba(99,102,241,0.4)]" : "text-rose-300 drop-shadow-[0_0_8px_rgba(244,63,94,0.4)]"
               }`}>{defenderRoll}</span>
             </div>
           </div>
 
-          <div className={`mb-10 text-xs font-bold tracking-widest uppercase px-8 py-4 rounded-2xl border text-center ${
+          <div className={`mb-8 text-xs font-black tracking-widest uppercase px-8 py-4 rounded-2xl border text-center shadow-inner ${
             attackerRoll === defenderRoll
-              ? "bg-amber-50 text-amber-700 border-amber-200"
+              ? "bg-amber-950/20 border-amber-500/25 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.05)]"
               : (attackerRoll! > defenderRoll! ? attacker : defender) === 1
-                ? "bg-indigo-50 text-indigo-700 border-indigo-200"
-                : "bg-rose-50 text-rose-700 border-rose-200"
+                ? "bg-indigo-950/20 border-indigo-500/25 text-indigo-300 shadow-[0_0_15px_rgba(99,102,241,0.05)]"
+                : "bg-rose-950/20 border-rose-500/25 text-rose-300 shadow-[0_0_15px_rgba(244,63,94,0.05)]"
           }`}>
             {attackerRoll === defenderRoll
               ? "CLASH! RE-ROLLING!"
@@ -222,7 +226,7 @@ export default function BattlePhase({ gameState }: any) {
 
           <button
             onClick={handleResultNext}
-            className="px-8 py-4 bg-zinc-950 text-white font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-zinc-900 active:scale-95 transition-all shadow-md shadow-zinc-900/10"
+            className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-extrabold text-xs uppercase tracking-widest rounded-xl hover:from-cyan-600 hover:to-blue-600 active:scale-95 transition-all shadow-[0_0_15px_rgba(6,182,212,0.3)]"
           >
             {attackerRoll === defenderRoll ? "ROLL AGAIN" : "RESOLVE BATTLE"}
           </button>
