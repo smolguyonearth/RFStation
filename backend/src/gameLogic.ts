@@ -79,7 +79,7 @@ export class GameLogic {
   }
 
   resetGame() {
-    this.mode = 'IDLE';
+    this.mode = 'GAME';
     this.gamePhase = 'INIT';
     this.state = 'setup';
     this.currentPlayer = 1;
