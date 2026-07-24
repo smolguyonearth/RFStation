@@ -1,16 +1,8 @@
 import type { AppMode, GameState } from "@/types/game.types";
 import { useEffect, useRef } from "react";
-import { AudioEngine } from "@/lib/AudioEngine";
 import MapViewer from "@/components/Map/MapViewer";
 import { Landmarks } from "@/constants/landmark";
 import { useTranslation } from "react-i18next";
-
-const matrixToSounds = [
-  ["mahanakhon", "asiatique", "giant_swing"],
-  ["wat_arun", "bremen_stadium", "townhall"],
-];
-
-const NARRATION_DELAY_MS = 1500;
 
 export default function MuseumControllerView({
   gameState,
@@ -21,7 +13,6 @@ export default function MuseumControllerView({
 }) {
   const { t } = useTranslation();
   const isMounted = useRef(false);
-  const narrationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const matrixToLandmarkId = [
     ["lm_06", "lm_01", "lm_03"],
@@ -44,51 +35,7 @@ export default function MuseumControllerView({
       isMounted.current = true;
       return;
     }
-
-    // Clear any pending narration timer
-    if (narrationTimerRef.current) {
-      clearTimeout(narrationTimerRef.current);
-      narrationTimerRef.current = null;
-    }
-
-    // Stop narration immediately when switching
-    AudioEngine.stopVoice();
-
-    if (gameState.activeMuseumLocation) {
-      const zone = matrixToSounds[gameState.activeMuseumLocation.row][gameState.activeMuseumLocation.col];
-      const lang = gameState.language || "EN";
-
-      // Start background sound at full volume (fade in via ZonePlayer)
-      AudioEngine.playZone(zone, 1.0);
-
-      // Delay narration so background comes in first, then duck background to 70%
-      narrationTimerRef.current = setTimeout(() => {
-        AudioEngine.playZone(zone, 0.7); // duck background to 70%
-        AudioEngine.playNarration(lang, zone);
-      }, NARRATION_DELAY_MS);
-    } else {
-      // Deselected: fade out background, stop narration
-      AudioEngine.stop();
-    }
-
-    return () => {
-      if (narrationTimerRef.current) {
-        clearTimeout(narrationTimerRef.current);
-        narrationTimerRef.current = null;
-      }
-    };
   }, [activeLocKey, gameState.language]);
-
-  // Cleanup on unmount (exit museum mode)
-  useEffect(() => {
-    return () => {
-      if (narrationTimerRef.current) {
-        clearTimeout(narrationTimerRef.current);
-      }
-      AudioEngine.stopVoice();
-      AudioEngine.stopImmediate();
-    };
-  }, []);
 
   const onAction = async (row: number, col: number) => {
     const buttonId = row < 0 || col < 0 ? -1 : row * 3 + col;
@@ -103,7 +50,7 @@ export default function MuseumControllerView({
     <div className="flex-1 p-6 md:p-10 flex flex-col animate-fade-in relative min-h-screen bg-[#FAF9F6] text-[#333C4E] font-sans justify-between">
 
       {/* Top Console Bar */}
-      <div className="flex justify-between items-baseline pb-6 border-b border-[#FFF0F3] z-10">
+      <div className="relative z-50 flex justify-between items-baseline pb-6 border-b border-[#FFF0F3]">
         <div>
           <span className="text-[10px] font-bold tracking-[0.25em] text-[#FF7899] bg-[#FFEBF0] border border-[#FFD6E0] px-3.5 py-1.5 rounded-full uppercase shadow-cute-xs">
             Interactive Guide
