@@ -1,35 +1,23 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;600;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Geist:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-brand-bg: #07080d;
-  --color-brand-border: rgba(255, 255, 255, 0.08);
-  --color-brand-accent: #06b6d4;
-  --color-brand-primary: #ffffff;
+  --color-brand-bg: #F9FAFB;
+  --color-brand-border: #E5E7EB;
+  --color-brand-accent: #6366F1;
+  --color-brand-primary: #1F2937;
 }
 
-@utility cyber-grid {
-  background-image: 
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  background-position: center;
+@utility minimal-shadow {
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
 }
 
-@utility neon-glow-p1 {
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.15), inset 0 0 12px rgba(99, 102, 241, 0.1);
-}
-
-@utility neon-glow-p2 {
-  box-shadow: 0 0 20px rgba(244, 63, 94, 0.15), inset 0 0 12px rgba(244, 63, 94, 0.1);
-}
-
-@utility neon-glow-accent {
-  box-shadow: 0 0 20px rgba(6, 182, 212, 0.2), inset 0 0 12px rgba(6, 182, 212, 0.1);
+@utility minimal-shadow-hover {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
 }
 
 @layer utilities {
-  .font-outfit {
-    font-family: 'Outfit', sans-serif;
+  .font-sans {
+    font-family: 'Inter', 'Geist', sans-serif;
   }
 }

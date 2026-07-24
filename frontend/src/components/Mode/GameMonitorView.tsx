@@ -49,23 +49,23 @@ export default function GameMonitorView({
   };
 
   return (
-    <div className="w-full max-w-5xl animate-fade-in flex flex-col items-center relative">
-      <div className="absolute -top-12 right-0 flex gap-4">
-        {/* Simulate Selectors */}
+    <div className="w-full max-w-4xl animate-fade-in flex flex-col items-center relative font-sans text-[#1F2937] p-6 bg-white border border-zinc-200 rounded-3xl shadow-sm">
+      {/* Simulation Selectors (Minimalist Style) */}
+      <div className="absolute -top-14 right-0 flex gap-3">
         {[
-          { label: "P1", val: p1Zone, set: setP1Zone, color: "blue" },
-          { label: "P2", val: p2Zone, set: setP2Zone, color: "red" },
+          { label: "P1", val: p1Zone, set: setP1Zone, color: "indigo" },
+          { label: "P2", val: p2Zone, set: setP2Zone, color: "rose" },
         ].map((s) => (
           <div key={s.label} className="flex flex-col items-end">
-            <label className={`text-xs font-bold text-${s.color}-600 mb-1`}>
-              {s.label} Simulate Location
-            </label>
+            <span className={`text-[9px] font-bold text-zinc-400 uppercase mb-1 tracking-wider`}>
+              {s.label} SIMULATOR
+            </span>
             <select
               value={s.val}
               onChange={(e) => s.set(e.target.value)}
-              className={`px-4 py-2 border-2 border-${s.color}-300 rounded bg-${s.color}-50 text-sm font-bold text-${s.color}-700`}
+              className="px-3 py-1.5 border border-zinc-200 rounded-lg bg-zinc-50 text-xs font-medium text-zinc-700 shadow-sm focus:outline-none focus:border-zinc-300"
             >
-              <option value="waiting">🔄 Waiting...</option>
+              <option value="waiting">🔄 Searching...</option>
               <option value="mahanakhon">Mahanakhon</option>
               <option value="asiatique">Asiatique</option>
               <option value="giant_swing">Giant Swing</option>
@@ -77,46 +77,50 @@ export default function GameMonitorView({
         ))}
       </div>
 
-      <div className="flex justify-between w-full items-center mb-16 px-8 border-b-2 border-zinc-200 pb-8 mt-12">
+      {/* Editorial Header scoreboard */}
+      <div className="flex justify-between w-full items-center mb-12 px-6 border-b border-zinc-200 pb-8 mt-4">
+        {/* Player 1 Info */}
         <div
-          className={`flex flex-col items-center transition-all ${game.currentPlayer === 1 ? "scale-110" : "opacity-50 grayscale"}`}
+          className={`flex flex-col items-center transition-all duration-300 ${game.currentPlayer === 1 ? "scale-105" : "opacity-40"}`}
         >
-          <span className="text-sm font-bold tracking-widest text-blue-600 mb-2">
+          <span className="text-[10px] font-bold tracking-[0.2em] text-indigo-600 mb-2">
             PLAYER 1
           </span>
-          <span className="text-6xl font-black text-brand-primary">{game.scores[1]}</span>
+          <span className="text-5xl font-light text-zinc-900">{game.scores[1]}</span>
           
-          {/* P1 Location Badge */}
-          <div className={`mt-3 px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 border transition-all ${
+          <div className={`mt-3 px-3 py-1 rounded-full text-[10px] font-medium flex items-center gap-1.5 border transition-all ${
             p1Zone === "waiting"
-              ? "bg-slate-50 text-slate-400 border-slate-200/60 animate-pulse"
-              : "bg-blue-50 text-blue-700 border-blue-100"
+              ? "bg-zinc-50 text-zinc-400 border-zinc-200/60"
+              : "bg-[#EEF2FF] text-indigo-700 border-indigo-100"
           }`}>
             <span>{p1Zone === "waiting" ? "🔍" : "📍"}</span>
             <span>{zoneNameMap[p1Zone] || p1Zone}</span>
           </div>
         </div>
+
+        {/* Phase Header */}
         <div className="text-center">
-          <h1 className="text-2xl font-black tracking-[0.3em] text-zinc-600 mb-2">
-            TERRITORY
-          </h1>
-          <div className="px-6 py-2 border border-zinc-200 rounded-full text-zinc-700 font-bold uppercase tracking-widest bg-zinc-50">
+          <h2 className="text-xs font-bold tracking-[0.25em] text-zinc-400 uppercase mb-2">
+            Territory Conquest
+          </h2>
+          <div className="px-5 py-1.5 border border-zinc-200 rounded-full text-zinc-700 text-xs font-medium uppercase tracking-widest bg-zinc-50 shadow-inner">
             {game.gamePhase}
           </div>
         </div>
+
+        {/* Player 2 Info */}
         <div
-          className={`flex flex-col items-center transition-all ${game.currentPlayer === 2 ? "scale-110" : "opacity-50 grayscale"}`}
+          className={`flex flex-col items-center transition-all duration-300 ${game.currentPlayer === 2 ? "scale-105" : "opacity-40"}`}
         >
-          <span className="text-sm font-bold tracking-widest text-red-600 mb-2">
+          <span className="text-[10px] font-bold tracking-[0.2em] text-rose-600 mb-2">
             PLAYER 2
           </span>
-          <span className="text-6xl font-black text-brand-primary">{game.scores[2]}</span>
+          <span className="text-5xl font-light text-zinc-900">{game.scores[2]}</span>
 
-          {/* P2 Location Badge */}
-          <div className={`mt-3 px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 border transition-all ${
+          <div className={`mt-3 px-3 py-1 rounded-full text-[10px] font-medium flex items-center gap-1.5 border transition-all ${
             p2Zone === "waiting"
-              ? "bg-slate-50 text-slate-400 border-slate-200/60 animate-pulse"
-              : "bg-red-50 text-red-700 border-red-100"
+              ? "bg-zinc-50 text-zinc-400 border-zinc-200/60"
+              : "bg-[#FFF1F2] text-rose-700 border-rose-100"
           }`}>
             <span>{p2Zone === "waiting" ? "🔍" : "📍"}</span>
             <span>{zoneNameMap[p2Zone] || p2Zone}</span>
@@ -124,27 +128,42 @@ export default function GameMonitorView({
         </div>
       </div>
 
+      {/* Grid Board */}
       <div
-        className={`w-full max-w-lg transition-all duration-1000 ${game.gamePhase === "BATTLE" ? "scale-95 opacity-50 blur-[2px]" : ""}`}
+        className={`w-full max-w-md transition-all duration-1000 ${game.gamePhase === "BATTLE" ? "scale-98 opacity-40 blur-[1px]" : ""}`}
       >
-        <div className="grid grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-3 gap-5">
           {game.displayMatrix.map((row, r) =>
             row.map((val, c) => (
               <button
                 key={`${r}-${c}`}
                 onClick={() => onAction(r, c)}
-                className={`w-full aspect-square rounded-[1.5rem] sm:rounded-[2rem] border-4 ${val === 1 ? "bg-blue-500 border-blue-600 shadow-[0_4px_20px_rgba(59,130,246,0.3)]" : val === 2 ? "bg-red-500 border-red-600 shadow-[0_4px_20px_rgba(239,68,68,0.3)]" : val === 3 ? "bg-amber-500 border-amber-600 animate-pulse" : "bg-white border-zinc-200 hover:border-zinc-300"} transition-all hover:scale-105`}
+                className={`w-full aspect-square rounded-2xl border transition-all duration-300 ${
+                  val === 1
+                    ? "bg-indigo-500 border-indigo-600 shadow-sm"
+                    : val === 2
+                      ? "bg-rose-500 border-rose-600 shadow-sm"
+                      : val === 3
+                        ? "bg-amber-400 border-amber-500 animate-pulse"
+                        : "bg-white border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50"
+                } hover:scale-102`}
               />
             )),
           )}
         </div>
       </div>
 
+      {/* Battle Mode Backdrop Banner */}
       {game.gamePhase === "BATTLE" && (
-        <div className="absolute inset-0 flex items-center justify-center z-50 bg-white/80 backdrop-blur-sm rounded-[2.5rem]">
-          <h2 className="text-4xl sm:text-5xl font-black tracking-widest animate-pulse text-brand-primary">
-            BATTLE!
-          </h2>
+        <div className="absolute inset-0 flex items-center justify-center z-50 bg-white/90 backdrop-blur-sm rounded-3xl animate-fade-in">
+          <div className="text-center px-8 py-6 bg-white border border-zinc-200 rounded-2xl shadow-lg max-w-xs">
+            <span className="text-[10px] font-bold tracking-[0.3em] text-amber-600 bg-amber-50 border border-amber-100 px-3 py-1 rounded-full uppercase">
+              Combat Event
+            </span>
+            <h2 className="text-3xl font-light tracking-widest text-[#1F2937] uppercase mt-4 animate-pulse">
+              Battle!
+            </h2>
+          </div>
         </div>
       )}
     </div>

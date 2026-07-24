@@ -52,14 +52,6 @@ export default function MuseumMonitorView({
     }
 
     if (game.activeMuseumLocation) {
-      // Playing zone music 
-      // const locNames = [
-      //   ["mahanakhon", "asiatique", "giant_swing"],
-      //   ["wat_arun", "bremen_stadium", "townhall"],
-      // ];
-      // const loc = locNames[game.activeMuseumLocation.row][game.activeMuseumLocation.col];
-      // //AudioEngine.playZone(loc, 0.08);
-
       // Stop any background zone music
       AudioEngine.stop();
       setIsPlaying(true);
@@ -79,20 +71,23 @@ export default function MuseumMonitorView({
   }, [activeLocKey, game.language]);
 
   return (
-    <div className="w-full max-w-7xl mx-auto p-4 md:p-8 animate-in fade-in duration-700 flex flex-col h-screen">
-      {/* Header */}
-      <header className="mb-6">
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900">
+    <div className="w-full max-w-7xl mx-auto p-4 md:p-8 animate-fade-in flex flex-col h-screen font-sans text-[#1F2937] bg-[#F9FAFB]">
+      {/* Editorial Header */}
+      <header className="mb-8 border-b border-zinc-200 pb-6">
+        <span className="text-[10px] font-bold tracking-[0.25em] text-[#6B7280] uppercase">
+          Interactive Exhibition
+        </span>
+        <h1 className="text-3xl font-light tracking-wide text-[#1F2937] uppercase mt-2">
           Exhibit Hall
         </h1>
-        <p className="text-slate-500 mt-2">Interactive Museum Map - Select an item to learn more</p>
+        <p className="text-[#6B7280] text-xs font-light tracking-wide mt-1">Select an item on the map grid to learn more about the landmark.</p>
       </header>
 
-      {/* Main layout — flex row so the panel can slide in smoothly */}
+      {/* Main layout — Editorial / Magazine style */}
       <div className="flex flex-row gap-6 flex-grow overflow-hidden">
 
-        {/* Map Section — always visible, grows to fill space */}
-        <div className="flex-1 min-w-0 bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex items-center justify-center relative transition-all duration-500">
+        {/* Map Section */}
+        <div className="flex-1 min-w-0 bg-white p-6 rounded-2xl border border-zinc-200/80 flex items-center justify-center relative transition-all duration-500 shadow-sm">
           <MapViewer
             selectedLand={selectedLand}
             onSelect={(land) => {
@@ -103,10 +98,10 @@ export default function MuseumMonitorView({
           />
         </div>
 
-        {/* Details Panel — slides in from the right when a landmark is selected */}
+        {/* Details Panel */}
         <div
           className={[
-            "bg-white rounded-3xl border border-slate-100 shadow-sm flex flex-col overflow-y-auto",
+            "bg-white rounded-2xl border border-zinc-200/80 shadow-sm flex flex-col overflow-y-auto",
             "transition-all duration-500 ease-in-out",
             selectedLand
               ? "w-[420px] min-w-[320px] opacity-100 translate-x-0 p-8"
@@ -114,13 +109,13 @@ export default function MuseumMonitorView({
           ].join(" ")}
         >
           {selectedLand && (
-            <div className="animate-in slide-in-from-right-4 duration-300 h-full flex flex-col">
-              {/* Visual Audio Indicator */}
+            <div className="animate-fade-in h-full flex flex-col">
+              {/* Muted Sage Audio Indicator */}
               {isPlaying && (
-                <div className="flex items-center gap-2 mb-6 text-emerald-600 font-medium bg-emerald-50 px-3.5 py-1.5 rounded-full w-fit text-xs border border-emerald-100 shadow-sm">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                <div className="flex items-center gap-2 mb-6 text-[#5C7D64] font-medium bg-[#EAF2EC] px-3.5 py-1.5 rounded-full w-fit text-[10px] border border-zinc-200/50 shadow-sm">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#8CA693] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#5C7D64]"></span>
                   </span>
                   Audio Guide Playing
                 </div>
@@ -130,7 +125,7 @@ export default function MuseumMonitorView({
                 onClose={() => onAction(-1, -1)}
                 flat={true}
                 hideGameplayDetails={true}
-                className="w-full h-full"
+                className="w-full h-full text-zinc-800"
               />
             </div>
           )}
