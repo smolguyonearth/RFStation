@@ -1,25 +1,25 @@
-import { Link } from "react-router-dom"
-import { Cpu, Lightbulb, CheckCircle2, Radio, Wrench } from "lucide-react"
+import { Link } from "react-router-dom";
+import { Cpu, Lightbulb, CheckCircle2, Radio, Wrench } from "lucide-react";
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-[#F9FAFB] text-[#1F2937] font-sans p-6 lg:p-10 flex flex-col xl:flex-row gap-10">
+    <div className="min-h-screen bg-[#F9FAFB] text-[#1F2937] font-sans p-4 sm:p-6 lg:p-10 grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-8 lg:gap-10">
       
       {/* ================= LEFT MAIN COLUMN ================= */}
-      <div className="flex-1 flex flex-col gap-8 min-w-0">
+      <div className="lg:col-span-2 xl:col-span-3 flex flex-col gap-8 min-w-0">
         
         {/* Top Header & Search Simulation */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="relative w-full max-w-xs">
+          <div className="relative w-full md:max-w-xs">
             <input
               type="text"
               placeholder="Search project features..."
-              className="w-full bg-[#F3F4F6] border border-zinc-200 rounded-xl px-4 py-2 text-xs font-light text-zinc-600 focus:outline-none focus:border-zinc-300"
+              className="w-full bg-[#F3F4F6] border border-zinc-200 rounded-xl px-4 py-2.5 text-xs font-light text-zinc-600 focus:outline-none focus:border-zinc-300"
             />
           </div>
 
           {/* Filter Pills */}
-          <div className="flex gap-2 overflow-x-auto pb-1">
+          <div className="flex gap-2 overflow-x-auto pb-1.5 scrollbar-none">
             <span className="bg-[#0C1227] text-white px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap cursor-pointer shadow-sm">
               All Sections
             </span>
@@ -35,7 +35,7 @@ export default function HomePage() {
         </div>
 
         {/* Hero Geometric Banner */}
-        <div className="relative rounded-[2rem] bg-gradient-to-r from-blue-700 via-indigo-800 to-purple-900 text-white p-8 md:p-12 overflow-hidden shadow-sm flex flex-col justify-between min-h-[260px]">
+        <div className="relative rounded-[2rem] bg-gradient-to-r from-blue-700 via-indigo-800 to-purple-900 text-white p-6 sm:p-8 md:p-12 overflow-hidden shadow-sm flex flex-col justify-between min-h-[260px]">
           {/* Abstract geometric glass/neon decoration */}
           <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full blur-3xl translate-x-10 -translate-y-10" />
           <div className="absolute bottom-0 left-1/3 w-60 h-60 bg-indigo-500/20 rounded-full blur-3xl" />
@@ -44,7 +44,7 @@ export default function HomePage() {
             <span className="text-[10px] font-bold tracking-[0.3em] text-indigo-200 uppercase bg-white/10 px-3 py-1 rounded-full w-fit">
               Interactive Board Game
             </span>
-            <h1 className="text-3xl md:text-4xl font-extralight tracking-wide leading-tight mt-6">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extralight tracking-wide leading-tight mt-6">
               Bridging the Weser and the Chao Phraya through sound.
             </h1>
             <p className="text-indigo-200 text-xs font-light tracking-wide mt-3 leading-relaxed">
@@ -52,16 +52,16 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="relative z-10 flex flex-wrap gap-3 mt-8">
+          <div className="relative z-10 flex flex-col sm:flex-row gap-3 mt-8">
             <Link
               to="/controller"
-              className="bg-white hover:bg-zinc-100 text-[#0C1227] font-semibold text-xs uppercase tracking-wider px-5 py-3 rounded-xl transition-all shadow-md active:scale-95"
+              className="w-full sm:w-auto text-center bg-white hover:bg-zinc-100 text-[#0C1227] font-semibold text-xs uppercase tracking-wider px-5 py-3.5 rounded-xl transition-all shadow-md active:scale-95"
             >
               Start Console
             </Link>
             <Link
               to="/map"
-              className="border border-white/30 hover:border-white/50 hover:bg-white/5 text-white font-semibold text-xs uppercase tracking-wider px-5 py-3 rounded-xl transition-all active:scale-95"
+              className="w-full sm:w-auto text-center border border-white/30 hover:border-white/50 hover:bg-white/5 text-white font-semibold text-xs uppercase tracking-wider px-5 py-3.5 rounded-xl transition-all active:scale-95"
             >
               View Map
             </Link>
@@ -79,8 +79,8 @@ export default function HomePage() {
             </span>
           </div>
 
-          {/* Dribbble Item Cards */}
-          <div className="grid md:grid-cols-3 gap-6">
+          {/* Dribbble Item Cards - Responsive Layout */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             
             {/* Card 1: Hardware */}
             <div className="bg-white border border-zinc-200/80 rounded-2xl p-6 flex flex-col justify-between hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all group">
@@ -119,7 +119,7 @@ export default function HomePage() {
             </div>
 
             {/* Card 3: Software */}
-            <div className="bg-white border border-zinc-200/80 rounded-2xl p-6 flex flex-col justify-between hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all group">
+            <div className="bg-white border border-zinc-200/80 rounded-2xl p-6 flex flex-col justify-between hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all group sm:col-span-2 lg:col-span-1">
               <div>
                 <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 mb-5">
                   <Cpu size={18} />
@@ -142,9 +142,9 @@ export default function HomePage() {
       </div>
 
       {/* ================= RIGHT SIDE PANEL COLUMN ================= */}
-      <div className="w-full xl:w-80 shrink-0 flex flex-col gap-8">
+      <div className="lg:col-span-1 flex flex-col gap-8 w-full">
         
-        {/* Astro / Status Box (Styled like Dribbble Dark Card) */}
+        {/* Astro / Status Box */}
         <div className="relative rounded-2xl bg-[#0C1227] text-white p-6 shadow-md overflow-hidden min-h-[220px] flex flex-col justify-between">
           <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl" />
           
@@ -178,19 +178,19 @@ export default function HomePage() {
 
           <Link
             to="/display"
-            className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-center text-xs uppercase tracking-wider rounded-xl transition-colors shadow-sm active:scale-95 mt-4 block"
+            className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-center text-xs uppercase tracking-wider rounded-xl transition-colors shadow-sm active:scale-95 mt-6 block"
           >
             Launch Display Screen
           </Link>
         </div>
 
         {/* Project logs feed */}
-        <div className="bg-white border border-zinc-200/80 rounded-2xl p-6 shadow-sm flex-1 flex flex-col">
+        <div className="bg-white border border-zinc-200/80 rounded-2xl p-6 shadow-sm flex flex-col">
           <span className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase block mb-4">
             Recent Activities
           </span>
 
-          <div className="flex flex-col gap-4 flex-grow">
+          <div className="flex flex-col gap-4">
             {[
               { title: "Hardware Calibrated", desc: "Weser & Chao Phraya grid active", icon: Wrench, color: "bg-amber-50 text-amber-600 border border-amber-100" },
               { title: "BGM Loops Configured", desc: "Anti-pop micro fades loaded", icon: Lightbulb, color: "bg-emerald-50 text-emerald-600 border border-emerald-100" },

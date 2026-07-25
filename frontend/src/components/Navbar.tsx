@@ -51,7 +51,7 @@ export default function Navbar() {
                                 `}
                             >
                                 <Icon size={20} className={active ? "text-[#FF7899]" : "text-zinc-400 group-hover:scale-105 transition-transform"} />
-                                
+
                                 {/* Tooltip */}
                                 <span className="absolute left-16 bg-[#333C4E] text-white text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded shadow-sm opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap z-50">
                                     {t(link.title)}
@@ -66,17 +66,16 @@ export default function Navbar() {
                     {/* Language Pills */}
                     <div className="flex flex-col gap-1.5 bg-[#FAF9F6] border border-[#FFF0F3] p-1 rounded-xl w-full shadow-cute-xs">
                         {["en", "th", "de"].map((lng) => (
-                          <button
-                            key={lng}
-                            onClick={() => changeLanguage(lng)}
-                            className={`w-full py-1.5 text-[9px] font-bold rounded-lg transition-all ${
-                              i18n.language === lng
-                                ? "bg-white text-[#FF7899] border border-[#FFD6E0] shadow-sm"
-                                : "text-zinc-400 hover:text-zinc-600"
-                            }`}
-                          >
-                            {lng.toUpperCase()}
-                          </button>
+                            <button
+                                key={lng}
+                                onClick={() => changeLanguage(lng)}
+                                className={`w-full py-1.5 text-[9px] font-bold rounded-lg transition-all ${i18n.language === lng
+                                        ? "bg-white text-[#FF7899] border border-[#FFD6E0] shadow-sm"
+                                        : "text-zinc-400 hover:text-zinc-600"
+                                    }`}
+                            >
+                                {lng.toUpperCase()}
+                            </button>
                         ))}
                     </div>
 
@@ -157,11 +156,10 @@ export default function Navbar() {
                                                 changeLanguage(lng);
                                                 toggleMenu();
                                             }}
-                                            className={`py-2 rounded-lg text-xs font-bold transition-all ${
-                                                i18n.language === lng
+                                            className={`py-2 rounded-lg text-xs font-bold transition-all ${i18n.language === lng
                                                     ? "bg-[#FFEBF0] text-[#FF7899] border border-[#FFD6E0]"
                                                     : "bg-white border border-zinc-200 text-zinc-500 hover:bg-[#FAF9F6]"
-                                            }`}
+                                                }`}
                                         >
                                             {lng.toUpperCase()}
                                         </button>
