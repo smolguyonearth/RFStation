@@ -129,6 +129,11 @@ const app = new Elysia()
     // Broadcast to all connected frontends via WebSocket (instant, in-memory)
     server?.publish('live-data', JSON.stringify(body));
 
+    // Track physical zone in game logic to restrict button presses
+    const { device_code, nearest_device, zone_code } = body as any;
+    game.setPhysicalZone(device_code, zone_code || nearest_device);
+
+
     packageCounter++;
     if (packageCounter % 10 === 0) {
       console.log(`[Backend] Received ${packageCounter} packages from Calliope beacons (Last: ${body.device_code} at ${body.zone_code || body.nearest_device})`);

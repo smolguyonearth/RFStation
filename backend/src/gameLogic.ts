@@ -21,6 +21,24 @@ export class GameLogic {
   p1ClaimHistory: { row: number, col: number }[] = [];
   p2ClaimHistory: { row: number, col: number }[] = [];
 
+  p1PhysicalZone: string | null = null;
+  p2PhysicalZone: string | null = null;
+
+  setPhysicalZone(playerCode: string, zone: string | null) {
+    if (playerCode === 'P1') this.p1PhysicalZone = zone;
+    else if (playerCode === 'P2') this.p2PhysicalZone = zone;
+  }
+
+  private rowColToZone(row: number, col: number): string | null {
+    if (row === 0 && col === 0) return 'A';
+    if (row === 0 && col === 1) return 'B';
+    if (row === 0 && col === 2) return 'C';
+    if (row === 1 && col === 0) return 'D';
+    if (row === 1 && col === 1) return 'E';
+    if (row === 1 && col === 2) return 'F';
+    return null;
+  }
+
   recordClaim(row: number, col: number, player: number) {
     if (player === 1) {
       this.p1ClaimHistory = this.p1ClaimHistory.filter(c => !(c.row === row && c.col === col));
@@ -116,6 +134,16 @@ export class GameLogic {
 
     if (this.mode === 'GAME') {
       if (this.gamePhase !== 'TURN') return false; // Ignore actions if not in TURN phase
+
+      // --- PHYSICAL LOCATION CHECK ---
+      const requiredZone = this.rowColToZone(row, col);
+      const activeZone = this.currentPlayer === 1 ? this.p1PhysicalZone : this.p2PhysicalZone;
+
+      if (requiredZone !== activeZone) {
+        console.log(`[GameLogic] Reject action: Player ${this.currentPlayer} is at '${activeZone}', but tried to press button for '${requiredZone}'`);
+        return false;
+      }
+      // -------------------------------
 
       const currentOwner = this.matrix[row][col];
 
