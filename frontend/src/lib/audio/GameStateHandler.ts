@@ -105,58 +105,14 @@ export class GameStateHandler {
         }
 
         const currentPlayer = gameState.currentPlayer;
-        const lastInteracted = currentPlayer === 1 ? this.getP1LastLocation() : this.getP2LastLocation();
 
-        const matrixToSounds = [
-            ["asiatique", "mahanakhon", "giant_swing"],
-            ["wat_arun", "bremen_stadium", "townhall"],
-        ];
-
-        // 1. Prioritize real-time physical zone from Calliope
+        // Strictly prioritize real-time physical zone from Calliope
         const physicalZone = currentPlayer === 1 ? this.p1PhysicalZone : this.p2PhysicalZone;
         if (physicalZone && physicalZone !== "waiting") {
             return physicalZone;
         }
 
-        // 2. Fallback to lastInteractedLocation state
-        if (lastInteracted && lastInteracted.row != null && lastInteracted.col != null) {
-            if (matrixToSounds[lastInteracted.row] && matrixToSounds[lastInteracted.row][lastInteracted.col]) {
-                return matrixToSounds[lastInteracted.row][lastInteracted.col];
-            }
-        }
-
-        // 2. Fallback to claim history logic if lastInteracted is null
-        const history = currentPlayer === 1 ? gameState.p1ClaimHistory : gameState.p2ClaimHistory;
-
-        // Helper to check localStorage fallback
-        const getLocalStorageFallback = (): string | null => {
-            if (typeof window !== "undefined" && window.localStorage) {
-                return localStorage.getItem(`player${currentPlayer}_last_location`);
-            }
-            return null;
-        };
-
-        if (!history || !Array.isArray(history) || history.length === 0) {
-            return getLocalStorageFallback();
-        }
-
-        const latest = history[history.length - 1];
-        if (!latest || latest.row == null || latest.col == null) {
-            return getLocalStorageFallback();
-        }
-
-        if (!matrixToSounds[latest.row] || !matrixToSounds[latest.row][latest.col]) {
-            return getLocalStorageFallback();
-        }
-
-        const soundKey = matrixToSounds[latest.row][latest.col];
-
-        // Save to persistent state
-        if (typeof window !== "undefined" && window.localStorage) {
-            localStorage.setItem(`player${currentPlayer}_last_location`, soundKey);
-        }
-
-        return soundKey;
+        return null;
     }
 
     static handleGameUpdate(gameState: any): void {

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Landmarks } from "@/constants/landmark";
 import { Swords, Loader2, Trophy, Sparkles } from "lucide-react";
 import { AudioEngine } from "@/lib/AudioEngine";
+import MapViewer from "@/components/Map/MapViewer";
 
 type AppMode = "IDLE" | "MUSEUM" | "GAME";
 type Language = "EN" | "TH" | "DE";
@@ -61,19 +62,19 @@ export default function GameMonitorView({
       <div className="w-full max-w-6xl mx-auto flex flex-col items-center justify-center relative select-none px-4 py-12 font-sans text-[#333C4E]">
         <div className="w-full max-w-2xl bg-white border border-[#FFF0F3] rounded-[2.5rem] p-12 shadow-cute flex flex-col items-center justify-center text-center relative overflow-hidden animate-pop">
           <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 via-[#FF7899] to-[#2BB673]" />
-          
+
           <div className="w-20 h-20 bg-[#FFEBF0] border border-[#FFD6E0] flex items-center justify-center rounded-full text-3xl mb-8 shadow-cute animate-pulse">
             🔊
           </div>
-          
+
           <span className="text-[10px] font-black tracking-[0.25em] text-[#FF7899] bg-[#FFEBF0] border border-[#FFD6E0] px-4 py-2 rounded-full uppercase mb-4 shadow-cute-xs">
             {t("game.intro_tag")}
           </span>
-          
+
           <h2 className="text-2xl md:text-3xl font-extrabold text-[#333C4E] mb-2 tracking-widest uppercase text-center">
             {t("game.intro_title")}
           </h2>
-          
+
           <p className="text-xs text-zinc-400 font-bold max-w-sm text-center leading-relaxed mb-6 uppercase tracking-wider">
             {t("game.intro_desc")}
           </p>
@@ -107,14 +108,33 @@ export default function GameMonitorView({
     ["lm_10", "lm_02", "lm_04"],
   ];
 
+  const ownershipMap: Record<string, number> = {};
+  game.displayMatrix.forEach((row, r) => {
+    row.forEach((val, c) => {
+      const landmarkId = matrixToLandmarkId[r][c];
+      ownershipMap[landmarkId] = val;
+    });
+  });
+
+  const handleMapSelect = (land: any) => {
+    for (let r = 0; r < matrixToLandmarkId.length; r++) {
+      for (let c = 0; c < matrixToLandmarkId[r].length; c++) {
+        if (matrixToLandmarkId[r][c] === land.id) {
+          onAction(r, c);
+          return;
+        }
+      }
+    }
+  };
+
   return (
-    <div className="w-full max-w-6xl mx-auto flex flex-col items-center relative select-none px-4 py-6 font-sans text-[#333C4E]">
+    <div className="w-full max-w-6xl mx-auto flex flex-col items-center relative select-none px-4 py-6 font-sans text-[#333C4E] h-screen overflow-hidden">
       {/* Background Decorative Ambient Blobs */}
       <div className="absolute top-10 left-10 w-72 h-72 rounded-full bg-[#FF7899]/3 blur-[100px] animate-float-slow pointer-events-none" />
       <div className="absolute bottom-10 right-10 w-72 h-72 rounded-full bg-[#2BB673]/3 blur-[100px] animate-float-medium pointer-events-none" />
 
       {/* Header Panel (Dropdowns removed) */}
-      <div className="w-full flex justify-between items-center mb-6 z-10">
+      <div className="w-full flex justify-between items-center mb-6 z-10 shrink-0">
         <div className="flex items-center gap-3">
           <div className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF7899] opacity-75"></span>
@@ -130,49 +150,61 @@ export default function GameMonitorView({
       </div>
 
       {/* Main Glass HUD Dashboard */}
-      <div className="w-full bg-white border border-[#FFF0F3] rounded-[2.5rem] p-8 shadow-cute flex flex-col items-center gap-10 z-10 relative overflow-hidden">
+      <div className="w-full bg-white border border-[#FFF0F3] rounded-[2.5rem] p-6 shadow-cute flex flex-col lg:flex-row gap-6 z-10 relative overflow-hidden flex-1 min-h-[400px]">
 
-        {/* Scoreboard Row */}
-        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+        {/* Dynamic Game MapViewer (Left/Main Side) */}
+        <div
+          className={`w-full lg:w-2/3 flex-1 min-h-[400px] bg-[#FAF9F6] border border-[#FFF0F3] rounded-[2rem] overflow-hidden transition-all duration-700 shadow-inner ${game.gamePhase === "BATTLE" ? "scale-[0.97] opacity-40 blur-[1px] pointer-events-none" : ""
+            }`}
+        >
+          <MapViewer
+            selectedLand={null}
+            onSelect={handleMapSelect}
+            ownershipMap={ownershipMap}
+          />
+        </div>
+
+        {/* Vertical Scoreboard Sidebar (Right Side) */}
+        <div className="w-full lg:w-64 flex flex-col gap-4 lg:gap-6 items-stretch shrink-0 overflow-y-auto pb-4 lg:pb-0">
 
           {/* Player 1 Box (Neon Pink Theme) */}
           <div
-            className={`relative rounded-3xl p-6 border transition-all duration-300 overflow-hidden flex items-center justify-between ${game.currentPlayer === 1
+            className={`relative rounded-3xl p-6 border transition-all duration-300 overflow-hidden flex flex-col items-center text-center ${game.currentPlayer === 1
               ? "border-[#FFD6E0] bg-[#FFEBF0]/40 shadow-cute-sm scale-102"
               : "border-transparent bg-transparent opacity-40"
               }`}
           >
-            <div className="flex flex-col gap-1.5">
-              <span className="text-[10px] font-black tracking-[0.25em] text-[#FF7899] uppercase flex items-center gap-1.5">
+            <div className="flex flex-col gap-1.5 items-center w-full">
+              <span className="text-[10px] font-black tracking-[0.25em] text-[#FF7899] uppercase flex items-center justify-center gap-1.5 w-full">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#FF7899] animate-pulse" />
                 {t("game.p1")}
               </span>
-              <div className="flex items-baseline">
+              <div className="flex items-baseline justify-center">
                 <span className="text-6xl font-black text-zinc-800 font-mono leading-none tracking-tight">
                   {game.scores[1]}
                 </span>
               </div>
-              <div className={`mt-2 px-3 py-1 rounded-xl text-[9px] font-black inline-flex items-center gap-1.5 border transition-all duration-300 w-fit ${p1Zone === "waiting"
+              <div className={`mt-2 px-3 py-1.5 rounded-xl text-[9px] font-black inline-flex items-center justify-center gap-1.5 border transition-all duration-300 w-full max-w-[160px] ${p1Zone === "waiting"
                 ? "bg-[#FAF9F6] text-zinc-400 border-zinc-100"
                 : "bg-[#FFEBF0] text-[#FF7899] border-[#FFD6E0]"
                 }`}>
                 <span>{p1Zone === "waiting" ? <Loader2 size={10} className="animate-spin text-zinc-400" /> : "📍"}</span>
-                <span>{(zoneNameMap[p1Zone] || p1Zone).toUpperCase()}</span>
+                <span className="truncate">{(zoneNameMap[p1Zone] || p1Zone).toUpperCase()}</span>
               </div>
             </div>
             {game.currentPlayer === 1 && (
-              <div className="absolute right-6 top-6 bg-[#FF7899] text-white px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider animate-pulse shadow-sm">
+              <div className="absolute right-4 top-4 bg-[#FF7899] text-white px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider animate-pulse shadow-sm">
                 {t("game.active_turn")}
               </div>
             )}
           </div>
 
           {/* Central Game Phase/Status Panel */}
-          <div className="flex flex-col items-center text-center p-4">
-            <h2 className="text-[10px] font-black tracking-[0.35em] text-zinc-400 uppercase mb-2">
+          <div className="flex flex-col items-center text-center p-4 bg-[#FAF9F6] border border-[#FFF0F3] rounded-3xl shadow-inner my-auto">
+            <h2 className="text-[10px] font-black tracking-[0.35em] text-zinc-400 uppercase mb-3">
               {t("game.territory_conquest")}
             </h2>
-            <div className="px-5 py-2 border border-[#FFF0F3] bg-[#FAF9F6] rounded-xl text-zinc-600 text-xs font-bold uppercase tracking-widest shadow-cute-xs flex items-center gap-2">
+            <div className="px-5 py-2.5 border border-zinc-200 bg-white rounded-xl text-zinc-600 text-xs font-bold uppercase tracking-widest shadow-cute-xs flex items-center gap-2">
               {game.gamePhase === "BATTLE" ? (
                 <>
                   <Swords size={14} className="text-amber-500 animate-bounce" />
@@ -192,7 +224,7 @@ export default function GameMonitorView({
             </div>
 
             {/* Dynamic Turn Detail Description */}
-            <p className="text-[10px] text-zinc-400 font-bold uppercase mt-3 tracking-widest leading-relaxed">
+            <p className="text-[10px] text-zinc-400 font-bold uppercase mt-4 tracking-widest leading-relaxed px-2">
               {game.gamePhase === "TURN"
                 ? t("game.turn_desc", { player: game.currentPlayer })
                 : game.gamePhase === "BATTLE"
@@ -205,117 +237,33 @@ export default function GameMonitorView({
 
           {/* Player 2 Box (Neon Emerald/Green Theme) */}
           <div
-            className={`relative rounded-3xl p-6 border transition-all duration-300 overflow-hidden flex items-center justify-between ${game.currentPlayer === 2
+            className={`relative rounded-3xl p-6 border transition-all duration-300 overflow-hidden flex flex-col items-center text-center ${game.currentPlayer === 2
               ? "border-[#C2F0D9] bg-[#E1F7EC]/40 shadow-cute-sm scale-102"
               : "border-transparent bg-transparent opacity-40"
               }`}
           >
-            <div className="flex flex-col gap-1.5">
-              <span className="text-[10px] font-black tracking-[0.25em] text-[#2BB673] uppercase flex items-center gap-1.5">
+            <div className="flex flex-col gap-1.5 items-center w-full">
+              <span className="text-[10px] font-black tracking-[0.25em] text-[#2BB673] uppercase flex items-center justify-center gap-1.5 w-full">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#2BB673] animate-pulse" />
                 {t("game.p2")}
               </span>
-              <div className="flex items-baseline">
+              <div className="flex items-baseline justify-center">
                 <span className="text-6xl font-black text-zinc-800 font-mono leading-none tracking-tight">
                   {game.scores[2]}
                 </span>
               </div>
-              <div className={`mt-2 px-3 py-1 rounded-xl text-[9px] font-black inline-flex items-center gap-1.5 border transition-all duration-300 w-fit ${p2Zone === "waiting"
+              <div className={`mt-2 px-3 py-1.5 rounded-xl text-[9px] font-black inline-flex items-center justify-center gap-1.5 border transition-all duration-300 w-full max-w-[160px] ${p2Zone === "waiting"
                 ? "bg-[#FAF9F6] text-zinc-400 border-zinc-100"
                 : "bg-[#E1F7EC] text-[#2BB673] border-[#C2F0D9]"
                 }`}>
                 <span>{p2Zone === "waiting" ? <Loader2 size={10} className="animate-spin text-zinc-400" /> : "📍"}</span>
-                <span>{(zoneNameMap[p2Zone] || p2Zone).toUpperCase()}</span>
+                <span className="truncate">{(zoneNameMap[p2Zone] || p2Zone).toUpperCase()}</span>
               </div>
             </div>
             {game.currentPlayer === 2 && (
-              <div className="absolute right-6 top-6 bg-[#2BB673] text-white px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider animate-pulse shadow-sm">
+              <div className="absolute right-4 top-4 bg-[#2BB673] text-white px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider animate-pulse shadow-sm">
                 {t("game.active_turn")}
               </div>
-            )}
-          </div>
-        </div>
-
-        {/* Dynamic Game Grid */}
-        <div
-          className={`w-full max-w-4xl transition-all duration-700 ${game.gamePhase === "BATTLE" ? "scale-[0.97] opacity-40 blur-[1px] pointer-events-none" : ""
-            }`}
-        >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {game.displayMatrix.map((row, r) =>
-              row.map((val, c) => {
-                const landmarkId = matrixToLandmarkId[r][c];
-                const landmark = Landmarks.find((l) => l.id === landmarkId);
-
-                // Styling classes according to ownership state (val)
-                let borderClass = "border-[#FFF0F3] bg-white hover:border-[#FFD6E0] hover:shadow-cute-xs";
-                let badgeContent = null;
-                let colorWash = null;
-
-                if (val === 1) {
-                  borderClass = "border-[#FF7899] shadow-cute-sm";
-                  badgeContent = (
-                    <div className="absolute top-3 right-3 bg-[#FF7899] text-white px-2.5 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider shadow-sm">
-                      {t("game.secured_p1")}
-                    </div>
-                  );
-                  colorWash = <div className="absolute inset-0 bg-[#FF7899]/5 mix-blend-color pointer-events-none" />;
-                } else if (val === 2) {
-                  borderClass = "border-[#2BB673] shadow-cute-sm";
-                  badgeContent = (
-                    <div className="absolute top-3 right-3 bg-[#2BB673] text-white px-2.5 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider shadow-sm">
-                      {t("game.secured_p2")}
-                    </div>
-                  );
-                  colorWash = <div className="absolute inset-0 bg-[#2BB673]/5 mix-blend-color pointer-events-none" />;
-                } else if (val === 3) {
-                  borderClass = "border-amber-400 shadow-cute-sm animate-pulse";
-                  badgeContent = (
-                    <div className="absolute top-3 right-3 bg-amber-500 text-white px-2.5 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider animate-pulse shadow-sm">
-                      {t("game.contested")}
-                    </div>
-                  );
-                  colorWash = <div className="absolute inset-0 bg-amber-500/5 mix-blend-color pointer-events-none" />;
-                }
-
-                return (
-                  <button
-                    key={`${r}-${c}`}
-                    onClick={() => onAction(r, c)}
-                    className={`relative w-full aspect-[4/3] rounded-[2rem] overflow-hidden border-2 transition-all duration-300 group shadow-cute-xs active:scale-[0.97] cursor-pointer ${borderClass}`}
-                  >
-                    {/* Landmark Image Background */}
-                    {landmark?.image ? (
-                      <img
-                        src={landmark.image}
-                        alt=""
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-108"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-slate-100" />
-                    )}
-
-                    {/* Dark Vignette Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent group-hover:from-black/80 transition-all duration-300" />
-
-                    {/* Team Color Wash */}
-                    {colorWash}
-
-                    {/* Ownership Status Badge */}
-                    {badgeContent}
-
-                    {/* Landmark Metadata Overlay */}
-                    <div className="absolute bottom-4 left-4 right-4 text-left">
-                      <h4 className="text-sm font-extrabold tracking-wide text-white uppercase truncate drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
-                        {t(landmark?.name || "")}
-                      </h4>
-                      <p className="text-[8px] text-zinc-200 font-bold uppercase tracking-widest mt-0.5 truncate drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]">
-                        {landmark?.resources?.join(" • ")}
-                      </p>
-                    </div>
-                  </button>
-                );
-              })
             )}
           </div>
         </div>

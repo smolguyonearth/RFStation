@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Dice from '@/components/Dice';
 import { useSwipe } from '@/hooks/useSwipe';
 import { useTranslation } from "react-i18next";
@@ -9,6 +9,15 @@ export default function InitRollPhase({ gameState, startGame }: any) {
     const [p1Roll, setP1Roll] = useState<number | null>(null);
     const [p2Roll, setP2Roll] = useState<number | null>(null);
     const [skippedIntro, setSkippedIntro] = useState(!!sessionStorage.getItem("skipped_intro"));
+
+    useEffect(() => {
+        if (gameState?.introActive) {
+            setStep("P1_ROLL");
+            setP1Roll(null);
+            setP2Roll(null);
+            setSkippedIntro(false);
+        }
+    }, [gameState?.introActive]);
 
     const isIntroActive = gameState?.introActive && !skippedIntro;
 

@@ -100,6 +100,7 @@ export default function Controller() {
     localStorage.removeItem("player2_last_location");
     localStorage.removeItem("p1_last_interacted");
     localStorage.removeItem("p2_last_interacted");
+    sessionStorage.removeItem("skipped_intro");
     await fetch(`/api/game/reset`, { method: "POST" });
   };
 

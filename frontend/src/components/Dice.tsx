@@ -46,8 +46,6 @@ export default function Dice({ mode, onRoll, label, onBeforeRoll, resetTrigger }
   ) => {
     setIsRolling(true);
     setPop(false);
-    if (tubeFillRef.current) tubeFillRef.current.style.width = '0%';
-    tubeValueRef.current = 0;
 
     let rolls = 0;
     const maxRolls = 12;
