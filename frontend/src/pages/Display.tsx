@@ -2,8 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import MuseumMonitorView from "@/components/Mode/MuseumMonitorView";
 import GameMonitorView from "@/components/Mode/GameMonitorView";
 import { AudioEngine } from "@/lib/AudioEngine";
+import i18n from "@/i18n";
+import { useTranslation } from "react-i18next";
 
 export default function Game() {
+  const { t } = useTranslation();
   const [game, setGame] = useState<any>(null);
   const gameRef = useRef<any>(null);
   const prevModeRef = useRef<string | null>(null);
@@ -11,6 +14,12 @@ export default function Game() {
   useEffect(() => {
     gameRef.current = game;
   }, [game]);
+
+  useEffect(() => {
+    if (game?.language) {
+      i18n.changeLanguage(game.language.toLowerCase());
+    }
+  }, [game?.language]);
 
   const applyAudioForGameState = (nextGame: any) => {
     if (!nextGame) return;
@@ -133,7 +142,7 @@ export default function Game() {
         <div className="flex flex-col items-center gap-4">
           <div className="w-10 h-10 border-4 border-zinc-200 border-t-zinc-500 rounded-full animate-spin" />
           <span className="text-[10px] uppercase tracking-widest font-bold text-zinc-500 animate-pulse">
-            Connecting to system core...
+            {t("display.connecting")}
           </span>
         </div>
       </div>
@@ -148,10 +157,10 @@ export default function Game() {
               💤
             </div>
             <h1 className="text-2xl font-black text-zinc-800 uppercase tracking-wider">
-              System Standby
+              {t("display.standby_title")}
             </h1>
             <p className="text-zinc-500 font-bold text-xs uppercase tracking-widest mt-2">
-              Waiting for tablet controls or physical board interactions
+              {t("display.standby_desc")}
             </p>
           </div>
         )}

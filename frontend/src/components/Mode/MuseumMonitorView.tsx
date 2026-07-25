@@ -1,4 +1,5 @@
 import LandmarkDetails from "@/components/Map/LandmarkDetails";
+import { useTranslation } from "react-i18next";
 import { Landmarks } from "@/constants/landmark";
 import mapVectorBg from "@/assets/Map_final_vecter.webp";
 import { useEffect, useRef } from "react";
@@ -29,6 +30,7 @@ export default function MuseumMonitorView({
   game: GameData;
   onAction: (r: number, c: number) => void;
 }) {
+  const { t } = useTranslation();
   const narrationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const activeLocKey = game.activeMuseumLocation
@@ -119,13 +121,13 @@ export default function MuseumMonitorView({
       <header className="mb-6 border-b border-[#FFF0F3] pb-6 flex justify-between items-baseline">
         <div>
           <span className="text-[10px] font-bold tracking-[0.25em] text-[#FF7899] bg-[#FFEBF0] px-3.5 py-1.5 rounded-full uppercase border border-[#FFD6E0] shadow-cute-xs inline-block">
-            Interactive Exhibition
+            {t("museum.exhibit_tag")}
           </span>
           <h1 className="text-3xl font-extrabold tracking-wide text-[#333C4E] uppercase mt-4">
-            Exhibit Hall
+            {t("museum.exhibit_title")}
           </h1>
           <p className="text-zinc-400 text-xs font-bold uppercase mt-1">
-            {selectedLand ? "Currently exploring landmark details." : "Use the controller tablet to select a landmark."}
+            {selectedLand ? t("museum.exploring") : t("museum.use_controller")}
           </p>
         </div>
       </header>
@@ -149,10 +151,10 @@ export default function MuseumMonitorView({
               <img src={mapVectorBg} className="w-full h-full object-contain opacity-90 rounded-[2rem]" />
             </div>
             <h2 className="text-2xl font-black text-[#333C4E] uppercase tracking-wide">
-              Exhibition Active
+              {t("museum.exhibition_active")}
             </h2>
             <p className="text-zinc-400 text-xs font-bold uppercase mt-2 tracking-widest leading-relaxed max-w-sm">
-              Please select a landmark on the controller tablet to explore its story.
+              {t("museum.select_to_explore")}
             </p>
           </div>
         )}
@@ -160,7 +162,7 @@ export default function MuseumMonitorView({
 
       {/* Footer */}
       <div className="text-center text-[10px] font-bold text-zinc-400 tracking-[0.25em] uppercase pt-4 border-t border-[#FFF0F3]">
-        RFStation Display Console • V3.2
+        {t("museum.footer")}
       </div>
     </div>
   );

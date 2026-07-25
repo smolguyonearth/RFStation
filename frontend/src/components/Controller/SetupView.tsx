@@ -1,12 +1,16 @@
 import { useState } from "react";
 import type { AppMode, Language } from "@/types/game.types";
+import { useTranslation } from "react-i18next";
 
 export default function SetupView({
   setMode,
 }: {
   setMode: (mode: AppMode, lang: Language) => void;
 }) {
-  const [selectedLang, setSelectedLang] = useState<Language>("EN");
+  const { t, i18n } = useTranslation();
+  const [selectedLang, setSelectedLang] = useState<Language>(
+    (i18n.language.toUpperCase() as Language) || "EN"
+  );
 
   return (
     <div className="flex-1 p-6 md:p-12 flex flex-col items-center justify-center animate-fade-in min-h-screen bg-[#FAF9F6] text-[#333C4E] font-sans relative overflow-hidden select-none">
@@ -22,13 +26,13 @@ export default function SetupView({
         {/* Header inside the central card */}
         <div className="text-center mb-12 max-w-md w-full">
           <span className="text-[10px] font-extrabold tracking-[0.2em] text-[#FF7899] bg-[#FFEBF0] border border-[#FFD6E0] px-4 py-2 rounded-full uppercase">
-            Station Control System
+            {t("setup.system")}
           </span>
           <h1 className="text-3xl md:text-4xl font-extrabold mt-8 tracking-wide text-[#333C4E] uppercase leading-none">
-            Select Mode
+            {t("setup.title")}
           </h1>
           <p className="text-zinc-400 text-xs mt-4 tracking-wide font-medium max-w-xs mx-auto leading-relaxed">
-            Initialize the station guide system or start a competitive local match.
+            {t("setup.subtitle")}
           </p>
         </div>
 
@@ -37,7 +41,10 @@ export default function SetupView({
           {(["EN", "TH", "DE"] as Language[]).map((lang) => (
             <button
               key={lang}
-              onClick={() => setSelectedLang(lang)}
+              onClick={() => {
+                setSelectedLang(lang);
+                i18n.changeLanguage(lang.toLowerCase());
+              }}
               className={`w-14 h-9 text-xs font-extrabold rounded-xl transition-all duration-300 ${
                 selectedLang === lang
                   ? "bg-[#FFEBF0] text-[#FF7899] border border-[#FFD6E0] shadow-sm"
@@ -73,10 +80,10 @@ export default function SetupView({
 
             <div>
               <h2 className="text-lg font-extrabold text-[#333C4E] tracking-wide group-hover:text-[#2BB673] transition-colors">
-                Museum Mode
+                {t("setup.museum_title")}
               </h2>
               <p className="text-zinc-400 text-xs font-bold tracking-wide mt-2">
-                Interactive Landmark Guide & Audio Narration
+                {t("setup.museum_subtitle")}
               </p>
             </div>
           </button>
@@ -102,10 +109,10 @@ export default function SetupView({
 
             <div>
               <h2 className="text-lg font-extrabold text-[#333C4E] tracking-wide group-hover:text-[#FF7899] transition-colors">
-                Game Mode
+                {t("setup.game_title")}
               </h2>
               <p className="text-zinc-400 text-xs font-bold tracking-wide mt-2">
-                Competitive 2-Player Territory Conquest
+                {t("setup.game_subtitle")}
               </p>
             </div>
           </button>

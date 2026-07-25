@@ -67,15 +67,15 @@ export default function GameMonitorView({
           </div>
           
           <span className="text-[10px] font-black tracking-[0.25em] text-[#FF7899] bg-[#FFEBF0] border border-[#FFD6E0] px-4 py-2 rounded-full uppercase mb-4 shadow-cute-xs">
-            Phase 0: Introduction
+            {t("game.intro_tag")}
           </span>
           
           <h2 className="text-2xl md:text-3xl font-extrabold text-[#333C4E] mb-2 tracking-widest uppercase text-center">
-            Audio Guide Active
+            {t("game.intro_title")}
           </h2>
           
           <p className="text-xs text-zinc-400 font-bold max-w-sm text-center leading-relaxed mb-6 uppercase tracking-wider">
-            Please listen to the instructions on the main display speakers.
+            {t("game.intro_desc")}
           </p>
 
           <div className="flex items-center gap-3 bg-[#E1F7EC] border border-[#C2F0D9] px-5 py-2.5 rounded-xl shadow-cute-xs">
@@ -84,7 +84,7 @@ export default function GameMonitorView({
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
             <span className="text-[9px] font-black tracking-wider text-emerald-800 uppercase">
-              Language: {game.language || "EN"}
+              {t("museum.language")}: {game.language || "EN"}
             </span>
           </div>
         </div>
@@ -121,11 +121,11 @@ export default function GameMonitorView({
             <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FF7899]"></span>
           </div>
           <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400">
-            EXHIBITION CONSOLE • LIVE
+            {t("game.exhibit_console")}
           </span>
         </div>
         <div className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">
-          RFSTATION V3.2
+          {t("game.footer_version")}
         </div>
       </div>
 
@@ -145,7 +145,7 @@ export default function GameMonitorView({
             <div className="flex flex-col gap-1.5">
               <span className="text-[10px] font-black tracking-[0.25em] text-[#FF7899] uppercase flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#FF7899] animate-pulse" />
-                PLAYER 1
+                {t("game.p1")}
               </span>
               <div className="flex items-baseline">
                 <span className="text-6xl font-black text-zinc-800 font-mono leading-none tracking-tight">
@@ -162,7 +162,7 @@ export default function GameMonitorView({
             </div>
             {game.currentPlayer === 1 && (
               <div className="absolute right-6 top-6 bg-[#FF7899] text-white px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider animate-pulse shadow-sm">
-                ACTIVE TURN
+                {t("game.active_turn")}
               </div>
             )}
           </div>
@@ -170,23 +170,23 @@ export default function GameMonitorView({
           {/* Central Game Phase/Status Panel */}
           <div className="flex flex-col items-center text-center p-4">
             <h2 className="text-[10px] font-black tracking-[0.35em] text-zinc-400 uppercase mb-2">
-              TERRITORY CONQUEST
+              {t("game.territory_conquest")}
             </h2>
             <div className="px-5 py-2 border border-[#FFF0F3] bg-[#FAF9F6] rounded-xl text-zinc-600 text-xs font-bold uppercase tracking-widest shadow-cute-xs flex items-center gap-2">
               {game.gamePhase === "BATTLE" ? (
                 <>
                   <Swords size={14} className="text-amber-500 animate-bounce" />
-                  <span className="text-amber-500 font-sans tracking-[0.1em]">{game.gamePhase} PHASE</span>
+                  <span className="text-amber-500 font-sans tracking-[0.1em]">{t("game.phase", { phase: game.gamePhase })}</span>
                 </>
               ) : game.gamePhase === "END" ? (
                 <>
                   <Trophy size={14} className="text-yellow-500 animate-bounce" />
-                  <span className="text-yellow-500 font-sans tracking-[0.1em]">{game.gamePhase} PHASE</span>
+                  <span className="text-yellow-500 font-sans tracking-[0.1em]">{t("game.phase", { phase: game.gamePhase })}</span>
                 </>
               ) : (
                 <>
                   <Sparkles size={14} className="text-[#FF7899]" />
-                  <span className="text-zinc-600 font-sans tracking-[0.1em]">{game.gamePhase} PHASE</span>
+                  <span className="text-zinc-600 font-sans tracking-[0.1em]">{t("game.phase", { phase: game.gamePhase })}</span>
                 </>
               )}
             </div>
@@ -194,12 +194,12 @@ export default function GameMonitorView({
             {/* Dynamic Turn Detail Description */}
             <p className="text-[10px] text-zinc-400 font-bold uppercase mt-3 tracking-widest leading-relaxed">
               {game.gamePhase === "TURN"
-                ? `Player ${game.currentPlayer}'s turn to claim territory`
+                ? t("game.turn_desc", { player: game.currentPlayer })
                 : game.gamePhase === "BATTLE"
-                  ? "Combat event initiated! Resolve battle on table"
+                  ? t("game.combat_desc")
                   : game.gamePhase === "END"
-                    ? "Game Over! Calculating champion"
-                    : "System initializing match data"}
+                    ? t("game.gameover_desc")
+                    : t("game.init_desc")}
             </p>
           </div>
 
@@ -213,7 +213,7 @@ export default function GameMonitorView({
             <div className="flex flex-col gap-1.5">
               <span className="text-[10px] font-black tracking-[0.25em] text-[#2BB673] uppercase flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#2BB673] animate-pulse" />
-                PLAYER 2
+                {t("game.p2")}
               </span>
               <div className="flex items-baseline">
                 <span className="text-6xl font-black text-zinc-800 font-mono leading-none tracking-tight">
@@ -230,13 +230,13 @@ export default function GameMonitorView({
             </div>
             {game.currentPlayer === 2 && (
               <div className="absolute right-6 top-6 bg-[#2BB673] text-white px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider animate-pulse shadow-sm">
-                ACTIVE TURN
+                {t("game.active_turn")}
               </div>
             )}
           </div>
         </div>
 
-        {/* Dynamic Game Board Grid */}
+        {/* Dynamic Game Grid */}
         <div
           className={`w-full max-w-4xl transition-all duration-700 ${game.gamePhase === "BATTLE" ? "scale-[0.97] opacity-40 blur-[1px] pointer-events-none" : ""
             }`}
@@ -256,7 +256,7 @@ export default function GameMonitorView({
                   borderClass = "border-[#FF7899] shadow-cute-sm";
                   badgeContent = (
                     <div className="absolute top-3 right-3 bg-[#FF7899] text-white px-2.5 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider shadow-sm">
-                      P1 SECURED
+                      {t("game.secured_p1")}
                     </div>
                   );
                   colorWash = <div className="absolute inset-0 bg-[#FF7899]/5 mix-blend-color pointer-events-none" />;
@@ -264,7 +264,7 @@ export default function GameMonitorView({
                   borderClass = "border-[#2BB673] shadow-cute-sm";
                   badgeContent = (
                     <div className="absolute top-3 right-3 bg-[#2BB673] text-white px-2.5 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider shadow-sm">
-                      P2 SECURED
+                      {t("game.secured_p2")}
                     </div>
                   );
                   colorWash = <div className="absolute inset-0 bg-[#2BB673]/5 mix-blend-color pointer-events-none" />;
@@ -272,7 +272,7 @@ export default function GameMonitorView({
                   borderClass = "border-amber-400 shadow-cute-sm animate-pulse";
                   badgeContent = (
                     <div className="absolute top-3 right-3 bg-amber-500 text-white px-2.5 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider animate-pulse shadow-sm">
-                      CONTESTED
+                      {t("game.contested")}
                     </div>
                   );
                   colorWash = <div className="absolute inset-0 bg-amber-500/5 mix-blend-color pointer-events-none" />;
@@ -300,8 +300,6 @@ export default function GameMonitorView({
 
                     {/* Team Color Wash */}
                     {colorWash}
-
-                    {/* Points Tag Removed */}
 
                     {/* Ownership Status Badge */}
                     {badgeContent}
@@ -334,13 +332,13 @@ export default function GameMonitorView({
                 <Swords size={40} className="text-amber-500" />
               </div>
               <span className="text-[10px] font-bold tracking-[0.25em] text-[#FF7899] bg-[#FFEBF0] border border-[#FFD6E0] px-4 py-1.5 rounded-xl uppercase shadow-cute-xs">
-                Combat Encounter
+                {t("game.combat_encounter")}
               </span>
               <h2 className="text-3xl font-extrabold tracking-widest text-[#333C4E] uppercase mt-6 mb-3 animate-pulse">
-                BATTLE !
+                {t("game.battle_alert")}
               </h2>
               <p className="text-zinc-500 text-xs font-bold leading-relaxed max-w-xs mt-2 uppercase tracking-widest leading-relaxed">
-                A clash is detected! Resolve the territorial skirmish on the interactive physical game board now.
+                {t("game.battle_desc")}
               </p>
             </div>
           </div>

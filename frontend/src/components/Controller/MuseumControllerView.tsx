@@ -53,20 +53,20 @@ export default function MuseumControllerView({
       <div className="relative z-50 flex justify-between items-baseline pb-6 border-b border-[#FFF0F3]">
         <div>
           <span className="text-[10px] font-bold tracking-[0.25em] text-[#FF7899] bg-[#FFEBF0] border border-[#FFD6E0] px-3.5 py-1.5 rounded-full uppercase shadow-cute-xs">
-            Interactive Guide
+            {t("museum.tag")}
           </span>
           <h1 className="text-2xl font-black tracking-wide text-[#333C4E] uppercase mt-4">
-            Museum Guide Map
+            {t("museum.title")}
           </h1>
           <p className="text-zinc-400 text-xs font-bold mt-1 uppercase tracking-wider">
-            Language: <span className="text-indigo-500">{gameState.language}</span>
+            {t("museum.language")}: <span className="text-indigo-500">{gameState.language}</span>
           </p>
         </div>
         <button
           onClick={() => setMode("IDLE")}
           className="px-5 py-2.5 rounded-2xl border border-[#FFF0F3] bg-white text-xs font-bold uppercase tracking-wider text-zinc-500 hover:bg-[#FAF9F6] hover:border-[#FFD6E0] transition-all shadow-cute-xs flex items-center gap-2"
         >
-          Exit
+          {t("museum.exit")}
         </button>
       </div>
 
@@ -89,7 +89,7 @@ export default function MuseumControllerView({
                 onClick={() => onAction(-1, -1)}
                 className="text-xs font-bold text-zinc-400 hover:text-rose-500 uppercase tracking-widest px-2 py-1 bg-white border border-zinc-100 rounded-lg shadow-sm"
               >
-                Close
+                {t("common.close")}
               </button>
             </div>
           </div>

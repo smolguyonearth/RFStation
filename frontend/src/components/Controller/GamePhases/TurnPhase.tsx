@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import Dice from "@/components/Dice";
 import { useSwipe } from "@/hooks/useSwipe";
+import { useTranslation } from "react-i18next";
 
 export default function TurnPhase({ gameState, endTurn }: any) {
+  const { t } = useTranslation();
   const [step, setStep] = useState<"ROLL" | "ACTION">("ROLL");
   const [hasRolled, setHasRolled] = useState(false);
   const isP1 = gameState.currentPlayer === 1;
@@ -34,15 +36,15 @@ export default function TurnPhase({ gameState, endTurn }: any) {
           <span className={`text-[10px] font-extrabold tracking-[0.2em] uppercase mb-4 px-4 py-2 rounded-full border shadow-cute-xs ${
             isP1 ? "text-[#4F46E5] bg-[#EEF2FF] border-[#C7D2FE]" : "text-[#FF7899] bg-[#FFEBF0] border-[#FFD6E0]"
           }`}>
-            Active Player
+            {t("turn.active_player")}
           </span>
           
           <h2 className="text-2xl md:text-3xl font-extrabold mb-4 tracking-widest uppercase text-center text-[#333C4E]">
-            Player {gameState.currentPlayer} Turn
+            {t("turn.player_turn", { player: gameState.currentPlayer })}
           </h2>
           
           <div className="my-4">
-            <Dice mode="D6" label="ROLL TO MOVE" onRoll={handleRoll} />
+            <Dice mode="D6" label={t("dice.roll", { mode: "D6" })} onRoll={handleRoll} />
           </div>
 
           {hasRolled && (
@@ -55,10 +57,10 @@ export default function TurnPhase({ gameState, endTurn }: any) {
                     : "bg-[#FFEBF0] hover:bg-[#FFD6E0] text-[#FF7899] border-[#FFD6E0]"
                 }`}
               >
-                Next: Move Piece →
+                {t("turn.next_move")}
               </button>
               <p className="mt-2 text-[10px] text-zinc-400 font-bold tracking-wider">
-                (Or Swipe Left)
+                {t("init_roll.or_swipe")}
               </p>
             </div>
           )}
@@ -73,33 +75,33 @@ export default function TurnPhase({ gameState, endTurn }: any) {
           <span className={`text-[10px] font-extrabold tracking-[0.2em] uppercase mb-4 px-4 py-2 rounded-full border shadow-cute-xs ${
             isP1 ? "text-[#4F46E5] bg-[#EEF2FF] border-[#C7D2FE]" : "text-[#FF7899] bg-[#FFEBF0] border-[#FFD6E0]"
           }`}>
-            Board Action
+            {t("turn.board_action")}
           </span>
           
           <h2 className="text-3xl md:text-4xl font-extrabold mb-8 tracking-widest uppercase text-center text-[#333C4E]">
-            Move Piece
+            {t("turn.move_piece")}
           </h2>
 
           <div className="w-full bg-white border border-[#FFF0F3] rounded-[2rem] p-6 shadow-cute mb-8 text-left">
             <span className="text-[9px] font-extrabold tracking-[0.2em] text-[#FF7899] uppercase">
-              Operational Checklist
+              {t("turn.checklist")}
             </span>
             <h3 className="text-xs font-bold mt-1 mb-4 uppercase tracking-wider text-zinc-500">
-              Complete on physical board:
+              {t("turn.complete_on_board")}
             </h3>
             
             <ul className="text-xs space-y-3.5 text-zinc-500 font-bold">
               <li className="flex items-start gap-2.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#FF7899] mt-1.5" />
-                <span>Move your piece to the destination square.</span>
+                <span>{t("turn.checklist_1")}</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#FF7899] mt-1.5" />
-                <span>If landing on a landmark, press its physical button sensor.</span>
+                <span>{t("turn.checklist_2")}</span>
               </li>
               <li className="flex items-start gap-2.5 text-[#333C4E] bg-[#FAF9F6] px-3.5 py-3 rounded-xl border border-[#FFF0F3]">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5 animate-pulse" />
-                <span>If landing on path grid, click the button below.</span>
+                <span>{t("turn.checklist_3")}</span>
               </li>
             </ul>
           </div>
@@ -112,7 +114,7 @@ export default function TurnPhase({ gameState, endTurn }: any) {
                 : "bg-[#FFEBF0] hover:bg-[#FFD6E0] text-[#FF7899] border-[#FFD6E0]"
             }`}
           >
-            End Turn
+            {t("turn.end_turn")}
           </button>
         </div>
       )}

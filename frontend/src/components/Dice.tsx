@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 type DiceMode = "D20" | "D6" | "D8";
 
@@ -11,6 +12,7 @@ interface NeonDiceProps {
 }
 
 export default function Dice({ mode, onRoll, label, onBeforeRoll, resetTrigger }: NeonDiceProps) {
+  const { t } = useTranslation();
   const [isRolling, setIsRolling] = useState(false);
   const [isHolding, setIsHolding] = useState(false);
   const [diceValue, setDiceValue] = useState<string | number>("?");
@@ -185,7 +187,7 @@ export default function Dice({ mode, onRoll, label, onBeforeRoll, resetTrigger }
             disabled={isRolling || diceValue !== "?"}
             className="mt-4 w-full py-3.5 px-6 bg-[#FFEBF0] text-[#FF7899] border-2 border-[#FFD6E0] font-extrabold text-xs tracking-wider uppercase rounded-2xl hover:bg-[#FFD6E0] hover:text-white active:scale-95 transition-all shadow-cute-xs cursor-pointer text-center disabled:opacity-50 disabled:pointer-events-none"
           >
-            {isHolding ? "Charging..." : isRolling ? "Rolling..." : diceValue !== "?" ? "Rolled" : `Hold to Charge ${mode}`}
+            {isHolding ? t("dice.charging") : isRolling ? t("dice.rolling") : diceValue !== "?" ? t("dice.rolled") : t("dice.hold", { mode })}
           </button>
         </div>
       )}
@@ -196,7 +198,7 @@ export default function Dice({ mode, onRoll, label, onBeforeRoll, resetTrigger }
           disabled={isRolling || diceValue !== "?"}
           className="mt-6 w-full py-3.5 px-6 bg-[#FFEBF0] text-[#FF7899] border-2 border-[#FFD6E0] font-extrabold text-xs tracking-wider uppercase rounded-2xl hover:bg-[#FFD6E0] hover:text-white active:scale-95 transition-all shadow-cute-xs cursor-pointer text-center disabled:opacity-50 disabled:pointer-events-none"
         >
-          {isRolling ? "Rolling..." : diceValue !== "?" ? "Rolled" : `Roll ${mode}`}
+          {isRolling ? t("dice.rolling") : diceValue !== "?" ? t("dice.rolled") : t("dice.roll", { mode })}
         </button>
       )}
     </div>
