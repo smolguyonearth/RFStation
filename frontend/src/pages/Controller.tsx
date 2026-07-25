@@ -1,62 +1,12 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import type { Language, AppMode, GameState } from "@/types/game.types";
 import SetupView from "@/components/Controller/SetupView";
 import MuseumControllerView from "@/components/Controller/MuseumControllerView";
 import GameControllerView from "@/components/Controller/GameControllerView";
-import { AudioEngine } from "@/lib/AudioEngine";
 
 export default function Controller() {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [loading, setLoading] = useState(true);
-  const prevModeRef = useRef<string | null>(null);
-  const gameRef = useRef<any>(null);
-
-  useEffect(() => {
-    gameRef.current = gameState;
-  }, [gameState]);
-
-  const applyAudioForGameState = (nextGame: any) => {
-    if (!nextGame) return;
-
-    const prevMode = prevModeRef.current;
-    const nextMode = nextGame.mode;
-
-    if (
-      prevMode &&
-      prevMode !== "IDLE" &&
-      nextMode === "IDLE" &&
-      prevMode !== nextMode
-    ) {
-      AudioEngine.reset();
-    } else {
-      AudioEngine.handleGameUpdate(nextGame);
-    }
-
-    prevModeRef.current = nextMode;
-  };
-
-  useEffect(() => {
-    const unlock = () => {
-      AudioEngine.init();
-      const ctx = (AudioEngine as any).audioCtx;
-      if (ctx) {
-        ctx.resume().then(() => {
-          if (gameRef.current) {
-            AudioEngine.reset();
-            AudioEngine.handleGameUpdate(gameRef.current);
-          }
-        }).catch(() => { });
-      }
-    };
-
-    window.addEventListener("click", unlock, { once: true });
-    window.addEventListener("touchstart", unlock, { once: true });
-
-    return () => {
-      window.removeEventListener("click", unlock);
-      window.removeEventListener("touchstart", unlock);
-    };
-  }, []);
 
   useEffect(() => {
     // 1. Fetch initial state
@@ -65,7 +15,6 @@ export default function Controller() {
       .then((data) => {
         if (data.success) {
           setGameState(data.game);
-          applyAudioForGameState(data.game);
         }
         setLoading(false);
       })
@@ -88,19 +37,6 @@ export default function Controller() {
           const data = JSON.parse(event.data);
           if (data.type === "game_update" && data.game) {
             setGameState(data.game);
-            applyAudioForGameState(data.game);
-          }
-          if (data.nearest_device) {
-            const map: Record<string, string> = {
-              A: "mahanakhon",
-              B: "asiatique",
-              C: "giant_swing",
-              D: "wat_arun",
-              E: "bremen_stadium",
-              F: "townhall",
-            };
-            const zone = map[data.nearest_device];
-            AudioEngine.handlePhysicalZoneUpdate(data.device_code, zone);
           }
         } catch (e) {
           console.error("WS Parse error", e);

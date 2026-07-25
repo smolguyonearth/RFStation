@@ -1,9 +1,59 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import MuseumMonitorView from "@/components/Mode/MuseumMonitorView";
 import GameMonitorView from "@/components/Mode/GameMonitorView";
+import { AudioEngine } from "@/lib/AudioEngine";
 
 export default function Game() {
   const [game, setGame] = useState<any>(null);
+  const gameRef = useRef<any>(null);
+  const prevModeRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    gameRef.current = game;
+  }, [game]);
+
+  const applyAudioForGameState = (nextGame: any) => {
+    if (!nextGame) return;
+
+    const prevMode = prevModeRef.current;
+    const nextMode = nextGame.mode;
+
+    if (
+      prevMode &&
+      prevMode !== "IDLE" &&
+      nextMode === "IDLE" &&
+      prevMode !== nextMode
+    ) {
+      AudioEngine.reset();
+    } else {
+      AudioEngine.handleGameUpdate(nextGame);
+    }
+
+    prevModeRef.current = nextMode;
+  };
+
+  useEffect(() => {
+    const unlock = () => {
+      AudioEngine.init();
+      const ctx = AudioEngine.audioCtx;
+      if (ctx) {
+        ctx.resume().then(() => {
+          if (gameRef.current) {
+            AudioEngine.reset();
+            AudioEngine.handleGameUpdate(gameRef.current);
+          }
+        }).catch(() => {});
+      }
+    };
+
+    window.addEventListener("click", unlock, { once: true });
+    window.addEventListener("touchstart", unlock, { once: true });
+
+    return () => {
+      window.removeEventListener("click", unlock);
+      window.removeEventListener("touchstart", unlock);
+    };
+  }, []);
 
   useEffect(() => {
     fetch(`/api/game/status`)
@@ -11,6 +61,7 @@ export default function Game() {
       .then((data) => {
         if (data.success) {
           setGame(data.game);
+          applyAudioForGameState(data.game);
         }
       });
 
@@ -26,6 +77,7 @@ export default function Game() {
         const data = JSON.parse(e.data);
         if (data.type === "game_update") {
           setGame(data.game);
+          applyAudioForGameState(data.game);
         }
         if (data.nearest_device) {
           const map: Record<string, string> = {
@@ -46,6 +98,8 @@ export default function Game() {
               },
             }),
           );
+
+          AudioEngine.handlePhysicalZoneUpdate(data.device_code, zone);
         }
       };
 
