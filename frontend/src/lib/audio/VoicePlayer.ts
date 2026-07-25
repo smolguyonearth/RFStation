@@ -11,6 +11,9 @@ export class VoicePlayer {
     private static introSource: AudioBufferSourceNode | null = null;
     private static introGainNode: GainNode | null = null;
 
+    private static currentIntroRequestId: number = 0;
+    private static currentVoiceRequestId: number = 0;
+
     /** Configurable tail-fade duration in seconds */
     static tailFadeDuration: number = 1.5;
 
@@ -67,12 +70,17 @@ export class VoicePlayer {
         if (!voiceGain) return;
 
         this.stopVoice();
+        const requestId = ++this.currentVoiceRequestId;
 
         try {
             const path = `/sounds/descriptions/${lang.toLowerCase()}/${locationKey}.mp3`;
             const response = await fetch(path);
             const arrayBuffer = await response.arrayBuffer();
             const buffer = await ctx.decodeAudioData(arrayBuffer);
+
+            if (requestId !== this.currentVoiceRequestId) {
+                return;
+            }
 
             const source = ctx.createBufferSource();
             const localGain = ctx.createGain();
@@ -101,11 +109,14 @@ export class VoicePlayer {
             this.voiceGainNode = localGain;
         } catch (e) {
             console.error("Failed to play narration description", e);
-            DuckingManager.performDucking(false);
+            if (requestId === this.currentVoiceRequestId) {
+                DuckingManager.performDucking(false);
+            }
         }
     }
 
     static stopVoice(): void {
+        this.currentVoiceRequestId++;
         const ctx = ContextManager.getContext();
         if (ctx && this.voiceSource && this.voiceGainNode) {
             const source = this.voiceSource;
@@ -239,11 +250,16 @@ export class VoicePlayer {
         if (!voiceGain) return;
 
         this.stopIntro();
+        const requestId = ++this.currentIntroRequestId;
 
         try {
             const response = await fetch(`/sounds/intro/intro_${lang.toLowerCase()}.mp3`);
             const arrayBuffer = await response.arrayBuffer();
             const buffer = await ctx.decodeAudioData(arrayBuffer);
+
+            if (requestId !== this.currentIntroRequestId) {
+                return;
+            }
 
             const source = ctx.createBufferSource();
             const localGain = ctx.createGain();
@@ -272,7 +288,9 @@ export class VoicePlayer {
             this.introGainNode = localGain;
         } catch (e) {
             console.error("Failed to play intro sequence", e);
-            DuckingManager.performDucking(false);
+            if (requestId === this.currentIntroRequestId) {
+                DuckingManager.performDucking(false);
+            }
         }
     }
 
@@ -281,6 +299,7 @@ export class VoicePlayer {
     }
 
     static stopIntro(): void {
+        this.currentIntroRequestId++;
         const ctx = ContextManager.getContext();
         if (ctx && this.introSource && this.introGainNode) {
             const source = this.introSource;

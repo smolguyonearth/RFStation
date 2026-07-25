@@ -3,10 +3,17 @@ import type { Language, AppMode, GameState } from "@/types/game.types";
 import SetupView from "@/components/Controller/SetupView";
 import MuseumControllerView from "@/components/Controller/MuseumControllerView";
 import GameControllerView from "@/components/Controller/GameControllerView";
+import i18n from "@/i18n";
 
 export default function Controller() {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (gameState?.language) {
+      i18n.changeLanguage(gameState.language.toLowerCase());
+    }
+  }, [gameState?.language]);
 
   useEffect(() => {
     // 1. Fetch initial state

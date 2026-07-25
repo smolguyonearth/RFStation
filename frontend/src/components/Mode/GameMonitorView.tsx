@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Landmarks } from "@/constants/landmark";
 import { Swords, Loader2, Trophy, Sparkles } from "lucide-react";
+import { AudioEngine } from "@/lib/AudioEngine";
 
 type AppMode = "IDLE" | "MUSEUM" | "GAME";
 type Language = "EN" | "TH" | "DE";
@@ -16,6 +17,7 @@ interface GameData {
   battleContext: { row: number; col: number } | null;
   scores: { 1: number; 2: number };
   activeMuseumLocation: { row: number; col: number } | null;
+  introActive?: boolean;
 }
 
 export default function GameMonitorView({
@@ -30,17 +32,65 @@ export default function GameMonitorView({
   const [p2Zone, setP2Zone] = useState<string>("waiting");
 
   useEffect(() => {
+    AudioEngine.handleGameUpdate(game);
+  }, [game]);
+
+  useEffect(() => {
+    return () => {
+      AudioEngine.reset();
+    };
+  }, []);
+
+  useEffect(() => {
     const handleDeviceUpdate = (e: Event) => {
       const customEvent = e as CustomEvent;
       const { device_code, zone } = customEvent.detail;
       if (device_code === "P1") setP1Zone(zone);
       else if (device_code === "P2") setP2Zone(zone);
+
+      AudioEngine.handlePhysicalZoneUpdate(device_code, zone);
     };
 
     window.addEventListener("device_zone_update", handleDeviceUpdate);
     return () =>
       window.removeEventListener("device_zone_update", handleDeviceUpdate);
   }, []);
+
+  if (game.introActive) {
+    return (
+      <div className="w-full max-w-6xl mx-auto flex flex-col items-center justify-center relative select-none px-4 py-12 font-sans text-[#333C4E]">
+        <div className="w-full max-w-2xl bg-white border border-[#FFF0F3] rounded-[2.5rem] p-12 shadow-cute flex flex-col items-center justify-center text-center relative overflow-hidden animate-pop">
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 via-[#FF7899] to-[#2BB673]" />
+          
+          <div className="w-20 h-20 bg-[#FFEBF0] border border-[#FFD6E0] flex items-center justify-center rounded-full text-3xl mb-8 shadow-cute animate-pulse">
+            🔊
+          </div>
+          
+          <span className="text-[10px] font-black tracking-[0.25em] text-[#FF7899] bg-[#FFEBF0] border border-[#FFD6E0] px-4 py-2 rounded-full uppercase mb-4 shadow-cute-xs">
+            Phase 0: Introduction
+          </span>
+          
+          <h2 className="text-2xl md:text-3xl font-extrabold text-[#333C4E] mb-2 tracking-widest uppercase text-center">
+            Audio Guide Active
+          </h2>
+          
+          <p className="text-xs text-zinc-400 font-bold max-w-sm text-center leading-relaxed mb-6 uppercase tracking-wider">
+            Please listen to the instructions on the main display speakers.
+          </p>
+
+          <div className="flex items-center gap-3 bg-[#E1F7EC] border border-[#C2F0D9] px-5 py-2.5 rounded-xl shadow-cute-xs">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span className="text-[9px] font-black tracking-wider text-emerald-800 uppercase">
+              Language: {game.language || "EN"}
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const zoneNameMap: Record<string, string> = {
     waiting: "Searching...",

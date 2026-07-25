@@ -39,10 +39,9 @@ export default function Game() {
       if (ctx) {
         ctx.resume().then(() => {
           if (gameRef.current) {
-            AudioEngine.reset();
             AudioEngine.handleGameUpdate(gameRef.current);
           }
-        }).catch(() => {});
+        }).catch(() => { });
       }
     };
 
