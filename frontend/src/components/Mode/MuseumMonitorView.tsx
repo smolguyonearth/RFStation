@@ -29,19 +29,32 @@ export default function MuseumMonitorView({
   game: GameData;
   onAction: (r: number, c: number) => void;
 }) {
-  const isMounted = useRef(false);
   const narrationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const activeLocKey = game.activeMuseumLocation
     ? `${game.activeMuseumLocation.row}-${game.activeMuseumLocation.col}`
     : "none";
 
+  // Unlock AudioContext on first user interaction on the display
   useEffect(() => {
-    if (!isMounted.current) {
-      isMounted.current = true;
-      return;
-    }
+    const unlock = () => {
+      AudioEngine.init();
+      const ctx = AudioEngine.audioCtx;
+      if (ctx) {
+        ctx.resume().catch(() => {});
+      }
+    };
 
+    window.addEventListener("click", unlock, { once: true });
+    window.addEventListener("touchstart", unlock, { once: true });
+
+    return () => {
+      window.removeEventListener("click", unlock);
+      window.removeEventListener("touchstart", unlock);
+    };
+  }, []);
+
+  useEffect(() => {
     // Clear any pending narration timer
     if (narrationTimerRef.current) {
       clearTimeout(narrationTimerRef.current);
@@ -101,7 +114,7 @@ export default function MuseumMonitorView({
 
   return (
     <div className="w-full max-w-7xl mx-auto p-4 md:p-8 animate-fade-in flex flex-col h-screen font-sans text-zinc-800 bg-[#FAF9F6] justify-between">
-      
+
       {/* Header */}
       <header className="mb-6 border-b border-[#FFF0F3] pb-6 flex justify-between items-baseline">
         <div>

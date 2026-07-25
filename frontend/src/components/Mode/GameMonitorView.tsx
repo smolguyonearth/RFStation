@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Landmarks } from "@/constants/landmark";
-import { Shield, Swords, Zap, Loader2, MapPin, Trophy, Sparkles } from "lucide-react";
+import { Swords, Loader2, Trophy, Sparkles } from "lucide-react";
 
 type AppMode = "IDLE" | "MUSEUM" | "GAME";
 type Language = "EN" | "TH" | "DE";
@@ -81,17 +81,16 @@ export default function GameMonitorView({
 
       {/* Main Glass HUD Dashboard */}
       <div className="w-full bg-white border border-[#FFF0F3] rounded-[2.5rem] p-8 shadow-cute flex flex-col items-center gap-10 z-10 relative overflow-hidden">
-        
+
         {/* Scoreboard Row */}
         <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-          
+
           {/* Player 1 Box (Neon Pink Theme) */}
           <div
-            className={`relative rounded-3xl p-6 border transition-all duration-300 overflow-hidden flex items-center justify-between ${
-              game.currentPlayer === 1
-                ? "border-[#FFD6E0] bg-[#FFEBF0]/40 shadow-cute-sm scale-102"
-                : "border-transparent bg-transparent opacity-40"
-            }`}
+            className={`relative rounded-3xl p-6 border transition-all duration-300 overflow-hidden flex items-center justify-between ${game.currentPlayer === 1
+              ? "border-[#FFD6E0] bg-[#FFEBF0]/40 shadow-cute-sm scale-102"
+              : "border-transparent bg-transparent opacity-40"
+              }`}
           >
             <div className="flex flex-col gap-1.5">
               <span className="text-[10px] font-black tracking-[0.25em] text-[#FF7899] uppercase flex items-center gap-1.5">
@@ -103,11 +102,10 @@ export default function GameMonitorView({
                   {game.scores[1]}
                 </span>
               </div>
-              <div className={`mt-2 px-3 py-1 rounded-xl text-[9px] font-black inline-flex items-center gap-1.5 border transition-all duration-300 w-fit ${
-                p1Zone === "waiting"
-                  ? "bg-[#FAF9F6] text-zinc-400 border-zinc-100"
-                  : "bg-[#FFEBF0] text-[#FF7899] border-[#FFD6E0]"
-              }`}>
+              <div className={`mt-2 px-3 py-1 rounded-xl text-[9px] font-black inline-flex items-center gap-1.5 border transition-all duration-300 w-fit ${p1Zone === "waiting"
+                ? "bg-[#FAF9F6] text-zinc-400 border-zinc-100"
+                : "bg-[#FFEBF0] text-[#FF7899] border-[#FFD6E0]"
+                }`}>
                 <span>{p1Zone === "waiting" ? <Loader2 size={10} className="animate-spin text-zinc-400" /> : "📍"}</span>
                 <span>{(zoneNameMap[p1Zone] || p1Zone).toUpperCase()}</span>
               </div>
@@ -142,26 +140,25 @@ export default function GameMonitorView({
                 </>
               )}
             </div>
-            
+
             {/* Dynamic Turn Detail Description */}
             <p className="text-[10px] text-zinc-400 font-bold uppercase mt-3 tracking-widest leading-relaxed">
               {game.gamePhase === "TURN"
                 ? `Player ${game.currentPlayer}'s turn to claim territory`
                 : game.gamePhase === "BATTLE"
-                ? "Combat event initiated! Resolve battle on table"
-                : game.gamePhase === "END"
-                ? "Game Over! Calculating champion"
-                : "System initializing match data"}
+                  ? "Combat event initiated! Resolve battle on table"
+                  : game.gamePhase === "END"
+                    ? "Game Over! Calculating champion"
+                    : "System initializing match data"}
             </p>
           </div>
 
           {/* Player 2 Box (Neon Emerald/Green Theme) */}
           <div
-            className={`relative rounded-3xl p-6 border transition-all duration-300 overflow-hidden flex items-center justify-between ${
-              game.currentPlayer === 2
-                ? "border-[#C2F0D9] bg-[#E1F7EC]/40 shadow-cute-sm scale-102"
-                : "border-transparent bg-transparent opacity-40"
-            }`}
+            className={`relative rounded-3xl p-6 border transition-all duration-300 overflow-hidden flex items-center justify-between ${game.currentPlayer === 2
+              ? "border-[#C2F0D9] bg-[#E1F7EC]/40 shadow-cute-sm scale-102"
+              : "border-transparent bg-transparent opacity-40"
+              }`}
           >
             <div className="flex flex-col gap-1.5">
               <span className="text-[10px] font-black tracking-[0.25em] text-[#2BB673] uppercase flex items-center gap-1.5">
@@ -173,11 +170,10 @@ export default function GameMonitorView({
                   {game.scores[2]}
                 </span>
               </div>
-              <div className={`mt-2 px-3 py-1 rounded-xl text-[9px] font-black inline-flex items-center gap-1.5 border transition-all duration-300 w-fit ${
-                p2Zone === "waiting"
-                  ? "bg-[#FAF9F6] text-zinc-400 border-zinc-100"
-                  : "bg-[#E1F7EC] text-[#2BB673] border-[#C2F0D9]"
-              }`}>
+              <div className={`mt-2 px-3 py-1 rounded-xl text-[9px] font-black inline-flex items-center gap-1.5 border transition-all duration-300 w-fit ${p2Zone === "waiting"
+                ? "bg-[#FAF9F6] text-zinc-400 border-zinc-100"
+                : "bg-[#E1F7EC] text-[#2BB673] border-[#C2F0D9]"
+                }`}>
                 <span>{p2Zone === "waiting" ? <Loader2 size={10} className="animate-spin text-zinc-400" /> : "📍"}</span>
                 <span>{(zoneNameMap[p2Zone] || p2Zone).toUpperCase()}</span>
               </div>
@@ -192,16 +188,15 @@ export default function GameMonitorView({
 
         {/* Dynamic Game Board Grid */}
         <div
-          className={`w-full max-w-4xl transition-all duration-700 ${
-            game.gamePhase === "BATTLE" ? "scale-[0.97] opacity-40 blur-[1px] pointer-events-none" : ""
-          }`}
+          className={`w-full max-w-4xl transition-all duration-700 ${game.gamePhase === "BATTLE" ? "scale-[0.97] opacity-40 blur-[1px] pointer-events-none" : ""
+            }`}
         >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {game.displayMatrix.map((row, r) =>
               row.map((val, c) => {
                 const landmarkId = matrixToLandmarkId[r][c];
                 const landmark = Landmarks.find((l) => l.id === landmarkId);
-                
+
                 // Styling classes according to ownership state (val)
                 let borderClass = "border-[#FFF0F3] bg-white hover:border-[#FFD6E0] hover:shadow-cute-xs";
                 let badgeContent = null;
@@ -281,7 +276,7 @@ export default function GameMonitorView({
         {game.gamePhase === "BATTLE" && (
           <div className="absolute inset-0 flex items-center justify-center z-50 bg-[#FAF9F6]/90 backdrop-blur-xs rounded-[2.5rem] animate-fade-in p-6">
             <div className="text-center px-10 py-12 bg-white border border-[#FFF0F3] rounded-[2.5rem] shadow-cute max-w-sm w-full animate-pop flex flex-col items-center relative overflow-hidden">
-              
+
               {/* Danger Accents */}
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#FF7899] via-amber-400 to-[#2BB673]" />
 
