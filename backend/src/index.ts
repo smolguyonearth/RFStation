@@ -131,7 +131,7 @@ const app = new Elysia()
 
     packageCounter++;
     if (packageCounter % 10 === 0) {
-      console.log(`[Backend] Received ${packageCounter} packages from Calliope beacons (Last: ${body.device_code} at ${body.zone_code})`);
+      console.log(`[Backend] Received ${packageCounter} packages from Calliope beacons (Last: ${body.device_code} at ${body.zone_code || body.nearest_device})`);
     }
 
     // [DB DISABLED] Database writes are disabled.

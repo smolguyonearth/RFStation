@@ -104,7 +104,7 @@ export default function GameMonitorView({
   };
 
   const matrixToLandmarkId = [
-    ["lm_06", "lm_01", "lm_03"],
+    ["lm_01", "lm_06", "lm_03"],
     ["lm_10", "lm_02", "lm_04"],
   ];
 
@@ -167,16 +167,16 @@ export default function GameMonitorView({
         {/* Vertical Scoreboard Sidebar (Right Side) */}
         <div className="w-full lg:w-64 flex flex-col gap-4 lg:gap-6 items-stretch shrink-0 overflow-y-auto pb-4 lg:pb-0">
 
-          {/* Player 1 Box (Neon Pink Theme) */}
+          {/* Player 1 Box (Neon Emerald/Green Theme) */}
           <div
             className={`relative rounded-3xl p-6 border transition-all duration-300 overflow-hidden flex flex-col items-center text-center ${game.currentPlayer === 1
-              ? "border-[#FFD6E0] bg-[#FFEBF0]/40 shadow-cute-sm scale-102"
+              ? "border-[#C2F0D9] bg-[#E1F7EC]/40 shadow-cute-sm scale-102"
               : "border-transparent bg-transparent opacity-40"
               }`}
           >
             <div className="flex flex-col gap-1.5 items-center w-full">
-              <span className="text-[10px] font-black tracking-[0.25em] text-[#FF7899] uppercase flex items-center justify-center gap-1.5 w-full">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#FF7899] animate-pulse" />
+              <span className="text-[10px] font-black tracking-[0.25em] text-[#2BB673] uppercase flex items-center justify-center gap-1.5 w-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#2BB673] animate-pulse" />
                 {t("game.p1")}
               </span>
               <div className="flex items-baseline justify-center">
@@ -186,14 +186,14 @@ export default function GameMonitorView({
               </div>
               <div className={`mt-2 px-3 py-1.5 rounded-xl text-[9px] font-black inline-flex items-center justify-center gap-1.5 border transition-all duration-300 w-full max-w-[160px] ${p1Zone === "waiting"
                 ? "bg-[#FAF9F6] text-zinc-400 border-zinc-100"
-                : "bg-[#FFEBF0] text-[#FF7899] border-[#FFD6E0]"
+                : "bg-[#E1F7EC] text-[#2BB673] border-[#C2F0D9]"
                 }`}>
                 <span>{p1Zone === "waiting" ? <Loader2 size={10} className="animate-spin text-zinc-400" /> : "📍"}</span>
                 <span className="truncate">{(zoneNameMap[p1Zone] || p1Zone).toUpperCase()}</span>
               </div>
             </div>
             {game.currentPlayer === 1 && (
-              <div className="absolute right-4 top-4 bg-[#FF7899] text-white px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider animate-pulse shadow-sm">
+              <div className="absolute right-4 top-4 bg-[#2BB673] text-white px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider animate-pulse shadow-sm">
                 {t("game.active_turn")}
               </div>
             )}
@@ -235,16 +235,16 @@ export default function GameMonitorView({
             </p>
           </div>
 
-          {/* Player 2 Box (Neon Emerald/Green Theme) */}
+          {/* Player 2 Box (Neon Pink Theme) */}
           <div
             className={`relative rounded-3xl p-6 border transition-all duration-300 overflow-hidden flex flex-col items-center text-center ${game.currentPlayer === 2
-              ? "border-[#C2F0D9] bg-[#E1F7EC]/40 shadow-cute-sm scale-102"
+              ? "border-[#FFD6E0] bg-[#FFEBF0]/40 shadow-cute-sm scale-102"
               : "border-transparent bg-transparent opacity-40"
               }`}
           >
             <div className="flex flex-col gap-1.5 items-center w-full">
-              <span className="text-[10px] font-black tracking-[0.25em] text-[#2BB673] uppercase flex items-center justify-center gap-1.5 w-full">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#2BB673] animate-pulse" />
+              <span className="text-[10px] font-black tracking-[0.25em] text-[#FF7899] uppercase flex items-center justify-center gap-1.5 w-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FF7899] animate-pulse" />
                 {t("game.p2")}
               </span>
               <div className="flex items-baseline justify-center">
@@ -254,14 +254,14 @@ export default function GameMonitorView({
               </div>
               <div className={`mt-2 px-3 py-1.5 rounded-xl text-[9px] font-black inline-flex items-center justify-center gap-1.5 border transition-all duration-300 w-full max-w-[160px] ${p2Zone === "waiting"
                 ? "bg-[#FAF9F6] text-zinc-400 border-zinc-100"
-                : "bg-[#E1F7EC] text-[#2BB673] border-[#C2F0D9]"
+                : "bg-[#FFEBF0] text-[#FF7899] border-[#FFD6E0]"
                 }`}>
                 <span>{p2Zone === "waiting" ? <Loader2 size={10} className="animate-spin text-zinc-400" /> : "📍"}</span>
                 <span className="truncate">{(zoneNameMap[p2Zone] || p2Zone).toUpperCase()}</span>
               </div>
             </div>
             {game.currentPlayer === 2 && (
-              <div className="absolute right-4 top-4 bg-[#2BB673] text-white px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider animate-pulse shadow-sm">
+              <div className="absolute right-4 top-4 bg-[#FF7899] text-white px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider animate-pulse shadow-sm">
                 {t("game.active_turn")}
               </div>
             )}

@@ -96,7 +96,7 @@ export default function Game() {
             E: "bremen_stadium",
             F: "townhall",
           };
-          const zone = map[data.nearest_device];
+          const zone = map[data.nearest_device] || "waiting";
 
           window.dispatchEvent(
             new CustomEvent("device_zone_update", {

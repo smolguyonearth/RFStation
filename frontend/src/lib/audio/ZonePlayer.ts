@@ -16,8 +16,8 @@ export interface ZoneRecord {
 }
 
 export class ZonePlayer {
-    static crossfadeDuration: number = 0.008;
-    static overlapFadeTime: number = 0.008;
+    static crossfadeDuration: number = 1.5;
+    static overlapFadeTime: number = 1;
 
     private static activeLayers: ActiveLayer[] = [];
     private static currentZone: string | null = null;

@@ -19,8 +19,8 @@ export default function MapViewer({ selectedLand, onSelect, ownershipMap }: MapV
     const getFillColor = (lm: MapLocation) => {
         if (ownershipMap) {
             const owner = ownershipMap[lm.id];
-            if (owner === 1) return "rgba(255, 120, 153, 0.6)"; // P1: #FF7899
-            if (owner === 2) return "rgba(43, 182, 115, 0.6)"; // P2: #2BB673
+            if (owner === 1) return "rgba(43, 182, 115, 0.6)"; // P1: Green
+            if (owner === 2) return "rgba(255, 120, 153, 0.6)"; // P2: Pink
             if (owner === 3) return "rgba(245, 158, 11, 0.6)"; // Contested: #F59E0B
             return "rgba(0, 0, 0, 0.0)";
         }
@@ -36,8 +36,8 @@ export default function MapViewer({ selectedLand, onSelect, ownershipMap }: MapV
 
         if (ownershipMap) {
             const owner = ownershipMap[lm.id];
-            if (owner === 1) return "#FF7899";
-            if (owner === 2) return "#2BB673";
+            if (owner === 1) return "#2BB673"; // P1 Green
+            if (owner === 2) return "#FF7899"; // P2 Pink
             if (owner === 3) return "#F59E0B";
             return "transparent";
         }

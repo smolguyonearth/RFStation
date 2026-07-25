@@ -15,7 +15,7 @@ export default function MuseumControllerView({
   const isMounted = useRef(false);
 
   const matrixToLandmarkId = [
-    ["lm_06", "lm_01", "lm_03"],
+    ["lm_01", "lm_06", "lm_03"],
     ["lm_10", "lm_02", "lm_04"],
   ];
 

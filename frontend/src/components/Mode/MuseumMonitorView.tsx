@@ -6,7 +6,7 @@ import { useEffect, useRef } from "react";
 import { AudioEngine } from "@/lib/AudioEngine";
 
 const matrixToSounds = [
-  ["asiatique", "mahanakhon", "giant_swing"],
+  ["mahanakhon", "asiatique", "giant_swing"],
   ["wat_arun", "bremen_stadium", "townhall"],
 ];
 
@@ -103,7 +103,7 @@ export default function MuseumMonitorView({
   }, []);
 
   const matrixToLandmarkId = [
-    ["lm_06", "lm_01", "lm_03"],
+    ["lm_01", "lm_06", "lm_03"],
     ["lm_10", "lm_02", "lm_04"],
   ];
 
