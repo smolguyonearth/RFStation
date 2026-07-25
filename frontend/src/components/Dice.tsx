@@ -72,7 +72,7 @@ export default function Dice({ mode, onRoll, label, onBeforeRoll, resetTrigger }
   };
 
   const rollD20 = () => {
-    if (isRolling) return;
+    if (isRolling || diceValue !== "?") return;
     if (onBeforeRoll && !onBeforeRoll()) return;
     const result = Math.floor(Math.random() * 20) + 1;
     animateRoll(result, 20);
@@ -106,7 +106,7 @@ export default function Dice({ mode, onRoll, label, onBeforeRoll, resetTrigger }
 
   const startHolding = (e?: any) => {
     if (e && e.cancelable) e.preventDefault();
-    if (isRolling || isHoldingRef.current) return;
+    if (isRolling || isHoldingRef.current || diceValue !== "?") return;
     if (onBeforeRoll && !onBeforeRoll()) return;
 
     setIsHolding(true);
@@ -182,9 +182,10 @@ export default function Dice({ mode, onRoll, label, onBeforeRoll, resetTrigger }
           <button
             onMouseDown={startHolding}
             onTouchStart={startHolding}
-            className="mt-4 w-full py-3.5 px-6 bg-[#FFEBF0] text-[#FF7899] border-2 border-[#FFD6E0] font-extrabold text-xs tracking-wider uppercase rounded-2xl hover:bg-[#FFD6E0] hover:text-white active:scale-95 transition-all shadow-cute-xs cursor-pointer text-center"
+            disabled={isRolling || diceValue !== "?"}
+            className="mt-4 w-full py-3.5 px-6 bg-[#FFEBF0] text-[#FF7899] border-2 border-[#FFD6E0] font-extrabold text-xs tracking-wider uppercase rounded-2xl hover:bg-[#FFD6E0] hover:text-white active:scale-95 transition-all shadow-cute-xs cursor-pointer text-center disabled:opacity-50 disabled:pointer-events-none"
           >
-            {isHolding ? "Charging..." : `Hold to Charge ${mode}`}
+            {isHolding ? "Charging..." : isRolling ? "Rolling..." : diceValue !== "?" ? "Rolled" : `Hold to Charge ${mode}`}
           </button>
         </div>
       )}
@@ -192,9 +193,10 @@ export default function Dice({ mode, onRoll, label, onBeforeRoll, resetTrigger }
       {mode === "D20" && (
         <button
           onClick={rollD20}
-          className="mt-6 w-full py-3.5 px-6 bg-[#FFEBF0] text-[#FF7899] border-2 border-[#FFD6E0] font-extrabold text-xs tracking-wider uppercase rounded-2xl hover:bg-[#FFD6E0] hover:text-white active:scale-95 transition-all shadow-cute-xs cursor-pointer text-center"
+          disabled={isRolling || diceValue !== "?"}
+          className="mt-6 w-full py-3.5 px-6 bg-[#FFEBF0] text-[#FF7899] border-2 border-[#FFD6E0] font-extrabold text-xs tracking-wider uppercase rounded-2xl hover:bg-[#FFD6E0] hover:text-white active:scale-95 transition-all shadow-cute-xs cursor-pointer text-center disabled:opacity-50 disabled:pointer-events-none"
         >
-          Roll {mode}
+          {isRolling ? "Rolling..." : diceValue !== "?" ? "Rolled" : `Roll ${mode}`}
         </button>
       )}
     </div>
