@@ -87,7 +87,7 @@ const app = new Elysia()
     return { success: true };
   })
   .post('/api/action', ({ body, server }) => {
-    const { button_id } = body;
+    const { button_id, override } = body;
 
     // Map button_id (0-5) to row/col
     if (button_id >= 0 && button_id < 6) {
@@ -97,7 +97,7 @@ const app = new Elysia()
       console.log(`🔘 Button pressed: ${button_id} (Place [${row},${col}])`);
 
       // Pass to game logic
-      const changed = game.handleAction(row, col);
+      const changed = game.handleAction(row, col, override);
       console.log(`[Backend API] handleAction returned changed=${changed}`);
 
       if (changed) {
@@ -111,7 +111,7 @@ const app = new Elysia()
 
     // Special: button_id < 0 means "close / deselect" (e.g. Museum X button)
     if (button_id < 0) {
-      const changed = game.handleAction(-1, -1);
+      const changed = game.handleAction(-1, -1, override);
       if (changed) {
         server?.publish('live-data', JSON.stringify({ type: 'game_update', game: game.getSnapshot() }));
       }
@@ -121,7 +121,8 @@ const app = new Elysia()
     return "INVALID";
   }, {
     body: t.Object({
-      button_id: t.Number()
+      button_id: t.Number(),
+      override: t.Optional(t.Boolean())
     })
   })
   // --- Ingest Endpoint (Pass-through: receive → broadcast → done) ---

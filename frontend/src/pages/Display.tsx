@@ -132,7 +132,7 @@ export default function Game() {
     await fetch("/api/action", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ button_id: buttonId }),
+      body: JSON.stringify({ button_id: buttonId, override: true }),
     });
   };
 

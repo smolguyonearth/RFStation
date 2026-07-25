@@ -121,7 +121,7 @@ export class GameLogic {
     return false;
   }
 
-  handleAction(row: number, col: number): boolean {
+  handleAction(row: number, col: number, override: boolean = false): boolean {
     console.log(`[GameLogic] handleAction called for row=${row}, col=${col}. Current mode=${this.mode}, phase=${this.gamePhase}, currentPlayer=${this.currentPlayer}`);
     if (this.mode === 'MUSEUM') {
       if (row === -1 || col === -1) {
@@ -136,12 +136,14 @@ export class GameLogic {
       if (this.gamePhase !== 'TURN') return false; // Ignore actions if not in TURN phase
 
       // --- PHYSICAL LOCATION CHECK ---
-      const requiredZone = this.rowColToZone(row, col);
-      const activeZone = this.currentPlayer === 1 ? this.p1PhysicalZone : this.p2PhysicalZone;
+      if (!override) {
+        const requiredZone = this.rowColToZone(row, col);
+        const activeZone = this.currentPlayer === 1 ? this.p1PhysicalZone : this.p2PhysicalZone;
 
-      if (requiredZone !== activeZone) {
-        console.log(`[GameLogic] Reject action: Player ${this.currentPlayer} is at '${activeZone}', but tried to press button for '${requiredZone}'`);
-        return false;
+        if (requiredZone !== activeZone) {
+          console.log(`[GameLogic] Reject action: Player ${this.currentPlayer} is at '${activeZone}', but tried to press button for '${requiredZone}'`);
+          return false;
+        }
       }
       // -------------------------------
 
