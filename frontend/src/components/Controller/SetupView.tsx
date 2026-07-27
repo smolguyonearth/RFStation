@@ -13,7 +13,7 @@ export default function SetupView({
   );
 
   return (
-    <div className="flex-1 p-6 md:p-12 flex flex-col items-center justify-center animate-fade-in min-h-screen bg-[#FAF9F6] text-[#333C4E] font-sans relative overflow-hidden select-none">
+    <div className="flex-1 p-6 md:p-12 flex flex-col items-center justify-center animate-fade-in min-h-screen bg-[#FAF9F6] text-[#333C4E] font-sans relative overflow-hidden">
       
       {/* Charming Soft Pastel Decorative Blobs */}
       <div className="absolute top-16 left-16 w-32 h-32 bg-[#E1F7EC]/40 rounded-full blur-xl pointer-events-none" />
@@ -41,6 +41,11 @@ export default function SetupView({
           {(["EN", "TH", "DE"] as Language[]).map((lang) => (
             <button
               key={lang}
+              onTouchStart={(e) => {
+                setSelectedLang(lang);
+                i18n.changeLanguage(lang.toLowerCase());
+                if (e.cancelable) e.preventDefault();
+              }}
               onClick={() => {
                 setSelectedLang(lang);
                 i18n.changeLanguage(lang.toLowerCase());
@@ -56,11 +61,15 @@ export default function SetupView({
           ))}
         </div>
 
-        {/* Bottom Mode Cards (Pill-shaped White Cards with Subtle Pastel Borders) */}
+        {/* Bottom Mode Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
           
           {/* Museum Mode card */}
           <button
+            onTouchStart={(e) => {
+              setMode("MUSEUM", selectedLang);
+              if (e.cancelable) e.preventDefault();
+            }}
             onClick={() => setMode("MUSEUM", selectedLang)}
             className="group relative p-8 bg-white border border-[#E1F7EC] rounded-[2rem] text-left transition-all duration-300 hover:border-[#C2F0D9] hover:shadow-cute hover:-translate-y-0.5 flex flex-col justify-between min-h-[220px] active:scale-[0.98]"
           >
@@ -90,6 +99,10 @@ export default function SetupView({
 
           {/* Game Mode card */}
           <button
+            onTouchStart={(e) => {
+              setMode("GAME", selectedLang);
+              if (e.cancelable) e.preventDefault();
+            }}
             onClick={() => setMode("GAME", selectedLang)}
             className="group relative p-8 bg-white border border-[#FFEBF0] rounded-[2rem] text-left transition-all duration-300 hover:border-[#FFD6E0] hover:shadow-cute hover:-translate-y-0.5 flex flex-col justify-between min-h-[220px] active:scale-[0.98]"
           >

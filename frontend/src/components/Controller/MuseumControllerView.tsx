@@ -19,10 +19,12 @@ export default function MuseumControllerView({
     ["lm_10", "lm_02", "lm_04"],
   ];
 
-  const selectedLand = gameState.activeMuseumLocation
+  const selectedLand = gameState.activeMuseumLocation &&
+    typeof gameState.activeMuseumLocation.row === "number" &&
+    typeof gameState.activeMuseumLocation.col === "number"
     ? Landmarks.find(
       (l) =>
-        l.id === matrixToLandmarkId[gameState.activeMuseumLocation!.row][gameState.activeMuseumLocation!.col]
+        l.id === matrixToLandmarkId[gameState.activeMuseumLocation.row]?.[gameState.activeMuseumLocation.col]
     ) || null
     : null;
 
@@ -47,12 +49,12 @@ export default function MuseumControllerView({
   };
 
   return (
-    <div className="flex-1 p-6 md:p-10 flex flex-col animate-fade-in relative min-h-screen bg-[#FAF9F6] text-[#333C4E] font-sans justify-between">
+    <div className="flex-grow p-4 sm:p-6 lg:p-8 flex flex-col animate-fade-in relative h-full bg-[#FAF9F6] text-[#333C4E] font-sans justify-between overflow-hidden select-none">
 
       {/* Top Console Bar */}
       <div className="relative z-50 flex justify-between items-baseline pb-6 border-b border-[#FFF0F3]">
         <div>
-          <span className="text-[10px] font-bold tracking-[0.25em] text-[#FF7899] bg-[#FFEBF0] border border-[#FFD6E0] px-3.5 py-1.5 rounded-full uppercase shadow-cute-xs">
+          <span className="text-[10px] font-bold tracking-[0.25em] text-[#FF7899] bg-[#FFEBF0] border border-[#FFD6E0] px-3.5 py-1.5 rounded-full uppercase shadow-cute-xs inline-block">
             {t("museum.tag")}
           </span>
           <h1 className="text-2xl font-black tracking-wide text-[#333C4E] uppercase mt-4">
@@ -71,7 +73,7 @@ export default function MuseumControllerView({
       </div>
 
       {/* Main Map Viewer Console */}
-      <div className="flex-grow flex flex-col items-center justify-center my-6 z-10 w-full min-h-[360px]">
+      <div className="flex-grow flex flex-col items-center justify-center my-4 md:my-6 z-10 w-full min-h-0">
 
         {selectedLand && (
           <div className="text-center w-full max-w-sm animate-pop mb-4">
@@ -95,7 +97,7 @@ export default function MuseumControllerView({
           </div>
         )}
 
-        <div className="w-full max-w-xl bg-white border border-[#FFF0F3] rounded-[2.5rem] p-6 shadow-cute flex items-center justify-center relative min-h-[300px]">
+        <div className="w-full max-w-3xl flex-1 max-h-[70vh] aspect-square bg-white border border-[#FFF0F3] rounded-[2.5rem] p-4 shadow-cute flex items-center justify-center relative min-h-0">
           <MapViewer
             selectedLand={selectedLand}
             onSelect={(land) => {
@@ -113,7 +115,7 @@ export default function MuseumControllerView({
 
       {/* Footer System Status */}
       <div className="text-center text-[10px] font-bold text-zinc-400 tracking-[0.25em] uppercase pt-6 border-t border-[#FFF0F3]">
-        RFStation Audio System • V3.2
+        RFStation Audio System
       </div>
 
     </div>

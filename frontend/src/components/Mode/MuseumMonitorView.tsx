@@ -66,18 +66,22 @@ export default function MuseumMonitorView({
     // Stop narration immediately when switching
     AudioEngine.stopVoice();
 
-    if (game.activeMuseumLocation) {
-      const zone = matrixToSounds[game.activeMuseumLocation.row][game.activeMuseumLocation.col];
-      const lang = game.language || "EN";
+    if (game.activeMuseumLocation &&
+        typeof game.activeMuseumLocation.row === "number" &&
+        typeof game.activeMuseumLocation.col === "number") {
+      const zone = matrixToSounds[game.activeMuseumLocation.row]?.[game.activeMuseumLocation.col];
+      if (zone) {
+        const lang = game.language || "EN";
 
-      // Start background sound at full volume (fade in via ZonePlayer)
-      AudioEngine.playZone(zone, 1.0);
+        // Start background sound at full volume (fade in via ZonePlayer)
+        AudioEngine.playZone(zone, 1.0);
 
-      // Delay narration so background comes in first, then duck background to 40%
-      narrationTimerRef.current = setTimeout(() => {
-        AudioEngine.playZone(zone, 0.4); // duck background
-        AudioEngine.playNarration(lang, zone);
-      }, NARRATION_DELAY_MS);
+        // Delay narration so background comes in first, then duck background to 40%
+        narrationTimerRef.current = setTimeout(() => {
+          AudioEngine.playZone(zone, 0.4); // duck background
+          AudioEngine.playNarration(lang, zone);
+        }, NARRATION_DELAY_MS);
+      }
     } else {
       // Deselected: fade out background, stop narration
       AudioEngine.stop();
@@ -107,10 +111,12 @@ export default function MuseumMonitorView({
     ["lm_10", "lm_02", "lm_04"],
   ];
 
-  const selectedLand = game.activeMuseumLocation
+  const selectedLand = game.activeMuseumLocation &&
+                       typeof game.activeMuseumLocation.row === "number" &&
+                       typeof game.activeMuseumLocation.col === "number"
     ? Landmarks.find(
       (l) =>
-        l.id === matrixToLandmarkId[game.activeMuseumLocation!.row][game.activeMuseumLocation!.col]
+        l.id === matrixToLandmarkId[game.activeMuseumLocation.row]?.[game.activeMuseumLocation.col]
     ) || null
     : null;
 

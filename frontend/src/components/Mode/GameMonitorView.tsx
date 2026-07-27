@@ -128,13 +128,13 @@ export default function GameMonitorView({
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto flex flex-col items-center relative select-none px-4 py-6 font-sans text-[#333C4E] h-screen overflow-hidden">
+    <div className="w-full max-w-[96vw] mx-auto flex flex-col items-center relative select-none px-6 py-4 font-sans text-[#333C4E] h-screen overflow-hidden">
       {/* Background Decorative Ambient Blobs */}
       <div className="absolute top-10 left-10 w-72 h-72 rounded-full bg-[#FF7899]/3 blur-[100px] animate-float-slow pointer-events-none" />
       <div className="absolute bottom-10 right-10 w-72 h-72 rounded-full bg-[#2BB673]/3 blur-[100px] animate-float-medium pointer-events-none" />
 
       {/* Header Panel (Dropdowns removed) */}
-      <div className="w-full flex justify-between items-center mb-6 z-10 shrink-0">
+      <div className="w-full flex justify-between items-center mb-4 z-10 shrink-0">
         <div className="flex items-center gap-3">
           <div className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF7899] opacity-75"></span>
@@ -150,11 +150,11 @@ export default function GameMonitorView({
       </div>
 
       {/* Main Glass HUD Dashboard */}
-      <div className="w-full bg-white border border-[#FFF0F3] rounded-[2.5rem] p-6 shadow-cute flex flex-col lg:flex-row gap-6 z-10 relative overflow-hidden flex-1 min-h-[400px]">
+      <div className="w-full bg-white border border-[#FFF0F3] rounded-[2.5rem] p-6 shadow-cute flex flex-col lg:flex-row gap-6 z-10 relative overflow-hidden flex-1 min-h-0">
 
         {/* Dynamic Game MapViewer (Left/Main Side) */}
         <div
-          className={`w-full lg:w-2/3 flex-1 min-h-[400px] bg-[#FAF9F6] border border-[#FFF0F3] rounded-[2rem] overflow-hidden transition-all duration-700 shadow-inner ${game.gamePhase === "BATTLE" ? "scale-[0.97] opacity-40 blur-[1px] pointer-events-none" : ""
+          className={`w-full lg:w-2/3 flex-1 min-h-0 bg-[#FAF9F6] border border-[#FFF0F3] rounded-[2rem] overflow-hidden transition-all duration-700 shadow-inner ${game.gamePhase === "BATTLE" ? "scale-[0.97] opacity-40 blur-[1px] pointer-events-none" : ""
             }`}
         >
           <MapViewer
@@ -165,13 +165,13 @@ export default function GameMonitorView({
         </div>
 
         {/* Vertical Scoreboard Sidebar (Right Side) */}
-        <div className="w-full lg:w-64 flex flex-col gap-4 lg:gap-6 items-stretch shrink-0 overflow-y-auto pb-4 lg:pb-0">
+        <div className="w-full lg:w-76 flex flex-col gap-4 lg:gap-5 items-stretch shrink-0 overflow-y-auto px-3 pb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
 
           {/* Player 1 Box (Neon Emerald/Green Theme) */}
           <div
-            className={`relative rounded-3xl p-6 border transition-all duration-300 overflow-hidden flex flex-col items-center text-center ${game.currentPlayer === 1
+            className={`relative rounded-3xl p-5 border transition-all duration-300 overflow-hidden flex flex-col items-center justify-center text-center mx-2 my-2 flex-1 ${game.currentPlayer === 1
               ? "border-[#C2F0D9] bg-[#E1F7EC]/40 shadow-cute-sm scale-102"
-              : "border-transparent bg-transparent opacity-40"
+              : "border-zinc-100 bg-[#FAF9F6]/50 opacity-40"
               }`}
           >
             <div className="flex flex-col gap-1.5 items-center w-full">
@@ -180,11 +180,11 @@ export default function GameMonitorView({
                 {t("game.p1")}
               </span>
               <div className="flex items-baseline justify-center">
-                <span className="text-6xl font-black text-zinc-800 font-mono leading-none tracking-tight">
+                <span className="text-5xl font-black text-zinc-800 font-mono leading-none tracking-tight">
                   {game.scores[1]}
                 </span>
               </div>
-              <div className={`mt-2 px-3 py-1.5 rounded-xl text-[9px] font-black inline-flex items-center justify-center gap-1.5 border transition-all duration-300 w-full max-w-[160px] ${p1Zone === "waiting"
+              <div className={`mt-2 px-3 py-1 rounded-xl text-[9px] font-black inline-flex items-center justify-center gap-1.5 border transition-all duration-300 w-full max-w-[160px] ${p1Zone === "waiting"
                 ? "bg-[#FAF9F6] text-zinc-400 border-zinc-100"
                 : "bg-[#E1F7EC] text-[#2BB673] border-[#C2F0D9]"
                 }`}>
@@ -200,11 +200,11 @@ export default function GameMonitorView({
           </div>
 
           {/* Central Game Phase/Status Panel */}
-          <div className="flex flex-col items-center text-center p-4 bg-[#FAF9F6] border border-[#FFF0F3] rounded-3xl shadow-inner my-auto">
-            <h2 className="text-[10px] font-black tracking-[0.35em] text-zinc-400 uppercase mb-3">
+          <div className="flex flex-col items-center text-center p-3 bg-[#FAF9F6] border border-[#FFF0F3] rounded-3xl shadow-inner my-auto mx-2 animate-pop shrink-0">
+            <h2 className="text-[10px] font-black tracking-[0.35em] text-zinc-400 uppercase mb-2">
               {t("game.territory_conquest")}
             </h2>
-            <div className="px-5 py-2.5 border border-zinc-200 bg-white rounded-xl text-zinc-600 text-xs font-bold uppercase tracking-widest shadow-cute-xs flex items-center gap-2">
+            <div className="px-4 py-1.5 border border-zinc-200 bg-white rounded-xl text-zinc-600 text-xs font-bold uppercase tracking-widest shadow-cute-xs flex items-center gap-2">
               {game.gamePhase === "BATTLE" ? (
                 <>
                   <Swords size={14} className="text-amber-500 animate-bounce" />
@@ -224,7 +224,7 @@ export default function GameMonitorView({
             </div>
 
             {/* Dynamic Turn Detail Description */}
-            <p className="text-[10px] text-zinc-400 font-bold uppercase mt-4 tracking-widest leading-relaxed px-2">
+            <p className="text-[10px] text-zinc-400 font-bold uppercase mt-2.5 tracking-widest leading-relaxed px-2">
               {game.gamePhase === "TURN"
                 ? t("game.turn_desc", { player: game.currentPlayer })
                 : game.gamePhase === "BATTLE"
@@ -237,22 +237,22 @@ export default function GameMonitorView({
 
           {/* Player 2 Box (Neon Pink Theme) */}
           <div
-            className={`relative rounded-3xl p-6 border transition-all duration-300 overflow-hidden flex flex-col items-center text-center ${game.currentPlayer === 2
+            className={`relative rounded-3xl p-5 border transition-all duration-300 overflow-hidden flex flex-col items-center justify-center text-center mx-2 my-2 flex-1 ${game.currentPlayer === 2
               ? "border-[#FFD6E0] bg-[#FFEBF0]/40 shadow-cute-sm scale-102"
-              : "border-transparent bg-transparent opacity-40"
+              : "border-zinc-100 bg-[#FAF9F6]/50 opacity-40"
               }`}
           >
-            <div className="flex flex-col gap-1.5 items-center w-full">
+            <div className="flex flex-col gap-1 items-center w-full">
               <span className="text-[10px] font-black tracking-[0.25em] text-[#FF7899] uppercase flex items-center justify-center gap-1.5 w-full">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#FF7899] animate-pulse" />
                 {t("game.p2")}
               </span>
               <div className="flex items-baseline justify-center">
-                <span className="text-6xl font-black text-zinc-800 font-mono leading-none tracking-tight">
+                <span className="text-5xl font-black text-zinc-800 font-mono leading-none tracking-tight">
                   {game.scores[2]}
                 </span>
               </div>
-              <div className={`mt-2 px-3 py-1.5 rounded-xl text-[9px] font-black inline-flex items-center justify-center gap-1.5 border transition-all duration-300 w-full max-w-[160px] ${p2Zone === "waiting"
+              <div className={`mt-2 px-3 py-1 rounded-xl text-[9px] font-black inline-flex items-center justify-center gap-1.5 border transition-all duration-300 w-full max-w-[160px] ${p2Zone === "waiting"
                 ? "bg-[#FAF9F6] text-zinc-400 border-zinc-100"
                 : "bg-[#FFEBF0] text-[#FF7899] border-[#FFD6E0]"
                 }`}>

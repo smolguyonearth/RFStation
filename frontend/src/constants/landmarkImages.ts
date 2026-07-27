@@ -1,4 +1,4 @@
-import kingPower from "@/assets/King_power.jpg"
+import kingPower from "@/assets/King_power.avif"
 import watArun from "@/assets/Wat_arun.avif"
 import iconsiam from "@/assets/Iconsiam.avif"
 import townHall from "@/assets/Town_hall.avif"

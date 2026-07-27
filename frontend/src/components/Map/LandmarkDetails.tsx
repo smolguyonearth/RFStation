@@ -27,12 +27,12 @@ export default function LandmarkDetails({
 
   return (
     <div className={`${className} animate-in fade-in slide-in-from-bottom-8 duration-500`}>
-      <div className={flat ? "h-full flex flex-col justify-between" : "bg-white rounded-[2rem] border border-[#FFF0F3] shadow-cute p-6 lg:p-8 h-full flex flex-col justify-between"}>
+      <div className={flat ? "h-full flex flex-col justify-between" : "bg-white rounded-[2rem] border border-[#FFF0F3] shadow-cute p-6 lg:p-10 h-full flex flex-col justify-between"}>
         
         {/* Header Section */}
-        <div className="flex items-start justify-between mb-6">
+        <div className="flex items-center justify-between mb-6 pb-4 border-b border-zinc-100">
           <div>
-            <h3 className="text-xl font-extrabold text-[#333C4E] tracking-wide uppercase">
+            <h3 className="text-2xl lg:text-3xl font-black text-[#333C4E] tracking-wider uppercase">
               {t(land.name)}
             </h3>
             {!hideGameplayDetails && (
@@ -44,19 +44,19 @@ export default function LandmarkDetails({
           </div>
           <button
             onClick={onClose}
-            className="p-2 bg-[#FFEBF0] text-[#FF7899] border border-[#FFD6E0] rounded-xl shadow-cute-xs hover:bg-[#FFD6E0] transition-colors"
+            className="p-2.5 bg-[#FFEBF0] text-[#FF7899] border border-[#FFD6E0] rounded-xl shadow-cute-xs hover:bg-[#FF7899] hover:text-white transition-all duration-300"
             aria-label={t("common.close")}
           >
-            <X size={18} />
+            <X size={20} />
           </button>
         </div>
 
         {layout === "split" ? (
           /* Split Layout (2 Columns for wide displays) */
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start flex-grow">
-            {/* Left Column: Details */}
-            <div className="lg:col-span-3 flex flex-col justify-between h-full">
-              <div className="text-xs text-zinc-500 font-bold leading-relaxed mb-6 overflow-y-auto pr-2 max-h-[40vh]">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start flex-grow">
+            {/* Left Column: Details (7/12 cols) */}
+            <div className="lg:col-span-7 flex flex-col justify-between h-full py-2">
+              <div className="text-sm sm:text-base lg:text-[1.05rem] text-zinc-500 font-medium leading-relaxed mb-6 overflow-y-auto pr-3 max-h-[50vh] scrollbar-thin">
                 {land.description ? t(land.description) : t("map.no_description")}
               </div>
 
@@ -82,20 +82,22 @@ export default function LandmarkDetails({
               )}
             </div>
 
-            {/* Right Column: Image */}
+            {/* Right Column: Image (5/12 cols) */}
             {landmarkImage && (
               <div
-                className="lg:col-span-2 text-center cursor-pointer group w-full"
+                className="lg:col-span-5 text-center cursor-pointer group w-full flex flex-col items-center justify-center"
                 onClick={() => setIsFullView(true)}
               >
-                <img
-                  src={landmarkImage}
-                  alt={t(land.name)}
-                  className="mx-auto rounded-3xl object-cover border border-[#FFF0F3] shadow-cute group-hover:scale-[1.02] transition-transform duration-300 w-full aspect-[4/3] max-h-[300px]"
-                />
+                <div className="overflow-hidden rounded-[2.2rem] border border-[#FFF0F3] shadow-cute w-full aspect-[4/3] max-h-[360px] bg-zinc-50">
+                  <img
+                    src={landmarkImage}
+                    alt={t(land.name)}
+                    className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                  />
+                </div>
 
                 {land.imageSource && (
-                  <p className="text-[9px] text-zinc-400 font-bold uppercase mt-3 italic">
+                  <p className="text-[9px] text-zinc-400 font-bold uppercase mt-3 tracking-wider italic">
                     Source: {land.imageSource}
                   </p>
                 )}

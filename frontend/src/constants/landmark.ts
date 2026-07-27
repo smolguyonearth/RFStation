@@ -12,7 +12,7 @@ export const Landmarks: MapLocation[] = [
         resources: ['Energy', 'Tech'],
         d: LANDMARK_PATHS.mahanakhon,
         image: LANDMARK_IMAGES.king_power,
-        imageSource: 'Chainwit, via Wikimedia Commons'
+        imageSource: 'Marloes van der Veer on Unsplash'
     },
     {
         id: 'lm_02',

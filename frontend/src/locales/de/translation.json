@@ -87,7 +87,7 @@
         "use_controller": "Verwenden Sie das Steuerungs-Tablet, um eine Landmarke auszuwählen.",
         "exhibition_active": "Ausstellung aktiv",
         "select_to_explore": "Bitte wählen Sie eine Landmarke auf dem Steuerungs-Tablet aus, um ihre Geschichte zu erkunden.",
-        "footer": "RFStation-Anzeigekonsole • V3.2"
+        "footer": "RFStation-Anzeigekonsole"
     },
     "game": {
         "status": "Systemstatus: {{phase}}-Phase",
@@ -104,7 +104,7 @@
         "guide_title": "Spielanleitung",
         "skip_intro": "Einführung überspringen",
         "exhibit_console": "AUSSTELLUNGSKONSOLE • LIVE",
-        "footer_version": "RFSTATION V3.2",
+        "footer_version": "RFSTATION",
         "active_turn": "AKTIVER ZUG",
         "territory_conquest": "TERRITORIALEROBERUNG",
         "phase": "{{phase}}-PHASE",

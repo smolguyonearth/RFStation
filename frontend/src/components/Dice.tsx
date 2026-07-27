@@ -149,7 +149,7 @@ export default function Dice({ mode, onRoll, label, onBeforeRoll, resetTrigger }
   };
 
   return (
-    <div className="flex flex-col items-center w-full max-w-[280px] mx-auto select-none px-2">
+    <div className="flex flex-col items-center w-full max-w-[280px] mx-auto px-2">
       {/* Moderately Sized Dice Container to fit on Screen */}
       <div
         className={`w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 bg-white border border-[#FFF0F3] rounded-[2.5rem] flex flex-col justify-center items-center shadow-cute relative transition-transform duration-100 ${isRolling ? "animate-shake" : ""}`}
@@ -183,7 +183,7 @@ export default function Dice({ mode, onRoll, label, onBeforeRoll, resetTrigger }
             onMouseDown={startHolding}
             onTouchStart={startHolding}
             disabled={isRolling || diceValue !== "?"}
-            className="mt-4 w-full py-3.5 px-6 bg-[#FFEBF0] text-[#FF7899] border-2 border-[#FFD6E0] font-extrabold text-xs tracking-wider uppercase rounded-2xl hover:bg-[#FFD6E0] hover:text-white active:scale-95 transition-all shadow-cute-xs cursor-pointer text-center disabled:opacity-50 disabled:pointer-events-none"
+            className="mt-4 w-full py-3.5 px-6 bg-[#FFEBF0] text-[#FF7899] border-2 border-[#FFD6E0] font-extrabold text-xs tracking-wider uppercase rounded-2xl hover:bg-[#FFD6E0] hover:text-white active:scale-95 transition-all shadow-cute-xs cursor-pointer text-center disabled:opacity-50 disabled:pointer-events-none no-callout"
           >
             {isHolding ? t("dice.charging") : isRolling ? t("dice.rolling") : diceValue !== "?" ? t("dice.rolled") : t("dice.hold", { mode })}
           </button>
@@ -192,6 +192,10 @@ export default function Dice({ mode, onRoll, label, onBeforeRoll, resetTrigger }
 
       {mode === "D20" && (
         <button
+          onTouchStart={(e) => {
+            rollD20();
+            if (e.cancelable) e.preventDefault();
+          }}
           onClick={rollD20}
           disabled={isRolling || diceValue !== "?"}
           className="mt-6 w-full py-3.5 px-6 bg-[#FFEBF0] text-[#FF7899] border-2 border-[#FFD6E0] font-extrabold text-xs tracking-wider uppercase rounded-2xl hover:bg-[#FFD6E0] hover:text-white active:scale-95 transition-all shadow-cute-xs cursor-pointer text-center disabled:opacity-50 disabled:pointer-events-none"

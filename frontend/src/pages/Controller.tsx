@@ -112,10 +112,9 @@ export default function Controller() {
     );
   }
 
-  // --- Render Views Based on Mode ---
   return (
-    <div className="min-h-screen w-full bg-brand-bg text-brand-primary font-sans flex flex-col relative overflow-x-hidden overflow-y-auto">
-      <div className="relative z-10 flex-1 flex flex-col w-full">
+    <div className="h-[100dvh] max-h-[100dvh] w-full bg-brand-bg text-brand-primary font-sans flex flex-col relative overflow-hidden">
+      <div className="relative z-10 flex-1 flex flex-col w-full h-full min-h-0">
         {gameState.mode === "IDLE" && <SetupView setMode={setMode} />}
         {gameState.mode === "MUSEUM" && (
           <MuseumControllerView gameState={gameState} setMode={setMode} />

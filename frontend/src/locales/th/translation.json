@@ -87,7 +87,7 @@
         "use_controller": "ใช้แท็บเล็ตควบคุมเพื่อเลือกสถานที่แนะนำ",
         "exhibition_active": "เปิดใช้งานนิทรรศการแล้ว",
         "select_to_explore": "โปรดเลือกสถานที่แนะนำบนแท็บเล็ตควบคุมเพื่อสำรวจเรื่องราว",
-        "footer": "คอนโซลแสดงผล RFStation • V3.2"
+        "footer": "คอนโซลแสดงผล RFStation"
     },
     "game": {
         "status": "สถานะระบบ: ขั้นตอน {{phase}}",
@@ -104,7 +104,7 @@
         "guide_title": "คำแนะนำการเล่น",
         "skip_intro": "ข้ามแนะนำ",
         "exhibit_console": "คอนโซลนิทรรศการ • สด",
-        "footer_version": "RFSTATION V3.2",
+        "footer_version": "RFSTATION ",
         "active_turn": "รอบการเล่นของคุณ",
         "territory_conquest": "การยึดครองดินแดน",
         "phase": "ขั้นตอน {{phase}}",

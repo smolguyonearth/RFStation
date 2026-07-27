@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import Dice from '@/components/Dice';
-import { useSwipe } from '@/hooks/useSwipe';
 import { useTranslation } from "react-i18next";
 
 export default function InitRollPhase({ gameState, startGame }: any) {
@@ -50,19 +49,10 @@ export default function InitRollPhase({ gameState, startGame }: any) {
         setSkippedIntro(true);
     };
 
-    const swipeHandlers = useSwipe(
-        () => {
-            // Swipe Left (Next)
-            if (step === "P1_ROLL" && p1Roll !== null) setStep("P2_ROLL");
-            if (step === "P2_ROLL" && p2Roll !== null) setStep("RESULT");
-        },
-        () => { }, // Swipe Right (Ignore)
-    );
-
     // ========== INTRO SCREEN ==========
     if (isIntroActive) {
         return (
-            <div className="w-full h-full flex flex-col items-center justify-center relative py-4 select-none">
+            <div className="w-full h-full flex flex-col items-center justify-center relative py-4">
                 <div className="w-16 h-16 bg-[#FFFBE6] border border-[#FFE3B5] flex items-center justify-center rounded-full text-2xl mb-6 shadow-cute-sm animate-pulse">
                     🔊
                 </div>
@@ -76,6 +66,10 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                     {t("game.intro_desc")}
                 </p>
                 <button
+                    onTouchStart={(e) => {
+                        handleSkipIntro();
+                        if (e.cancelable) e.preventDefault();
+                    }}
                     onClick={handleSkipIntro}
                     className="px-8 py-3.5 bg-white border border-[#FFF0F3] text-zinc-500 font-extrabold text-xs uppercase tracking-widest rounded-2xl hover:bg-[#FFEBF0] hover:text-[#FF7899] transition-all shadow-cute-sm active:scale-95"
                 >
@@ -88,36 +82,36 @@ export default function InitRollPhase({ gameState, startGame }: any) {
     // ========== DICE ROLL SCREEN ==========
     return (
         <div
-            {...swipeHandlers}
-            className={`w-full h-full flex flex-col items-center justify-center relative py-4 select-none ${swipeHandlers.className}`}
+            className="w-full h-full flex flex-col items-center justify-center relative py-4"
         >
             {step === "P1_ROLL" && (
                 <div
                     key="p1"
                     className="w-full flex flex-col items-center justify-center animate-fade-in"
                 >
-                    <span className="text-[10px] font-extrabold tracking-[0.25em] text-[#FF7899] bg-[#FFEBF0] border border-[#FFD6E0] px-4 py-2 rounded-full uppercase mb-4 shadow-cute-xs">
+                    <span className="text-[10px] font-extrabold tracking-[0.25em] text-[#FF7899] bg-[#FFEBF0] border border-[#FFD6E0] px-4 py-2 rounded-full uppercase mb-2 shadow-cute-xs">
                         {t("init_roll.phase_title")}
                     </span>
-                    <h2 className="text-2xl md:text-3xl font-extrabold text-[#333C4E] mb-4 tracking-widest uppercase text-center">
+                    <h2 className="text-xl md:text-2xl font-extrabold text-[#333C4E] mb-2 tracking-widest uppercase text-center">
                         {t("init_roll.p1_roll")}
                     </h2>
 
-                    <div className="my-4">
+                    <div className="my-2">
                         <Dice mode="D20" label={t("dice.roll", { mode: "D20" })} onRoll={handleP1Roll} onBeforeRoll={handleBeforeRoll} />
                     </div>
 
                     {p1Roll !== null && (
-                        <div className="mt-6 flex flex-col items-center">
+                        <div className="mt-4 flex flex-col items-center">
                             <button
+                                onTouchStart={(e) => {
+                                    setStep("P2_ROLL");
+                                    if (e.cancelable) e.preventDefault();
+                                }}
                                 onClick={() => setStep("P2_ROLL")}
                                 className="px-8 py-3.5 bg-[#FFEBF0] text-[#FF7899] border border-[#FFD6E0] font-extrabold text-xs uppercase tracking-widest rounded-2xl hover:bg-[#FFD6E0] active:scale-95 transition-all shadow-cute-sm animate-pop"
                             >
                                 {t("init_roll.next_p2")}
                             </button>
-                            <p className="mt-2 text-[10px] text-zinc-400 font-bold tracking-wider">
-                                {t("init_roll.or_swipe")}
-                            </p>
                         </div>
                     )}
                 </div>
@@ -128,28 +122,29 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                     key="p2"
                     className="w-full flex flex-col items-center justify-center animate-fade-in"
                 >
-                    <span className="text-[10px] font-extrabold tracking-[0.25em] text-[#FF7899] bg-[#FFEBF0] border border-[#FFD6E0] px-4 py-2 rounded-full uppercase mb-4 shadow-cute-xs">
+                    <span className="text-[10px] font-extrabold tracking-[0.25em] text-[#FF7899] bg-[#FFEBF0] border border-[#FFD6E0] px-4 py-2 rounded-full uppercase mb-2 shadow-cute-xs">
                         {t("init_roll.phase_title")}
                     </span>
-                    <h2 className="text-2xl md:text-3xl font-extrabold text-[#333C4E] mb-4 tracking-widest uppercase text-center">
+                    <h2 className="text-xl md:text-2xl font-extrabold text-[#333C4E] mb-2 tracking-widest uppercase text-center">
                         {t("init_roll.p2_roll")}
                     </h2>
 
-                    <div className="my-4">
+                    <div className="my-2">
                         <Dice mode="D20" label={t("dice.roll", { mode: "D20" })} onRoll={handleP2Roll} onBeforeRoll={handleBeforeRoll} />
                     </div>
 
                     {p2Roll !== null && (
-                        <div className="mt-6 flex flex-col items-center">
+                        <div className="mt-4 flex flex-col items-center">
                             <button
+                                onTouchStart={(e) => {
+                                    setStep("RESULT");
+                                    if (e.cancelable) e.preventDefault();
+                                }}
                                 onClick={() => setStep("RESULT")}
                                 className="px-8 py-3.5 bg-[#FFEBF0] text-[#FF7899] border border-[#FFD6E0] font-extrabold text-xs uppercase tracking-widest rounded-2xl hover:bg-[#FFD6E0] active:scale-95 transition-all shadow-cute-sm animate-pop"
                             >
                                 {t("init_roll.show_results")}
                             </button>
-                            <p className="mt-2 text-[10px] text-zinc-400 font-bold tracking-wider">
-                                {t("init_roll.or_swipe")}
-                            </p>
                         </div>
                     )}
                 </div>
@@ -190,6 +185,10 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                     </div>
 
                     <button
+                        onTouchStart={(e) => {
+                            handleResultNext();
+                            if (e.cancelable) e.preventDefault();
+                        }}
                         onClick={handleResultNext}
                         className="px-8 py-4 bg-[#333C4E] hover:bg-zinc-800 text-white font-extrabold text-xs uppercase tracking-widest rounded-2xl transition-all shadow-md active:scale-95"
                     >

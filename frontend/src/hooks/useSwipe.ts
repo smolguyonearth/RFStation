@@ -3,14 +3,18 @@ import { useState } from 'react';
 export function useSwipe(onSwipeLeft: () => void, onSwipeRight: () => void) {
     const [startX, setStartX] = useState<number | null>(null);
 
-    const handlePointerDown = (e: React.PointerEvent) => setStartX(e.clientX);
-    const handlePointerUp = (e: React.PointerEvent) => {
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setStartX(e.touches[0].clientX);
+    };
+
+    const handleTouchEnd = (e: React.TouchEvent) => {
         if (startX === null) return;
-        const distance = startX - e.clientX;
+        const endX = e.changedTouches[0].clientX;
+        const distance = startX - endX;
         if (distance > 50) onSwipeLeft();
         if (distance < -50) onSwipeRight();
         setStartX(null);
     };
 
-    return { onPointerDown: handlePointerDown, onPointerUp: handlePointerUp, className: "touch-pan-y" };
+    return { onTouchStart: handleTouchStart, onTouchEnd: handleTouchEnd, className: "touch-manipulation" };
 }

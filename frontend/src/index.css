@@ -18,33 +18,95 @@
 
   /* Keyframes */
   @keyframes float-slow {
-    0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-15px) scale(1.05); }
+
+    0%,
+    100% {
+      transform: translateY(0) scale(1);
+    }
+
+    50% {
+      transform: translateY(-15px) scale(1.05);
+    }
   }
+
   @keyframes float-medium {
-    0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-10px) scale(0.98); }
+
+    0%,
+    100% {
+      transform: translateY(0) scale(1);
+    }
+
+    50% {
+      transform: translateY(-10px) scale(0.98);
+    }
   }
+
   @keyframes pulse-slow {
-    0%, 100% { opacity: 0.4; }
-    50% { opacity: 0.8; }
+
+    0%,
+    100% {
+      opacity: 0.4;
+    }
+
+    50% {
+      opacity: 0.8;
+    }
   }
+
   @keyframes glow-pink {
-    0%, 100% { box-shadow: 0 0 10px rgba(255, 46, 147, 0.15), inset 0 0 5px rgba(255, 46, 147, 0.1); border-color: rgba(255, 46, 147, 0.4); }
-    50% { box-shadow: 0 0 25px rgba(255, 46, 147, 0.5), inset 0 0 12px rgba(255, 46, 147, 0.25); border-color: rgba(255, 46, 147, 0.9); }
+
+    0%,
+    100% {
+      box-shadow: 0 0 10px rgba(255, 46, 147, 0.15), inset 0 0 5px rgba(255, 46, 147, 0.1);
+      border-color: rgba(255, 46, 147, 0.4);
+    }
+
+    50% {
+      box-shadow: 0 0 25px rgba(255, 46, 147, 0.5), inset 0 0 12px rgba(255, 46, 147, 0.25);
+      border-color: rgba(255, 46, 147, 0.9);
+    }
   }
+
   @keyframes glow-green {
-    0%, 100% { box-shadow: 0 0 10px rgba(16, 185, 129, 0.15), inset 0 0 5px rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.4); }
-    50% { box-shadow: 0 0 25px rgba(16, 185, 129, 0.5), inset 0 0 12px rgba(16, 185, 129, 0.25); border-color: rgba(16, 185, 129, 0.9); }
+
+    0%,
+    100% {
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.15), inset 0 0 5px rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+
+    50% {
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.5), inset 0 0 12px rgba(16, 185, 129, 0.25);
+      border-color: rgba(16, 185, 129, 0.9);
+    }
   }
+
   @keyframes glow-amber-pulse {
-    0%, 100% { box-shadow: 0 0 12px rgba(245, 158, 11, 0.2), inset 0 0 6px rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.4); }
-    50% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.6), inset 0 0 15px rgba(245, 158, 11, 0.3); border-color: rgba(245, 158, 11, 1); }
+
+    0%,
+    100% {
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.2), inset 0 0 6px rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.4);
+    }
+
+    50% {
+      box-shadow: 0 0 30px rgba(245, 158, 11, 0.6), inset 0 0 15px rgba(245, 158, 11, 0.3);
+      border-color: rgba(245, 158, 11, 1);
+    }
   }
+
   @keyframes border-run {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    0% {
+      background-position: 0% 50%;
+    }
+
+    50% {
+      background-position: 100% 50%;
+    }
+
+    100% {
+      background-position: 0% 50%;
+    }
   }
 }
 
@@ -64,4 +126,18 @@
   .font-sans {
     font-family: 'Quicksand', 'Inter', sans-serif;
   }
+}
+
+/* Fix iOS/iPadOS Safari: buttons inside user-select:none containers lose click events */
+button, a, [role="button"], input, select, textarea {
+  -webkit-user-select: auto;
+  user-select: auto;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.no-callout {
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
 }

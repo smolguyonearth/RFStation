@@ -87,7 +87,7 @@
         "use_controller": "Use the controller tablet to select a landmark.",
         "exhibition_active": "Exhibition Active",
         "select_to_explore": "Please select a landmark on the controller tablet to explore its story.",
-        "footer": "RFStation Display Console • V3.2"
+        "footer": "RFStation Display Console"
     },
     "game": {
         "status": "System Status: {{phase}} Phase",
@@ -104,7 +104,7 @@
         "guide_title": "Playing Guide",
         "skip_intro": "Skip Intro",
         "exhibit_console": "EXHIBITION CONSOLE • LIVE",
-        "footer_version": "RFSTATION V3.2",
+        "footer_version": "RFSTATION",
         "active_turn": "ACTIVE TURN",
         "territory_conquest": "TERRITORY CONQUEST",
         "phase": "{{phase}} PHASE",

@@ -110,7 +110,7 @@ export class GameLogic {
     this.activeMuseumLocation = null;
     this.p1ClaimHistory = [];
     this.p2ClaimHistory = [];
-    this.introActive = true;
+    this.introActive = false;
   }
 
   endTurn(): boolean {
@@ -248,7 +248,7 @@ export class GameLogic {
     if (this.mode === 'GAME') {
       this.gamePhase = 'TURN';
     }
-    
+
     // Live update scores
     this.calculateScores();
   }

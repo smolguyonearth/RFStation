@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useSwipe } from "@/hooks/useSwipe";
 import Dice from "@/components/Dice";
 import { useTranslation } from "react-i18next";
 
@@ -47,23 +46,14 @@ export default function BattlePhase({ gameState }: any) {
     }
   };
 
-  const swipeHandlers = useSwipe(
-    () => {
-      // Swipe Left (Next)
-      if (step === "ATTACKER_ROLL" && attackerRoll !== null) setStep("DEFENDER_ROLL");
-      if (step === "DEFENDER_ROLL" && defenderRoll !== null) setStep("RESULT");
-    },
-    () => { }, // Swipe Right (Ignore)
-  );
-
   return (
-    <div {...swipeHandlers} className="w-full h-full flex flex-col items-center justify-center p-6 bg-[#FDFBF9]">
+    <div className="w-full h-full flex flex-col items-center justify-center p-3 bg-[#FDFBF9]">
 
       {/* Main Card Container */}
-      <div className="w-full max-w-sm bg-white rounded-[32px] border border-zinc-100 shadow-sm p-8 flex flex-col items-center animate-in fade-in duration-500">
+      <div className="w-full max-w-sm bg-white rounded-[32px] border border-zinc-100 shadow-sm p-4 sm:p-6 flex flex-col items-center animate-in fade-in duration-500">
 
         {/* Header Section */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-4">
           <span className="text-[10px] font-bold tracking-[0.25em] text-[#FF6B81] bg-[#FF6B81]/10 px-4 py-1.5 rounded-full uppercase">
             {step === "ATTACKER_ROLL" 
               ? t("battle.attacker_tag") 
@@ -71,7 +61,7 @@ export default function BattlePhase({ gameState }: any) {
                 ? t("battle.defender_tag") 
                 : t("battle.outcome_tag")}
           </span>
-          <h2 className="text-xl font-light mt-4 text-zinc-900 tracking-wide uppercase">
+          <h2 className="text-lg font-light mt-2 text-zinc-900 tracking-wide uppercase">
             {step === "ATTACKER_ROLL" 
               ? t("battle.attacker_title", { attacker }) 
               : step === "DEFENDER_ROLL" 
@@ -79,7 +69,7 @@ export default function BattlePhase({ gameState }: any) {
                 : t("battle.result_title")}
           </h2>
           {step !== "RESULT" && (
-            <p className="text-zinc-400 font-medium text-[10px] mt-2 uppercase tracking-wider">
+            <p className="text-zinc-400 font-medium text-[10px] mt-1.5 uppercase tracking-wider">
               {t("battle.loc", { row: gameState.battleContext?.row + 1, col: gameState.battleContext?.col + 1 })}
             </p>
           )}
@@ -91,6 +81,10 @@ export default function BattlePhase({ gameState }: any) {
             <Dice mode="D8" label={t("dice.roll", { mode: "D8" })} onRoll={setAttackerRoll} />
             {attackerRoll !== null && (
               <button
+                onTouchStart={(e) => {
+                  setStep("DEFENDER_ROLL");
+                  if (e.cancelable) e.preventDefault();
+                }}
                 onClick={() => setStep("DEFENDER_ROLL")}
                 className="w-full py-3.5 bg-[#FF6B81] hover:bg-[#FF5267] text-white font-bold text-xs uppercase tracking-widest rounded-2xl transition-all shadow-lg shadow-[#FF6B81]/20"
               >
@@ -105,6 +99,10 @@ export default function BattlePhase({ gameState }: any) {
             <Dice mode="D8" label={t("dice.roll", { mode: "D8" })} onRoll={setDefenderRoll} />
             {defenderRoll !== null && (
               <button
+                onTouchStart={(e) => {
+                  setStep("RESULT");
+                  if (e.cancelable) e.preventDefault();
+                }}
                 onClick={() => setStep("RESULT")}
                 className="w-full py-3.5 bg-[#FF6B81] hover:bg-[#FF5267] text-white font-bold text-xs uppercase tracking-widest rounded-2xl transition-all shadow-lg shadow-[#FF6B81]/20"
               >
@@ -139,6 +137,10 @@ export default function BattlePhase({ gameState }: any) {
             </div>
 
             <button
+              onTouchStart={(e) => {
+                handleResultNext();
+                if (e.cancelable) e.preventDefault();
+              }}
               onClick={handleResultNext}
               className="w-full py-3.5 bg-zinc-900 hover:bg-zinc-800 text-white font-bold text-xs uppercase tracking-widest rounded-2xl transition-all"
             >
