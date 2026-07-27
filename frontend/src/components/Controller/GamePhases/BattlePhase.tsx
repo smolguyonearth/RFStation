@@ -78,7 +78,7 @@ export default function BattlePhase({ gameState }: any) {
         {/* Content Section based on Step */}
         {step === "ATTACKER_ROLL" && (
           <div className="w-full flex flex-col items-center gap-6">
-            <Dice mode="D8" label={t("dice.roll", { mode: "D8" })} onRoll={setAttackerRoll} />
+            <Dice mode="D8" label={t("dice.roll", { mode: "D8" })} onRoll={setAttackerRoll} playerId={attacker as 1 | 2} />
             {attackerRoll !== null && (
               <button
                 data-testid="attacker-roll-next-btn"
@@ -87,7 +87,11 @@ export default function BattlePhase({ gameState }: any) {
                   if (e.cancelable) e.preventDefault();
                 }}
                 onClick={() => setStep("DEFENDER_ROLL")}
-                className="w-full py-3.5 bg-[#FF6B81] hover:bg-[#FF5267] text-white font-bold text-xs uppercase tracking-widest rounded-2xl transition-all shadow-lg shadow-[#FF6B81]/20"
+                className={`w-full py-3.5 text-white font-bold text-xs uppercase tracking-widest rounded-2xl transition-all shadow-lg ${
+                  attacker === 1
+                    ? "bg-[#3B82F6] hover:bg-blue-500 shadow-blue-200"
+                    : "bg-[#EF4444] hover:bg-red-500 shadow-red-200"
+                }`}
               >
                 {t("battle.confirm_roll")}
               </button>
@@ -97,7 +101,7 @@ export default function BattlePhase({ gameState }: any) {
 
         {step === "DEFENDER_ROLL" && (
           <div className="w-full flex flex-col items-center gap-6">
-            <Dice mode="D8" label={t("dice.roll", { mode: "D8" })} onRoll={setDefenderRoll} />
+            <Dice mode="D8" label={t("dice.roll", { mode: "D8" })} onRoll={setDefenderRoll} playerId={defender as 1 | 2} />
             {defenderRoll !== null && (
               <button
                 data-testid="defender-roll-next-btn"
@@ -106,7 +110,11 @@ export default function BattlePhase({ gameState }: any) {
                   if (e.cancelable) e.preventDefault();
                 }}
                 onClick={() => setStep("RESULT")}
-                className="w-full py-3.5 bg-[#FF6B81] hover:bg-[#FF5267] text-white font-bold text-xs uppercase tracking-widest rounded-2xl transition-all shadow-lg shadow-[#FF6B81]/20"
+                className={`w-full py-3.5 text-white font-bold text-xs uppercase tracking-widest rounded-2xl transition-all shadow-lg ${
+                  defender === 1
+                    ? "bg-[#3B82F6] hover:bg-blue-500 shadow-blue-200"
+                    : "bg-[#EF4444] hover:bg-red-500 shadow-red-200"
+                }`}
               >
                 {t("battle.show_results")}
               </button>
@@ -119,18 +127,24 @@ export default function BattlePhase({ gameState }: any) {
             {/* Score Display */}
             <div className="flex items-center justify-between w-full mb-8 bg-zinc-50 p-6 rounded-2xl border border-zinc-100">
               <div className="text-center">
-                <p className="text-[9px] font-bold text-zinc-400 uppercase">{attacker === 1 ? t("game.p1") : t("game.p2")}</p>
-                <p className="text-3xl font-light text-zinc-900 mt-1">{attackerRoll}</p>
+                <p className={`text-[9px] font-extrabold uppercase ${attacker === 1 ? "text-[#3B82F6]" : "text-[#EF4444]"}`}>{attacker === 1 ? t("game.p1") : t("game.p2")}</p>
+                <p className={`text-3xl font-extrabold mt-1 ${attacker === 1 ? "text-[#3B82F6]" : "text-[#EF4444]"}`}>{attackerRoll}</p>
               </div>
               <div className="text-zinc-300 font-light text-sm">VS</div>
               <div className="text-center">
-                <p className="text-[9px] font-bold text-zinc-400 uppercase">{defender === 1 ? t("game.p1") : t("game.p2")}</p>
-                <p className="text-3xl font-light text-zinc-900 mt-1">{defenderRoll}</p>
+                <p className={`text-[9px] font-extrabold uppercase ${defender === 1 ? "text-[#3B82F6]" : "text-[#EF4444]"}`}>{defender === 1 ? t("game.p1") : t("game.p2")}</p>
+                <p className={`text-3xl font-extrabold mt-1 ${defender === 1 ? "text-[#3B82F6]" : "text-[#EF4444]"}`}>{defenderRoll}</p>
               </div>
             </div>
 
             {/* Winner Badge */}
-            <div className={`mb-8 px-6 py-3 rounded-xl text-center w-full ${attackerRoll === defenderRoll ? "bg-amber-50 text-amber-600" : "bg-[#FF6B81]/10 text-[#FF6B81]"}`}>
+            <div className={`mb-8 px-6 py-3 rounded-xl text-center w-full border ${
+              attackerRoll === defenderRoll
+                ? "bg-amber-50 text-amber-600 border-amber-100"
+                : (attackerRoll! > defenderRoll! ? attacker : defender) === 1
+                ? "bg-blue-50 text-blue-600 border-blue-100"
+                : "bg-red-50 text-red-600 border-red-100"
+            }`}>
               <p className="text-[10px] font-bold uppercase tracking-widest">
                 {attackerRoll === defenderRoll 
                   ? t("battle.clash") 

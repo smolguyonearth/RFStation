@@ -98,7 +98,7 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                     </h2>
 
                     <div className="my-2">
-                        <Dice mode="D20" label={t("dice.roll", { mode: "D20" })} onRoll={handleP1Roll} onBeforeRoll={handleBeforeRoll} />
+                        <Dice mode="D20" label={t("dice.roll", { mode: "D20" })} onRoll={handleP1Roll} onBeforeRoll={handleBeforeRoll} playerId={1} />
                     </div>
 
                     {p1Roll !== null && (
@@ -110,7 +110,7 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                                     if (e.cancelable) e.preventDefault();
                                 }}
                                 onClick={() => setStep("P2_ROLL")}
-                                className="px-8 py-3.5 bg-[#FFEBF0] text-[#FF7899] border border-[#FFD6E0] font-extrabold text-xs uppercase tracking-widest rounded-2xl hover:bg-[#FFD6E0] active:scale-95 transition-all shadow-cute-sm animate-pop"
+                                className="px-8 py-3.5 bg-[#EFF6FF] text-[#3B82F6] border border-[#BFDBFE] font-extrabold text-xs uppercase tracking-widest rounded-2xl hover:bg-[#BFDBFE] hover:text-white active:scale-95 transition-all shadow-cute-sm animate-pop"
                             >
                                 {t("init_roll.next_p2")}
                             </button>
@@ -132,7 +132,7 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                     </h2>
 
                     <div className="my-2">
-                        <Dice mode="D20" label={t("dice.roll", { mode: "D20" })} onRoll={handleP2Roll} onBeforeRoll={handleBeforeRoll} />
+                        <Dice mode="D20" label={t("dice.roll", { mode: "D20" })} onRoll={handleP2Roll} onBeforeRoll={handleBeforeRoll} playerId={2} />
                     </div>
 
                     {p2Roll !== null && (
@@ -144,7 +144,7 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                                     if (e.cancelable) e.preventDefault();
                                 }}
                                 onClick={() => setStep("RESULT")}
-                                className="px-8 py-3.5 bg-[#FFEBF0] text-[#FF7899] border border-[#FFD6E0] font-extrabold text-xs uppercase tracking-widest rounded-2xl hover:bg-[#FFD6E0] active:scale-95 transition-all shadow-cute-sm animate-pop"
+                                className="px-8 py-3.5 bg-[#FEF2F2] text-[#EF4444] border border-[#FCA5A5] font-extrabold text-xs uppercase tracking-widest rounded-2xl hover:bg-[#FCA5A5] hover:text-white active:scale-95 transition-all shadow-cute-sm animate-pop"
                             >
                                 {t("init_roll.show_results")}
                             </button>
@@ -167,13 +167,13 @@ export default function InitRollPhase({ gameState, startGame }: any) {
 
                     <div className="flex justify-center items-center gap-12 w-full max-w-sm mb-8 bg-white border border-[#FFF0F3] p-6 rounded-3xl shadow-cute">
                         <div className="flex flex-col items-center gap-2 flex-1">
-                          <span className="text-[11px] font-bold text-indigo-500 uppercase tracking-wider">{t("game.p1")}</span>
-                          <span className="text-5xl font-extrabold text-indigo-600 font-mono">{p1Roll}</span>
+                          <span className="text-[11px] font-bold text-[#3B82F6] uppercase tracking-wider">{t("game.p1")}</span>
+                          <span className="text-5xl font-extrabold text-[#3B82F6] font-mono">{p1Roll}</span>
                         </div>
                         <div className="w-[1px] h-16 bg-zinc-200" />
                         <div className="flex flex-col items-center gap-2 flex-1">
-                          <span className="text-[11px] font-bold text-[#FF7899] uppercase tracking-wider">{t("game.p2")}</span>
-                          <span className="text-5xl font-extrabold text-[#FF7899] font-mono">{p2Roll}</span>
+                          <span className="text-[11px] font-bold text-[#EF4444] uppercase tracking-wider">{t("game.p2")}</span>
+                          <span className="text-5xl font-extrabold text-[#EF4444] font-mono">{p2Roll}</span>
                         </div>
                     </div>
 
@@ -194,7 +194,7 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                             if (e.cancelable) e.preventDefault();
                         }}
                         onClick={handleResultNext}
-                        className="px-8 py-4 bg-[#333C4E] hover:bg-zinc-800 text-white font-extrabold text-xs uppercase tracking-widest rounded-2xl transition-all shadow-md active:scale-95"
+                        className="px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs uppercase tracking-widest rounded-2xl transition-all shadow-md shadow-emerald-100 active:scale-95"
                     >
                         {p1Roll === p2Roll ? t("init_roll.roll_again") : t("init_roll.start_game")}
                     </button>

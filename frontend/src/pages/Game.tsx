@@ -132,10 +132,10 @@ export default function Game() {
           <div className="bg-white border border-[#FFF0F3] p-10 rounded-3xl shadow-cute flex flex-col items-center animate-in fade-in zoom-in duration-500">
             <h2 className="text-2xl font-black text-[#333C4E] mb-8 uppercase tracking-tight">Mission Start</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-              <button onClick={() => handleStart(1)} className="group flex items-center justify-center gap-3 p-4 bg-indigo-500 hover:bg-indigo-400 text-white rounded-2xl font-bold text-xs uppercase transition-all shadow-lg shadow-indigo-200">
+              <button onClick={() => handleStart(1)} className="group flex items-center justify-center gap-3 p-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold text-xs uppercase transition-all shadow-lg shadow-blue-200">
                 <Play size={16} /> Player 1 Init
               </button>
-              <button onClick={() => handleStart(2)} className="group flex items-center justify-center gap-3 p-4 bg-[#FF7899] hover:bg-[#FF8FAB] text-white rounded-2xl font-bold text-xs uppercase transition-all shadow-lg shadow-pink-200">
+              <button onClick={() => handleStart(2)} className="group flex items-center justify-center gap-3 p-4 bg-red-600 hover:bg-red-500 text-white rounded-2xl font-bold text-xs uppercase transition-all shadow-lg shadow-red-200">
                 <Play size={16} /> Player 2 Init
               </button>
             </div>
@@ -153,13 +153,13 @@ export default function Game() {
               {game.scores[1] > game.scores[2] ? "Player 1 Victory" : game.scores[2] > game.scores[1] ? "Player 2 Victory" : "Draw Scenario"}
             </p>
             <div className="flex gap-4 w-full">
-              <div className="flex-1 text-center bg-[#EEF2FF] border border-[#C7D2FE] p-4 rounded-2xl">
+              <div className="flex-1 text-center bg-[#EFF6FF] border border-[#BFDBFE] p-4 rounded-2xl">
                 <div className="text-[10px] text-zinc-400 font-bold uppercase">P1 Score</div>
-                <div className="text-2xl font-mono mt-1 text-indigo-500 font-bold">{game.scores[1]}</div>
+                <div className="text-2xl font-mono mt-1 text-blue-600 font-bold">{game.scores[1]}</div>
               </div>
-              <div className="flex-1 text-center bg-[#FFEBF0] border border-[#FFD6E0] p-4 rounded-2xl">
+              <div className="flex-1 text-center bg-[#FEF2F2] border border-[#FCA5A5] p-4 rounded-2xl">
                 <div className="text-[10px] text-zinc-400 font-bold uppercase">P2 Score</div>
-                <div className="text-2xl font-mono mt-1 text-[#FF7899] font-bold">{game.scores[2]}</div>
+                <div className="text-2xl font-mono mt-1 text-red-600 font-bold">{game.scores[2]}</div>
               </div>
             </div>
             <button onClick={() => handleStart(1)} className="mt-8 w-full py-4 bg-[#333C4E] hover:bg-[#4A5568] text-white rounded-2xl font-black text-xs uppercase tracking-widest transition-all">
@@ -172,9 +172,9 @@ export default function Game() {
         {(game.state === 'playing' || game.state === 'battle') && (
           <div className={`transition-all duration-500 ${game.state === 'battle' ? 'opacity-30 blur-sm pointer-events-none' : ''}`}>
             <div className="flex justify-between items-center mb-8 bg-white border border-[#FFF0F3] p-4 rounded-2xl shadow-cute-xs">
-              <div className={`px-4 py-2 rounded-lg text-[10px] font-bold uppercase transition-all ${game.currentPlayer === 1 ? 'bg-indigo-500 text-white' : 'text-zinc-400'}`}>Player 1</div>
+              <div className={`px-4 py-2 rounded-lg text-[10px] font-bold uppercase transition-all ${game.currentPlayer === 1 ? 'bg-blue-600 text-white' : 'text-zinc-400'}`}>Player 1</div>
               <div className="font-mono font-bold text-lg text-[#333C4E]">{game.turnsLeft}</div>
-              <div className={`px-4 py-2 rounded-lg text-[10px] font-bold uppercase transition-all ${game.currentPlayer === 2 ? 'bg-[#FF7899] text-white' : 'text-zinc-400'}`}>Player 2</div>
+              <div className={`px-4 py-2 rounded-lg text-[10px] font-bold uppercase transition-all ${game.currentPlayer === 2 ? 'bg-red-600 text-white' : 'text-zinc-400'}`}>Player 2</div>
             </div>
 
             <div className="grid grid-cols-3 gap-3">
@@ -185,8 +185,8 @@ export default function Game() {
                     onClick={() => handleAction(rIdx, cIdx)}
                     className="aspect-square bg-white border border-[#FFF0F3] rounded-3xl flex items-center justify-center relative hover:border-[#FFD6E0] transition-all group shadow-cute-xs"
                   >
-                    <div className={`w-12 h-12 rounded-2xl transition-all duration-300 ${owner === 1 ? 'bg-indigo-400 shadow-[0_0_20px_rgba(99,102,241,0.3)] scale-110' :
-                      owner === 2 ? 'bg-[#FF7899] shadow-[0_0_20px_rgba(255,120,153,0.3)] scale-110' :
+                    <div className={`w-12 h-12 rounded-2xl transition-all duration-300 ${owner === 1 ? 'bg-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.3)] scale-110' :
+                      owner === 2 ? 'bg-red-400 shadow-[0_0_20px_rgba(239,68,68,0.3)] scale-110' :
                         'bg-[#F5F5F5] border border-zinc-100'
                       }`} />
                   </button>
@@ -201,14 +201,14 @@ export default function Game() {
       {game.state === 'battle' && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-[#FAF9F6]/80 backdrop-blur-md">
           <div className="bg-white border border-[#FFF0F3] p-8 rounded-3xl shadow-cute w-full max-w-xs flex flex-col items-center animate-in zoom-in duration-300">
-            <div className="p-4 bg-[#FFEBF0] border border-[#FFD6E0] rounded-2xl mb-6 animate-pulse">
-              <Swords size={32} className="text-[#FF7899]" />
+            <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl mb-6 animate-pulse">
+              <Swords size={32} className="text-amber-500" />
             </div>
             <h2 className="text-xl font-black text-[#333C4E] mb-2 uppercase">Battle Sequence</h2>
             <p className="text-zinc-400 text-xs font-bold text-center mb-8 uppercase">Conflict detected at coordinates [{game.battleContext?.row},{game.battleContext?.col}]. Authorize victor:</p>
             <div className="flex gap-3 w-full">
-              <button onClick={() => handleResolve(1)} className="flex-1 py-3 bg-indigo-500 hover:bg-indigo-400 text-white rounded-xl font-bold text-[10px] uppercase transition-all">P1 Wins</button>
-              <button onClick={() => handleResolve(2)} className="flex-1 py-3 bg-[#FF7899] hover:bg-[#FF8FAB] text-white rounded-xl font-bold text-[10px] uppercase transition-all">P2 Wins</button>
+              <button onClick={() => handleResolve(1)} className="flex-1 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-[10px] uppercase transition-all">P1 Wins</button>
+              <button onClick={() => handleResolve(2)} className="flex-1 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl font-bold text-[10px] uppercase transition-all">P2 Wins</button>
             </div>
           </div>
         </div>

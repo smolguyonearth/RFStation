@@ -23,7 +23,7 @@ export default function TurnPhase({ gameState, endTurn }: any) {
           key="roll"
           className="w-full flex flex-col items-center justify-center animate-fade-in"
         >
-          <span className={`text-[10px] font-extrabold tracking-[0.2em] uppercase mb-2 px-4 py-2 rounded-full border shadow-cute-xs ${isP1 ? "text-[#4F46E5] bg-[#EEF2FF] border-[#C7D2FE]" : "text-[#FF7899] bg-[#FFEBF0] border-[#FFD6E0]"
+          <span className={`text-[10px] font-extrabold tracking-[0.2em] uppercase mb-2 px-4 py-2 rounded-full border shadow-cute-xs ${isP1 ? "text-[#3B82F6] bg-[#EFF6FF] border-[#BFDBFE]" : "text-[#EF4444] bg-[#FEF2F2] border-[#FCA5A5]"
             }`}>
             {t("turn.active_player")}
           </span>
@@ -38,6 +38,7 @@ export default function TurnPhase({ gameState, endTurn }: any) {
               mode="D6"
               label={t("dice.roll", { mode: "D6" })}
               onRoll={handleRoll}
+              playerId={gameState.currentPlayer}
             />
           </div>
 
@@ -51,8 +52,8 @@ export default function TurnPhase({ gameState, endTurn }: any) {
                 }}
                 onClick={() => setStep("ACTION")}
                 className={`px-8 py-3.5 font-extrabold text-xs uppercase tracking-widest rounded-2xl transition-all shadow-cute border-2 ${isP1
-                    ? "bg-[#EEF2FF] hover:bg-[#C7D2FE] text-[#4F46E5] border-[#C7D2FE]"
-                    : "bg-[#FFEBF0] hover:bg-[#FFD6E0] text-[#FF7899] border-[#FFD6E0]"
+                  ? "bg-[#EFF6FF] hover:bg-[#BFDBFE] text-[#3B82F6] border-[#BFDBFE]"
+                  : "bg-[#FEF2F2] hover:bg-[#FCA5A5] text-[#EF4444] border-[#FCA5A5]"
                   }`}
               >
                 {t("turn.next_move")}
@@ -67,7 +68,7 @@ export default function TurnPhase({ gameState, endTurn }: any) {
           key="action"
           className="w-full max-w-md flex flex-col items-center justify-center animate-fade-in"
         >
-          <span className={`text-[10px] font-extrabold tracking-[0.2em] uppercase mb-4 px-4 py-2 rounded-full border shadow-cute-xs ${isP1 ? "text-[#4F46E5] bg-[#EEF2FF] border-[#C7D2FE]" : "text-[#FF7899] bg-[#FFEBF0] border-[#FFD6E0]"
+          <span className={`text-[10px] font-extrabold tracking-[0.2em] uppercase mb-4 px-4 py-2 rounded-full border shadow-cute-xs ${isP1 ? "text-[#3B82F6] bg-[#EFF6FF] border-[#BFDBFE]" : "text-[#EF4444] bg-[#FEF2F2] border-[#FCA5A5]"
             }`}>
             {t("turn.board_action")}
           </span>
@@ -77,9 +78,9 @@ export default function TurnPhase({ gameState, endTurn }: any) {
           </h2>
 
           <div className="w-full bg-white border border-[#FFF0F3] rounded-[2.5rem] p-7 shadow-cute mb-6 text-left relative overflow-hidden">
-            <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${isP1 ? "from-blue-500 to-indigo-500" : "from-[#FF7899] to-pink-300"}`} />
-            
-            <span className={`text-[10px] font-extrabold tracking-[0.25em] uppercase block ${isP1 ? "text-indigo-600" : "text-[#FF7899]"}`}>
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
+
+            <span className="text-[10px] font-extrabold tracking-[0.25em] uppercase block text-indigo-600">
               {t("turn.checklist")}
             </span>
             <h3 className="text-sm font-black mt-1.5 mb-4 uppercase tracking-wider text-zinc-700">
@@ -88,14 +89,14 @@ export default function TurnPhase({ gameState, endTurn }: any) {
 
             <ul className="space-y-3.5 text-[13px] text-zinc-600 font-bold">
               <li className="flex items-start gap-3 bg-zinc-50/50 p-3 rounded-2xl border border-zinc-100/60">
-                <span className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${isP1 ? "bg-indigo-600" : "bg-[#FF7899]"}`} />
+                <span className="w-2 h-2 rounded-full mt-1.5 shrink-0 bg-indigo-500" />
                 <span>{t("turn.checklist_1")}</span>
               </li>
               <li className="flex items-start gap-3 bg-zinc-50/50 p-3 rounded-2xl border border-zinc-100/60">
-                <span className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${isP1 ? "bg-indigo-600" : "bg-[#FF7899]"}`} />
+                <span className="w-2 h-2 rounded-full mt-1.5 shrink-0 bg-indigo-500" />
                 <span>{t("turn.checklist_2")}</span>
               </li>
-              <li className={`flex items-start gap-3 px-4 py-3 rounded-2xl border ${isP1 ? "text-[#4F46E5] bg-[#EEF2FF]/60 border-[#C7D2FE]/70" : "text-[#FF7899] bg-[#FFEBF0]/60 border-[#FFD6E0]/70"}`}>
+              <li className="flex items-start gap-3 px-4 py-3 rounded-2xl border text-amber-800 bg-amber-50/60 border-amber-200/70">
                 <span className="w-2 h-2 rounded-full bg-amber-400 mt-1.5 shrink-0 animate-pulse" />
                 <span className="font-extrabold">{t("turn.checklist_3")}</span>
               </li>
@@ -109,10 +110,7 @@ export default function TurnPhase({ gameState, endTurn }: any) {
               if (e.cancelable) e.preventDefault();
             }}
             onClick={() => endTurn()}
-            className={`w-full py-4 text-xs font-extrabold uppercase tracking-widest rounded-2xl transition-all border-2 shadow-cute active:scale-95 ${isP1
-                ? "bg-[#EEF2FF] hover:bg-[#C7D2FE] text-[#4F46E5] border-[#C7D2FE]"
-                : "bg-[#FFEBF0] hover:bg-[#FFD6E0] text-[#FF7899] border-[#FFD6E0]"
-              }`}
+            className="w-full py-4 text-xs font-extrabold uppercase tracking-widest rounded-2xl transition-all border-2 bg-[#333C4E] hover:bg-zinc-800 text-white border-[#333C4E] hover:border-zinc-800 shadow-cute-sm active:scale-95"
           >
             {t("turn.end_turn")}
           </button>

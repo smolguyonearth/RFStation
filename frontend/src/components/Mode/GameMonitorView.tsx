@@ -14,6 +14,7 @@ import {
   PlayerScoreCard,
   GameStatusPanel,
   BattleOverlay,
+  EndPhaseOverlay,
 } from "./GameMonitor/GameMonitorComponents";
 
 export type { GameData };
@@ -111,6 +112,7 @@ export default function GameMonitorView({
 
         {/* Battle Phase Alert Overlay */}
         {game.gamePhase === "BATTLE" && <BattleOverlay t={t} />}
+        {game.gamePhase === "END" && <EndPhaseOverlay t={t} scores={game.scores} />}
       </div>
     </div>
   );

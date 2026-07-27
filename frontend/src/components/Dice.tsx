@@ -9,9 +9,10 @@ interface NeonDiceProps {
   label?: string;
   onBeforeRoll?: () => boolean;
   resetTrigger?: any;
+  playerId?: 1 | 2;
 }
 
-export default function Dice({ mode, onRoll, label, onBeforeRoll, resetTrigger }: NeonDiceProps) {
+export default function Dice({ mode, onRoll, label, onBeforeRoll, resetTrigger, playerId }: NeonDiceProps) {
   const { t } = useTranslation();
   const [isRolling, setIsRolling] = useState(false);
   const [isHolding, setIsHolding] = useState(false);
@@ -148,6 +149,21 @@ export default function Dice({ mode, onRoll, label, onBeforeRoll, resetTrigger }
     }
   };
 
+  // Dynamic color configuration based on playerId
+  let labelColor = "text-[#FF7899]";
+  let chargeBg = "bg-[#FF7899]";
+  let buttonClasses = "bg-[#FFEBF0] text-[#FF7899] border-2 border-[#FFD6E0] hover:bg-[#FFD6E0] hover:text-white";
+  
+  if (playerId === 1) {
+    labelColor = "text-[#3B82F6]";
+    chargeBg = "bg-[#3B82F6]";
+    buttonClasses = "bg-[#EFF6FF] text-[#3B82F6] border-2 border-[#BFDBFE] hover:bg-[#BFDBFE] hover:text-white";
+  } else if (playerId === 2) {
+    labelColor = "text-[#EF4444]";
+    chargeBg = "bg-[#EF4444]";
+    buttonClasses = "bg-[#FEF2F2] text-[#EF4444] border-2 border-[#FCA5A5] hover:bg-[#FCA5A5] hover:text-white";
+  }
+
   return (
     <div className="flex flex-col items-center w-full max-w-[280px] mx-auto px-2">
       {/* Moderately Sized Dice Container to fit on Screen */}
@@ -159,18 +175,18 @@ export default function Dice({ mode, onRoll, label, onBeforeRoll, resetTrigger }
         >
           {diceValue}
         </div>
-        <div className="absolute bottom-4 font-extrabold text-[#FF7899] text-[9px] sm:text-[10px] tracking-[0.2em] uppercase">
+        <div className={`absolute bottom-4 font-extrabold ${labelColor} text-[9px] sm:text-[10px] tracking-[0.2em] uppercase`}>
           {label || mode}
         </div>
       </div>
 
       {(mode === "D6" || mode === "D8") && (
         <div className="w-full mt-6 flex flex-col gap-2">
-          {/* Cozy pastel pink charge tube */}
+          {/* Cozy pastel charge tube */}
           <div className="w-full h-2 bg-[#FAF9F6] border border-[#FFF0F3] rounded-full overflow-hidden relative shadow-inner">
             <div
               ref={tubeFillRef}
-              className="absolute top-0 left-0 h-full bg-[#FF7899] rounded-full transition-colors duration-75"
+              className={`absolute top-0 left-0 h-full ${chargeBg} rounded-full transition-colors duration-75`}
               style={{ width: `0%` }}
             />
           </div>
@@ -184,7 +200,7 @@ export default function Dice({ mode, onRoll, label, onBeforeRoll, resetTrigger }
             onMouseDown={startHolding}
             onTouchStart={startHolding}
             disabled={isRolling || diceValue !== "?"}
-            className="mt-4 w-full py-3.5 px-6 bg-[#FFEBF0] text-[#FF7899] border-2 border-[#FFD6E0] font-extrabold text-xs tracking-wider uppercase rounded-2xl hover:bg-[#FFD6E0] hover:text-white active:scale-95 transition-all shadow-cute-xs cursor-pointer text-center disabled:opacity-50 disabled:pointer-events-none no-callout"
+            className={`mt-4 w-full py-3.5 px-6 font-extrabold text-xs tracking-wider uppercase rounded-2xl active:scale-95 transition-all shadow-cute-xs cursor-pointer text-center disabled:opacity-50 disabled:pointer-events-none no-callout ${buttonClasses}`}
           >
             {isHolding ? t("dice.charging") : isRolling ? t("dice.rolling") : diceValue !== "?" ? t("dice.rolled") : t("dice.hold", { mode })}
           </button>
@@ -200,7 +216,7 @@ export default function Dice({ mode, onRoll, label, onBeforeRoll, resetTrigger }
           }}
           onClick={rollD20}
           disabled={isRolling || diceValue !== "?"}
-          className="mt-6 w-full py-3.5 px-6 bg-[#FFEBF0] text-[#FF7899] border-2 border-[#FFD6E0] font-extrabold text-xs tracking-wider uppercase rounded-2xl hover:bg-[#FFD6E0] hover:text-white active:scale-95 transition-all shadow-cute-xs cursor-pointer text-center disabled:opacity-50 disabled:pointer-events-none"
+          className={`mt-6 w-full py-3.5 px-6 font-extrabold text-xs tracking-wider uppercase rounded-2xl active:scale-95 transition-all shadow-cute-xs cursor-pointer text-center disabled:opacity-50 disabled:pointer-events-none ${buttonClasses}`}
         >
           {isRolling ? t("dice.rolling") : diceValue !== "?" ? t("dice.rolled") : t("dice.roll", { mode })}
         </button>

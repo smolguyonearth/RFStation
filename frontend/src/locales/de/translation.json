@@ -166,7 +166,8 @@
         "tie_game": "Unentschieden",
         "p1_wins": "Spieler 1 gewinnt",
         "p2_wins": "Spieler 2 gewinnt",
-        "play_again": "Nochmal spielen"
+        "play_again": "Nochmal spielen",
+        "waiting_for_restart": "Warten auf den Host zum Neustart des Spiels..."
     },
     "display": {
         "connecting": "Verbindung zum Systemkern wird hergestellt...",

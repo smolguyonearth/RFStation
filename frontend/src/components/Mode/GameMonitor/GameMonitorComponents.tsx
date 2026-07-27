@@ -39,29 +39,29 @@ const ZONE_NAME_MAP: Record<string, string> = {
 const PLAYER_CONFIG = {
   1: {
     labelKey: "game.p1",
-    activeClasses: "border-[#C2F0D9] bg-[#E1F7EC]/40 shadow-cute-sm scale-102",
+    activeClasses: "border-[#BFDBFE] bg-[#EFF6FF]/40 shadow-cute-sm scale-102",
     inactiveClasses: "border-zinc-100 bg-[#FAF9F6]/50 opacity-40",
-    bulbColor: "bg-[#2BB673]",
-    textColor: "text-[#2BB673]",
-    badgeColor: "bg-[#2BB673]",
+    bulbColor: "bg-[#3B82F6]",
+    textColor: "text-[#3B82F6]",
+    badgeColor: "bg-[#3B82F6]",
     statusColor: (isWaiting: boolean) =>
       isWaiting
         ? "bg-[#FAF9F6] text-zinc-400 border-zinc-100"
-        : "bg-[#E1F7EC] text-[#2BB673] border-[#C2F0D9]",
+        : "bg-[#EFF6FF] text-[#3B82F6] border-[#BFDBFE]",
     testId: "monitor-p1-card",
     scoreTestId: "monitor-p1-score",
   },
   2: {
     labelKey: "game.p2",
-    activeClasses: "border-[#FFD6E0] bg-[#FFEBF0]/40 shadow-cute-sm scale-102",
+    activeClasses: "border-[#FCA5A5] bg-[#FEF2F2]/40 shadow-cute-sm scale-102",
     inactiveClasses: "border-zinc-100 bg-[#FAF9F6]/50 opacity-40",
-    bulbColor: "bg-[#FF7899]",
-    textColor: "text-[#FF7899]",
-    badgeColor: "bg-[#FF7899]",
+    bulbColor: "bg-[#EF4444]",
+    textColor: "text-[#EF4444]",
+    badgeColor: "bg-[#EF4444]",
     statusColor: (isWaiting: boolean) =>
       isWaiting
         ? "bg-[#FAF9F6] text-zinc-400 border-zinc-100"
-        : "bg-[#FFEBF0] text-[#FF7899] border-[#FFD6E0]",
+        : "bg-[#FEF2F2] text-[#EF4444] border-[#FCA5A5]",
     testId: "monitor-p2-card",
     scoreTestId: "monitor-p2-score",
   },
@@ -73,11 +73,11 @@ export function GameIntroScreen({ language, t }: GameIntroScreenProps) {
   return (
     <div className="w-full max-w-6xl mx-auto flex flex-col items-center justify-center relative select-none px-4 py-12 font-sans text-[#333C4E]">
       <div className="w-full max-w-2xl bg-white border border-[#FFF0F3] rounded-[2.5rem] p-12 shadow-cute flex flex-col items-center justify-center text-center relative overflow-hidden animate-pop">
-        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 via-[#FF7899] to-[#2BB673]" />
-        <div className="w-20 h-20 bg-[#FFEBF0] border border-[#FFD6E0] flex items-center justify-center rounded-full text-3xl mb-8 shadow-cute animate-pulse">
+        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 via-[#EF4444] to-[#3B82F6]" />
+        <div className="w-20 h-20 bg-[#EFF6FF] border border-[#BFDBFE] flex items-center justify-center rounded-full text-3xl mb-8 shadow-cute animate-pulse">
           🔊
         </div>
-        <span className="text-[10px] font-black tracking-[0.25em] text-[#FF7899] bg-[#FFEBF0] border border-[#FFD6E0] px-4 py-2 rounded-full uppercase mb-4 shadow-cute-xs">
+        <span className="text-[10px] font-black tracking-[0.25em] text-[#3B82F6] bg-[#EFF6FF] border border-[#BFDBFE] px-4 py-2 rounded-full uppercase mb-4 shadow-cute-xs">
           {t("game.intro_tag")}
         </span>
         <h2 className="text-2xl md:text-3xl font-extrabold text-[#333C4E] mb-2 tracking-widest uppercase text-center">
@@ -217,6 +217,82 @@ export function BattleOverlay({ t }: BattleOverlayProps) {
         </h2>
         <p className="text-zinc-500 text-xs font-bold leading-relaxed max-w-xs mt-2 uppercase tracking-widest leading-relaxed">
           {t("game.battle_desc")}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+interface EndPhaseOverlayProps {
+  t: (key: string, options?: Record<string, unknown>) => string;
+  scores: Record<number, number>;
+}
+
+export function EndPhaseOverlay({ t, scores }: EndPhaseOverlayProps) {
+  const p1 = scores[1];
+  const p2 = scores[2];
+
+  let statusText = t("end.tie_game");
+  let badgeColor = "bg-amber-50 text-amber-800 border-amber-200";
+  let accentColor = "from-amber-400 to-orange-500 shadow-amber-100";
+  let winnerBanner = "border-amber-100 bg-amber-50/30";
+
+  if (p1 > p2) {
+    statusText = t("end.p1_wins");
+    badgeColor = "bg-[#EFF6FF] text-blue-800 border-blue-200";
+    accentColor = "from-blue-500 to-indigo-600 shadow-blue-100";
+    winnerBanner = "border-blue-100 bg-[#EFF6FF]/30";
+  } else if (p2 > p1) {
+    statusText = t("end.p2_wins");
+    badgeColor = "bg-[#FEF2F2] text-red-800 border-red-200";
+    accentColor = "from-red-500 to-rose-600 shadow-red-100";
+    winnerBanner = "border-red-100 bg-[#FEF2F2]/30";
+  }
+
+  return (
+    <div className="absolute inset-0 flex items-center justify-center z-50 bg-[#FAF9F6]/95 backdrop-blur-md rounded-[2.5rem] animate-fade-in p-6">
+      <div className={`text-center px-16 py-14 bg-white border-2 ${winnerBanner} rounded-[3rem] shadow-cute max-w-lg w-full animate-pop flex flex-col items-center relative overflow-hidden`}>
+        {/* Dynamic Gradient Accent Bar */}
+        <div className={`absolute top-0 left-0 right-0 h-2 bg-gradient-to-r ${accentColor}`} />
+
+        {/* Large Celebratory Icon with soft glow */}
+        <div className="w-24 h-24 bg-zinc-50 border border-zinc-100 flex items-center justify-center rounded-full mb-8 shadow-cute animate-pulse">
+          {p1 === p2 ? (
+            <Sparkles size={44} className="text-amber-500" />
+          ) : (
+            <Trophy size={44} className={p1 > p2 ? "text-blue-500" : "text-red-500"} />
+          )}
+        </div>
+
+        <span className={`text-[11px] font-black tracking-[0.25em] uppercase px-5 py-2.5 rounded-full border mb-6 shadow-cute-xs ${badgeColor}`}>
+          {t("end.conquest_complete")}
+        </span>
+
+        <h2 className="text-4xl font-black tracking-wide text-[#333C4E] mb-10 uppercase leading-none">
+          {statusText}
+        </h2>
+
+        {/* Side by side visual scoreboard comparing P1 and P2 */}
+        <div className="flex items-center justify-between w-full max-w-xs bg-zinc-50/50 p-6 rounded-[2rem] border border-zinc-100 shadow-inner">
+          {/* Player 1 Details */}
+          <div className="flex flex-col items-center gap-2 flex-1">
+            <span className="text-xs font-black text-blue-600 tracking-widest uppercase">{t("game.p1")}</span>
+            <span className="text-5xl font-black text-blue-600 font-mono leading-none">{p1}</span>
+          </div>
+
+          {/* VS Divider */}
+          <div className="w-[1px] h-16 bg-zinc-200 mx-4" />
+
+          {/* Player 2 Details */}
+          <div className="flex flex-col items-center gap-2 flex-1">
+            <span className="text-xs font-black text-red-600 tracking-widest uppercase">{t("game.p2")}</span>
+            <span className="text-5xl font-black text-red-600 font-mono leading-none">{p2}</span>
+          </div>
+        </div>
+        
+        {/* Waiting for controller restart indicator */}
+        <p className="text-[10px] text-zinc-400 font-black tracking-widest uppercase mt-10 animate-pulse">
+          {t("end.waiting_for_restart")}
         </p>
       </div>
     </div>

@@ -17,41 +17,41 @@ export default function GameControllerView({
     <div className="flex-grow p-4 sm:p-6 lg:p-8 flex flex-col h-full bg-[#FAF9F6] text-[#333C4E] font-sans justify-between relative animate-fade-in select-none overflow-hidden">
       {/* Top Header Deck - Structured 3-Column Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-4 pb-4 border-b border-[#FFF0F3] z-10 w-full shrink-0">
-        {/* Left: Status & Title */}
-        <div className="flex flex-col items-start gap-1">
-          <span className="text-[9px] font-extrabold tracking-[0.2em] text-[#FF7899] bg-[#FFEBF0] border border-[#FFD6E0] px-2.5 py-1 rounded-full uppercase shadow-cute-xs inline-block">
+        {/* Left: Status & Round */}
+        <div className="flex flex-col items-start gap-1.5">
+          <span className="text-[9px] font-extrabold tracking-[0.2em] text-zinc-500 bg-zinc-100 border border-zinc-200 px-2.5 py-1 rounded-full uppercase shadow-cute-xs inline-block">
             {t("game.status", { phase: gameState.gamePhase })}
           </span>
-          <h1 className="text-base font-black tracking-wider text-[#333C4E] uppercase">
-            {t("game.controller_title")}
-          </h1>
-        </div>
-
-        {/* Center: Scoreboard & Round Counter */}
-        <div className="flex items-center justify-center gap-3 w-full">
-          {/* Player 1 Card */}
-          <div className="flex items-center gap-2 bg-[#EEF2FF] border border-[#C7D2FE] px-3.5 py-1.5 rounded-xl shadow-cute-xs">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#4F46E5]" />
-            <span className="text-[9px] font-bold text-indigo-700 uppercase tracking-wider">{t("game.p1")}</span>
-            <strong className="text-sm font-extrabold text-[#333C4E]">{gameState.scores[1]}</strong>
-          </div>
-
-          {/* VS Divider */}
-          <span className="text-zinc-300 font-bold text-[10px] uppercase">vs</span>
-
-          {/* Player 2 Card */}
-          <div className="flex items-center gap-2 bg-[#FFEBF0] border border-[#FFD6E0] px-3.5 py-1.5 rounded-xl shadow-cute-xs">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#FF7899]" />
-            <span className="text-[9px] font-bold text-[#FF7899] uppercase tracking-wider">{t("game.p2")}</span>
-            <strong className="text-sm font-extrabold text-[#333C4E]">{gameState.scores[2]}</strong>
-          </div>
-
-          {/* Turn Count Card */}
-          <div className="flex items-center gap-1.5 bg-[#FFFBE6] border border-[#FFE3B5] px-3.5 py-1.5 rounded-xl text-amber-700 text-[9px] font-bold tracking-wide shadow-cute-xs">
+          <div className="flex items-center gap-1 bg-[#FFFBE6] border border-[#FFE3B5] px-2.5 py-1 rounded-full text-amber-700 text-[9px] font-extrabold tracking-widest uppercase shadow-cute-xs">
             <span>{t("game.round")}</span>
-            <span className="text-amber-800 font-extrabold">{gameState.currentTurn}</span>
+            <span className="text-amber-800">{gameState.currentTurn}</span>
             <span className="text-zinc-300">/</span>
             <span>10</span>
+          </div>
+        </div>
+
+        {/* Center: Title & Scoreboard */}
+        <div className="flex flex-col items-center justify-center gap-1.5 w-full">
+          <h1 className="text-[11px] font-black tracking-[0.2em] text-[#333C4E] uppercase">
+            {t("game.controller_title")}
+          </h1>
+          <div className="flex items-center justify-center gap-3">
+            {/* Player 1 Card */}
+            <div className="flex items-center gap-2 bg-[#EFF6FF] border border-[#BFDBFE] px-3.5 py-1.5 rounded-xl shadow-cute-xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#3B82F6]" />
+              <span className="text-[9px] font-bold text-blue-700 uppercase tracking-wider">{t("game.p1")}</span>
+              <strong className="text-sm font-extrabold text-[#333C4E]">{gameState.scores[1]}</strong>
+            </div>
+
+            {/* VS Divider */}
+            <span className="text-zinc-300 font-bold text-[10px] uppercase">vs</span>
+
+            {/* Player 2 Card */}
+            <div className="flex items-center gap-2 bg-[#FEF2F2] border border-[#FCA5A5] px-3.5 py-1.5 rounded-xl shadow-cute-xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#EF4444]" />
+              <span className="text-[9px] font-bold text-red-700 uppercase tracking-wider">{t("game.p2")}</span>
+              <strong className="text-sm font-extrabold text-[#333C4E]">{gameState.scores[2]}</strong>
+            </div>
           </div>
         </div>
 

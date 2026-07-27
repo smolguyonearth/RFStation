@@ -166,7 +166,8 @@
         "tie_game": "Tie Game",
         "p1_wins": "Player 1 Wins",
         "p2_wins": "Player 2 Wins",
-        "play_again": "Play Again"
+        "play_again": "Play Again",
+        "waiting_for_restart": "Waiting for host to restart game..."
     },
     "display": {
         "connecting": "Connecting to system core...",
