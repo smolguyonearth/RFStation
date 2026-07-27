@@ -136,6 +136,7 @@ export class GameLogic {
       if (this.gamePhase !== 'TURN') return false; // Ignore actions if not in TURN phase
 
       // --- PHYSICAL LOCATION CHECK ---
+      /* 
       if (!override) {
         const requiredZone = this.rowColToZone(row, col);
         const activeZone = this.currentPlayer === 1 ? this.p1PhysicalZone : this.p2PhysicalZone;
@@ -145,6 +146,7 @@ export class GameLogic {
           return false;
         }
       }
+      */
       // -------------------------------
 
       const currentOwner = this.matrix[row][col];
