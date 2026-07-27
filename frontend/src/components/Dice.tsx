@@ -180,6 +180,7 @@ export default function Dice({ mode, onRoll, label, onBeforeRoll, resetTrigger }
           </div>
 
           <button
+            data-testid="roll-charge-btn"
             onMouseDown={startHolding}
             onTouchStart={startHolding}
             disabled={isRolling || diceValue !== "?"}
@@ -189,9 +190,10 @@ export default function Dice({ mode, onRoll, label, onBeforeRoll, resetTrigger }
           </button>
         </div>
       )}
-
+ 
       {mode === "D20" && (
         <button
+          data-testid="roll-d20-btn"
           onTouchStart={(e) => {
             rollD20();
             if (e.cancelable) e.preventDefault();

@@ -81,6 +81,7 @@ export default function BattlePhase({ gameState }: any) {
             <Dice mode="D8" label={t("dice.roll", { mode: "D8" })} onRoll={setAttackerRoll} />
             {attackerRoll !== null && (
               <button
+                data-testid="attacker-roll-next-btn"
                 onTouchStart={(e) => {
                   setStep("DEFENDER_ROLL");
                   if (e.cancelable) e.preventDefault();
@@ -99,6 +100,7 @@ export default function BattlePhase({ gameState }: any) {
             <Dice mode="D8" label={t("dice.roll", { mode: "D8" })} onRoll={setDefenderRoll} />
             {defenderRoll !== null && (
               <button
+                data-testid="defender-roll-next-btn"
                 onTouchStart={(e) => {
                   setStep("RESULT");
                   if (e.cancelable) e.preventDefault();
@@ -137,6 +139,7 @@ export default function BattlePhase({ gameState }: any) {
             </div>
 
             <button
+              data-testid="battle-resolve-btn"
               onTouchStart={(e) => {
                 handleResultNext();
                 if (e.cancelable) e.preventDefault();

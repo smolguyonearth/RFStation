@@ -536,7 +536,7 @@ ws.onmessage = (event) => {
 |------|----------|
 | [`Game.tsx`](file:///Users/nitisj/Workspace/Internship/Station/frontend/src/pages/Game.tsx) | `GET /api/game/status` + `POST /api/game/start` + `POST /api/action` + `POST /api/game/resolve` + `POST /api/game/reset` + `WS /ws` |
 | [`Monitor.tsx`](file:///Users/nitisj/Workspace/Internship/Station/frontend/src/pages/Monitor.tsx) | `WS /ws` เท่านั้น |
-| [`useDeviceStream.ts`](file:///Users/nitisj/Workspace/Internship/Station/frontend/src/hook/useDeviceStream.ts) | `WS /ws` เท่านั้น |
+| [`useDeviceStream.ts`](file:///Users/nitisj/Workspace/Internship/Station/frontend/src/hooks/useDeviceStream.ts) | `WS /ws` เท่านั้น |
 
 ### 5.3 Flow Diagram
 

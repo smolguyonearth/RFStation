@@ -44,6 +44,7 @@ export default function TurnPhase({ gameState, endTurn }: any) {
           {hasRolled && (
             <div className="mt-4 flex flex-col items-center">
               <button
+                data-testid="next-move-btn"
                 onTouchStart={(e) => {
                   setStep("ACTION");
                   if (e.cancelable) e.preventDefault();
@@ -102,6 +103,7 @@ export default function TurnPhase({ gameState, endTurn }: any) {
           </div>
 
           <button
+            data-testid="end-turn-btn"
             onTouchStart={(e) => {
               endTurn();
               if (e.cancelable) e.preventDefault();

@@ -58,6 +58,7 @@ export default function GameControllerView({
         {/* Right: Global Controls */}
         <div className="flex justify-end gap-2 w-full">
           <button
+            data-testid="restart-btn"
             onTouchStart={(e) => {
               resetGame();
               if (e.cancelable) e.preventDefault();
@@ -71,6 +72,7 @@ export default function GameControllerView({
             {t("game.restart")}
           </button>
           <button
+            data-testid="exit-btn"
             onTouchStart={(e) => {
               setMode("IDLE");
               if (e.cancelable) e.preventDefault();

@@ -66,6 +66,7 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                     {t("game.intro_desc")}
                 </p>
                 <button
+                    data-testid="skip-intro-btn"
                     onTouchStart={(e) => {
                         handleSkipIntro();
                         if (e.cancelable) e.preventDefault();
@@ -103,6 +104,7 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                     {p1Roll !== null && (
                         <div className="mt-4 flex flex-col items-center">
                             <button
+                                data-testid="p1-roll-next-btn"
                                 onTouchStart={(e) => {
                                     setStep("P2_ROLL");
                                     if (e.cancelable) e.preventDefault();
@@ -136,6 +138,7 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                     {p2Roll !== null && (
                         <div className="mt-4 flex flex-col items-center">
                             <button
+                                data-testid="p2-roll-next-btn"
                                 onTouchStart={(e) => {
                                     setStep("RESULT");
                                     if (e.cancelable) e.preventDefault();
@@ -164,13 +167,13 @@ export default function InitRollPhase({ gameState, startGame }: any) {
 
                     <div className="flex justify-center items-center gap-12 w-full max-w-sm mb-8 bg-white border border-[#FFF0F3] p-6 rounded-3xl shadow-cute">
                         <div className="flex flex-col items-center gap-2 flex-1">
-                            <span className="text-[11px] font-bold text-indigo-500 uppercase tracking-wider">{t("game.p1")}</span>
-                            <span className="text-5xl font-extrabold text-indigo-600 font-mono">{p1Roll}</span>
+                          <span className="text-[11px] font-bold text-indigo-500 uppercase tracking-wider">{t("game.p1")}</span>
+                          <span className="text-5xl font-extrabold text-indigo-600 font-mono">{p1Roll}</span>
                         </div>
                         <div className="w-[1px] h-16 bg-zinc-200" />
                         <div className="flex flex-col items-center gap-2 flex-1">
-                            <span className="text-[11px] font-bold text-[#FF7899] uppercase tracking-wider">{t("game.p2")}</span>
-                            <span className="text-5xl font-extrabold text-[#FF7899] font-mono">{p2Roll}</span>
+                          <span className="text-[11px] font-bold text-[#FF7899] uppercase tracking-wider">{t("game.p2")}</span>
+                          <span className="text-5xl font-extrabold text-[#FF7899] font-mono">{p2Roll}</span>
                         </div>
                     </div>
 
@@ -185,6 +188,7 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                     </div>
 
                     <button
+                        data-testid="start-game-btn"
                         onTouchStart={(e) => {
                             handleResultNext();
                             if (e.cancelable) e.preventDefault();

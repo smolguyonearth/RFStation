@@ -41,6 +41,7 @@ export default function SetupView({
           {(["EN", "TH", "DE"] as Language[]).map((lang) => (
             <button
               key={lang}
+              data-testid={`lang-btn-${lang}`}
               onTouchStart={(e) => {
                 setSelectedLang(lang);
                 i18n.changeLanguage(lang.toLowerCase());
@@ -66,6 +67,7 @@ export default function SetupView({
           
           {/* Museum Mode card */}
           <button
+            data-testid="mode-museum-btn"
             onTouchStart={(e) => {
               setMode("MUSEUM", selectedLang);
               if (e.cancelable) e.preventDefault();
@@ -99,6 +101,7 @@ export default function SetupView({
 
           {/* Game Mode card */}
           <button
+            data-testid="mode-game-btn"
             onTouchStart={(e) => {
               setMode("GAME", selectedLang);
               if (e.cancelable) e.preventDefault();

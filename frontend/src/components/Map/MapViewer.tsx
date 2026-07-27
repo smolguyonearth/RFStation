@@ -2,13 +2,6 @@ import { Landmarks } from "@/constants/landmark"
 import mapVectorBg from "@/assets/Map_final_vecter.webp"
 import type { MapLocation } from "@/types/map.types"
 
-const getConquerorColor = (ownerId: string | null) => {
-    if (ownerId === "player_01") return "rgba(59, 130, 246, 0.6)";
-    if (ownerId === "player_02") return "rgba(236, 72, 153, 0.6)";
-    if (ownerId === "player_03") return "rgba(245, 158, 11, 0.6)";
-    return "rgba(0, 0, 0, 0.0)";
-}
-
 interface MapViewerProps {
     selectedLand: MapLocation | null;
     onSelect: (land: MapLocation) => void;
@@ -65,6 +58,7 @@ export default function MapViewer({ selectedLand, onSelect, ownershipMap }: MapV
                         return (
                             <path
                                 key={lm.id}
+                                data-testid={`landmark-path-${lm.id}`}
                                 d={lm.d}
                                 fill={getFillColor(lm)}
                                 stroke={getStrokeColor(lm, isSelected)}

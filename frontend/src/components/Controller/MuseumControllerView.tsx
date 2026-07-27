@@ -65,6 +65,7 @@ export default function MuseumControllerView({
           </p>
         </div>
         <button
+          data-testid="exit-btn"
           onClick={() => setMode("IDLE")}
           className="px-5 py-2.5 rounded-2xl border border-[#FFF0F3] bg-white text-xs font-bold uppercase tracking-wider text-zinc-500 hover:bg-[#FAF9F6] hover:border-[#FFD6E0] transition-all shadow-cute-xs flex items-center gap-2"
         >
