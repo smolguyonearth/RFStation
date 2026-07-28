@@ -8,6 +8,7 @@ interface GameIntroScreenProps {
 }
 
 interface PlayerScoreCardProps {
+  className?: string;
   playerId: 1 | 2;
   currentPlayer: number;
   score: number;
@@ -16,6 +17,7 @@ interface PlayerScoreCardProps {
 }
 
 interface GameStatusPanelProps {
+  className?: string;
   gamePhase: GamePhase;
   currentPlayer: number;
   t: (key: string, options?: Record<string, unknown>) => string;
@@ -77,7 +79,7 @@ export function GameIntroScreen({ language, t }: GameIntroScreenProps) {
         <div className="w-20 h-20 bg-[#EFF6FF] border border-[#BFDBFE] flex items-center justify-center rounded-full text-3xl mb-8 shadow-cute animate-pulse">
           🔊
         </div>
-        <span className="text-[10px] font-black tracking-[0.25em] text-[#3B82F6] bg-[#EFF6FF] border border-[#BFDBFE] px-4 py-2 rounded-full uppercase mb-4 shadow-cute-xs">
+        <span className="text-[10px] font-extrabold tracking-[0.25em] text-[#3F72AF] bg-[#3F72AF]/10 border border-[#3F72AF]/20 px-4 py-2 rounded-full uppercase mb-4 shadow-cute-xs">
           {t("game.intro_tag")}
         </span>
         <h2 className="text-2xl md:text-3xl font-extrabold text-[#333C4E] mb-2 tracking-widest uppercase text-center">
@@ -101,6 +103,7 @@ export function GameIntroScreen({ language, t }: GameIntroScreenProps) {
 }
 
 export function PlayerScoreCard({
+  className,
   playerId,
   currentPlayer,
   score,
@@ -114,9 +117,8 @@ export function PlayerScoreCard({
   return (
     <div
       data-testid={config.testId}
-      className={`relative rounded-3xl p-5 border transition-all duration-300 overflow-hidden flex flex-col items-center justify-center text-center mx-2 my-2 flex-1 ${
-        isActive ? config.activeClasses : config.inactiveClasses
-      }`}
+      className={`relative rounded-3xl p-5 border transition-all duration-300 overflow-hidden flex flex-col items-center justify-center text-center mx-2 my-2 ${className ?? ""
+        } ${isActive ? config.activeClasses : config.inactiveClasses}`}
     >
       <div className="flex flex-col gap-1.5 items-center w-full">
         <span
@@ -155,9 +157,11 @@ export function PlayerScoreCard({
   );
 }
 
-export function GameStatusPanel({ gamePhase, currentPlayer, t }: GameStatusPanelProps) {
+export function GameStatusPanel({ className, gamePhase, currentPlayer, t }: GameStatusPanelProps) {
   return (
-    <div className="flex flex-col items-center text-center p-3 bg-[#FAF9F6] border border-[#FFF0F3] rounded-3xl shadow-inner my-auto mx-2 animate-pop shrink-0">
+    <div
+      className={`flex flex-col items-center text-center p-3 bg-[#FAF9F6] border border-[#FFF0F3] rounded-3xl shadow-inner mx-2 my-2${className ?? ""}`}
+    >
       <h2 className="text-[10px] font-black tracking-[0.35em] text-zinc-400 uppercase mb-2">
         {t("game.territory_conquest")}
       </h2>
@@ -192,10 +196,10 @@ export function GameStatusPanel({ gamePhase, currentPlayer, t }: GameStatusPanel
         {gamePhase === "TURN"
           ? t("game.turn_desc", { player: currentPlayer })
           : gamePhase === "BATTLE"
-          ? t("game.combat_desc")
-          : gamePhase === "END"
-          ? t("game.gameover_desc")
-          : t("game.init_desc")}
+            ? t("game.combat_desc")
+            : gamePhase === "END"
+              ? t("game.gameover_desc")
+              : t("game.init_desc")}
       </p>
     </div>
   );
@@ -289,7 +293,7 @@ export function EndPhaseOverlay({ t, scores }: EndPhaseOverlayProps) {
             <span className="text-5xl font-black text-red-600 font-mono leading-none">{p2}</span>
           </div>
         </div>
-        
+
         {/* Waiting for controller restart indicator */}
         <p className="text-[10px] text-zinc-400 font-black tracking-widest uppercase mt-10 animate-pulse">
           {t("end.waiting_for_restart")}

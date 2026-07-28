@@ -10,6 +10,7 @@ interface LandmarkDetailsProps {
   hideGameplayDetails?: boolean;
   flat?: boolean;
   layout?: "vertical" | "split";
+  hideClose?: boolean;
 }
 
 export default function LandmarkDetails({
@@ -19,6 +20,7 @@ export default function LandmarkDetails({
   hideGameplayDetails = false,
   flat = false,
   layout = "vertical",
+  hideClose = false,
 }: LandmarkDetailsProps) {
   const { t } = useTranslation();
   const [isFullView, setIsFullView] = useState(false);
@@ -28,7 +30,7 @@ export default function LandmarkDetails({
   return (
     <div className={`${className} animate-in fade-in slide-in-from-bottom-8 duration-500`}>
       <div className={flat ? "h-full flex flex-col justify-between" : "bg-white rounded-[2rem] border border-[#FFF0F3] shadow-cute p-6 lg:p-10 h-full flex flex-col justify-between"}>
-        
+
         {/* Header Section */}
         <div className="flex items-center justify-between mb-6 pb-4 border-b border-zinc-100">
           <div>
@@ -42,13 +44,15 @@ export default function LandmarkDetails({
               </div>
             )}
           </div>
-          <button
-            onClick={onClose}
-            className="p-2.5 bg-[#FFEBF0] text-[#FF7899] border border-[#FFD6E0] rounded-xl shadow-cute-xs hover:bg-[#FF7899] hover:text-white transition-all duration-300"
-            aria-label={t("common.close")}
-          >
-            <X size={20} />
-          </button>
+          {!hideClose && (
+            <button
+              onClick={onClose}
+              className="p-2.5 bg-[#FFEBF0] text-[#FF7899] border border-[#FFD6E0] rounded-xl shadow-cute-xs hover:bg-[#FF7899] hover:text-white transition-all duration-300"
+              aria-label={t("common.close")}
+            >
+              <X size={20} />
+            </button>
+          )}
         </div>
 
         {layout === "split" ? (

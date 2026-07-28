@@ -56,7 +56,7 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                 <div className="w-16 h-16 bg-[#FFFBE6] border border-[#FFE3B5] flex items-center justify-center rounded-full text-2xl mb-6 shadow-cute-sm animate-pulse">
                     🔊
                 </div>
-                <span className="text-[10px] font-extrabold tracking-[0.25em] text-[#FF7899] bg-[#FFEBF0] border border-[#FFD6E0] px-4 py-2 rounded-full uppercase mb-4 shadow-cute-xs">
+                <span className="text-[10px] font-extrabold tracking-[0.25em] text-[#3F72AF] bg-[#3F72AF]/10 border border-[#3F72AF]/20 px-4 py-2 rounded-full uppercase mb-4 shadow-cute-xs">
                     {t("game.intro_tag")}
                 </span>
                 <h2 className="text-2xl md:text-3xl font-extrabold text-[#333C4E] mb-2 tracking-widest uppercase text-center">
@@ -72,7 +72,7 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                         if (e.cancelable) e.preventDefault();
                     }}
                     onClick={handleSkipIntro}
-                    className="px-8 py-3.5 bg-white border border-[#FFF0F3] text-zinc-500 font-extrabold text-xs uppercase tracking-widest rounded-2xl hover:bg-[#FFEBF0] hover:text-[#FF7899] transition-all shadow-cute-sm active:scale-95"
+                    className="px-8 py-3.5 bg-white border border-stone-200 text-stone-500 font-bold text-[11px] uppercase tracking-widest rounded-xl hover:border-[#3F72AF] hover:text-[#3F72AF] hover:bg-[#3F72AF]/5 transition-all duration-300 active:scale-95"
                 >
                     {t("game.skip_intro")}
                 </button>
@@ -90,7 +90,7 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                     key="p1"
                     className="w-full flex flex-col items-center justify-center animate-fade-in"
                 >
-                    <span className="text-[10px] font-extrabold tracking-[0.25em] text-[#FF7899] bg-[#FFEBF0] border border-[#FFD6E0] px-4 py-2 rounded-full uppercase mb-2 shadow-cute-xs">
+                    <span className="text-[10px] font-extrabold tracking-[0.25em] text-[#3F72AF] bg-[#3F72AF]/10 border border-[#3F72AF]/20 px-4 py-2 rounded-full uppercase mb-2 shadow-cute-xs">
                         {t("init_roll.phase_title")}
                     </span>
                     <h2 className="text-xl md:text-2xl font-extrabold text-[#333C4E] mb-2 tracking-widest uppercase text-center">
@@ -124,7 +124,7 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                     key="p2"
                     className="w-full flex flex-col items-center justify-center animate-fade-in"
                 >
-                    <span className="text-[10px] font-extrabold tracking-[0.25em] text-[#FF7899] bg-[#FFEBF0] border border-[#FFD6E0] px-4 py-2 rounded-full uppercase mb-2 shadow-cute-xs">
+                    <span className="text-[10px] font-extrabold tracking-[0.25em] text-[#3F72AF] bg-[#3F72AF]/10 border border-[#3F72AF]/20 px-4 py-2 rounded-full uppercase mb-2 shadow-cute-xs">
                         {t("init_roll.phase_title")}
                     </span>
                     <h2 className="text-xl md:text-2xl font-extrabold text-[#333C4E] mb-2 tracking-widest uppercase text-center">
@@ -144,7 +144,7 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                                     if (e.cancelable) e.preventDefault();
                                 }}
                                 onClick={() => setStep("RESULT")}
-                                className="px-8 py-3.5 bg-[#FEF2F2] text-[#EF4444] border border-[#FCA5A5] font-extrabold text-xs uppercase tracking-widest rounded-2xl hover:bg-[#FCA5A5] hover:text-white active:scale-95 transition-all shadow-cute-sm animate-pop"
+                                className="px-8 py-3.5 bg-[#FC5185]/10 text-[#FC5185] border border-[#FC5185]/20 font-extrabold text-xs uppercase tracking-widest rounded-2xl hover:bg-[#FC5185] hover:text-white active:scale-95 transition-all duration-300 shadow-sm animate-pop"
                             >
                                 {t("init_roll.show_results")}
                             </button>
@@ -167,21 +167,22 @@ export default function InitRollPhase({ gameState, startGame }: any) {
 
                     <div className="flex justify-center items-center gap-12 w-full max-w-sm mb-8 bg-white border border-[#FFF0F3] p-6 rounded-3xl shadow-cute">
                         <div className="flex flex-col items-center gap-2 flex-1">
-                          <span className="text-[11px] font-bold text-[#3B82F6] uppercase tracking-wider">{t("game.p1")}</span>
-                          <span className="text-5xl font-extrabold text-[#3B82F6] font-mono">{p1Roll}</span>
+                            <span className="text-[11px] font-bold text-[#3B82F6] uppercase tracking-wider">{t("game.p1")}</span>
+                            <span className="text-5xl font-extrabold text-[#3B82F6] font-mono">{p1Roll}</span>
                         </div>
                         <div className="w-[1px] h-16 bg-zinc-200" />
                         <div className="flex flex-col items-center gap-2 flex-1">
-                          <span className="text-[11px] font-bold text-[#EF4444] uppercase tracking-wider">{t("game.p2")}</span>
-                          <span className="text-5xl font-extrabold text-[#EF4444] font-mono">{p2Roll}</span>
+                            <span className="text-[11px] font-bold text-[#EF4444] uppercase tracking-wider">{t("game.p2")}</span>
+                            <span className="text-5xl font-extrabold text-[#EF4444] font-mono">{p2Roll}</span>
                         </div>
                     </div>
 
-                    <div className={`mb-8 text-xs sm:text-sm font-extrabold tracking-widest uppercase px-8 py-4 rounded-2xl border text-center shadow-cute-sm ${
-                        p1Roll === p2Roll
-                            ? "bg-[#FFFBE6] border-[#FFE3B5] text-amber-800"
-                            : "bg-[#E1F7EC] border-[#C2F0D9] text-emerald-800"
-                    }`}>
+                    <div className={`mb-8 text-xs sm:text-sm font-extrabold tracking-widest uppercase px-8 py-4 rounded-2xl border text-center shadow-cute-sm ${p1Roll === p2Roll
+                            ? "bg-[#FCE38A]/20 border-[#FCE38A] text-amber-900" // กรณีเสมอ
+                            : p1Roll! > p2Roll!
+                                ? "bg-[#3B82F6]/10 border-[#3B82F6]/20 text-[#3B82F6]" // กรณี Player 1 ชนะ
+                                : "bg-[#EF4444]/10 border-[#EF4444]/20 text-[#EF4444]" // กรณี Player 2 ชนะ
+                        }`}>
                         {p1Roll === p2Roll
                             ? t("init_roll.tie")
                             : t("init_roll.goes_first", { player: p1Roll! > p2Roll! ? 1 : 2 })}

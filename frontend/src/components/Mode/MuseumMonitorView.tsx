@@ -43,7 +43,7 @@ export default function MuseumMonitorView({
       AudioEngine.init();
       const ctx = AudioEngine.audioCtx;
       if (ctx) {
-        ctx.resume().catch(() => {});
+        ctx.resume().catch(() => { });
       }
     };
 
@@ -67,8 +67,8 @@ export default function MuseumMonitorView({
     AudioEngine.stopVoice();
 
     if (game.activeMuseumLocation &&
-        typeof game.activeMuseumLocation.row === "number" &&
-        typeof game.activeMuseumLocation.col === "number") {
+      typeof game.activeMuseumLocation.row === "number" &&
+      typeof game.activeMuseumLocation.col === "number") {
       const zone = matrixToSounds[game.activeMuseumLocation.row]?.[game.activeMuseumLocation.col];
       if (zone) {
         const lang = game.language || "EN";
@@ -111,28 +111,26 @@ export default function MuseumMonitorView({
     ["lm_10", "lm_02", "lm_04"],
   ];
 
-  const selectedLand = game.activeMuseumLocation &&
-                       typeof game.activeMuseumLocation.row === "number" &&
-                       typeof game.activeMuseumLocation.col === "number"
+  const activeLoc = game.activeMuseumLocation;
+  const selectedLand = activeLoc &&
+    typeof activeLoc.row === "number" &&
+    typeof activeLoc.col === "number"
     ? Landmarks.find(
       (l) =>
-        l.id === matrixToLandmarkId[game.activeMuseumLocation.row]?.[game.activeMuseumLocation.col]
+        l.id === matrixToLandmarkId[activeLoc.row]?.[activeLoc.col]
     ) || null
     : null;
 
   return (
-    <div className="w-full max-w-7xl mx-auto p-4 md:p-8 animate-fade-in flex flex-col h-screen font-sans text-zinc-800 bg-[#FAF9F6] justify-between">
+    <div className="w-full max-w-7xl mx-auto p-2 md:p-4 animate-fade-in flex flex-col h-screen font-sans text-stone-800 bg-stone-50 justify-between">
 
       {/* Header */}
-      <header className="mb-6 border-b border-[#FFF0F3] pb-6 flex justify-between items-baseline">
+      <header className="mb-6 border-b border-stone-200 pb-6 flex justify-between items-end">
         <div>
-          <span className="text-[10px] font-bold tracking-[0.25em] text-[#FF7899] bg-[#FFEBF0] px-3.5 py-1.5 rounded-full uppercase border border-[#FFD6E0] shadow-cute-xs inline-block">
-            {t("museum.exhibit_tag")}
-          </span>
-          <h1 className="text-3xl font-extrabold tracking-wide text-[#333C4E] uppercase mt-4">
+          {/* <h1 className="text-4xl font-serif font-light text-stone-900 tracking-tight">
             {t("museum.exhibit_title")}
-          </h1>
-          <p className="text-zinc-400 text-xs font-bold uppercase mt-1">
+          </h1> */}
+          <p className="text-stone-400 text-[10px] font-bold uppercase tracking-[0.3em] mt-3">
             {selectedLand ? t("museum.exploring") : t("museum.use_controller")}
           </p>
         </div>
@@ -141,25 +139,26 @@ export default function MuseumMonitorView({
       {/* Main Content Area */}
       <div className="flex-grow flex items-center justify-center mb-6 min-h-0 relative w-full">
         {selectedLand ? (
-          <div className="w-full h-full max-w-4xl bg-white border border-[#FFF0F3] rounded-[2.5rem] p-10 shadow-cute animate-pop overflow-y-auto">
+          <div className="w-full h-full max-w-4xl bg-white/70 backdrop-blur-sm border border-stone-200 rounded-3xl p-12 shadow-xl shadow-stone-200/20 animate-pop overflow-y-auto">
             <LandmarkDetails
               land={selectedLand}
               onClose={() => onAction(-1, -1)}
               flat={true}
               hideGameplayDetails={true}
-              className="w-full text-zinc-800"
+              className="w-full text-stone-800"
               layout="split"
+              hideClose={true}
             />
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center text-center animate-fade-in">
-            <div className="relative w-80 h-80 mb-6 bg-white border border-[#FFF0F3] p-6 rounded-[2.5rem] shadow-cute flex items-center justify-center">
-              <img src={mapVectorBg} className="w-full h-full object-contain opacity-90 rounded-[2rem]" />
+            <div className="relative w-72 h-72 mb-10 bg-white border border-stone-200 p-4 rounded-3xl shadow-lg flex items-center justify-center">
+              <img src={mapVectorBg} className="w-full h-full object-contain opacity-80 rounded-2xl" />
             </div>
-            <h2 className="text-2xl font-black text-[#333C4E] uppercase tracking-wide">
+            <h2 className="text-2xl font-serif font-light text-stone-900">
               {t("museum.exhibition_active")}
             </h2>
-            <p className="text-zinc-400 text-xs font-bold uppercase mt-2 tracking-widest leading-relaxed max-w-sm">
+            <p className="text-stone-400 text-[10px] font-bold uppercase tracking-[0.2em] mt-4">
               {t("museum.select_to_explore")}
             </p>
           </div>
@@ -167,7 +166,7 @@ export default function MuseumMonitorView({
       </div>
 
       {/* Footer */}
-      <div className="text-center text-[10px] font-bold text-zinc-400 tracking-[0.25em] uppercase pt-4 border-t border-[#FFF0F3]">
+      <div className="text-center text-[10px] font-bold text-stone-400 tracking-[0.3em] uppercase pt-6 border-t border-stone-200">
         {t("museum.footer")}
       </div>
     </div>

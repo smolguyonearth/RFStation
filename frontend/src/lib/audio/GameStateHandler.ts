@@ -52,7 +52,7 @@ export class GameStateHandler {
         }
     }
 
-    private static getP1LastLocation(): { row: number, col: number } | null {
+    public static getP1LastLocation(): { row: number, col: number } | null {
         if (this.p1LastLocation) return this.p1LastLocation;
         if (typeof window !== "undefined" && window.localStorage) {
             const stored = localStorage.getItem("p1_last_interacted");
@@ -66,7 +66,7 @@ export class GameStateHandler {
         return null;
     }
 
-    private static getP2LastLocation(): { row: number, col: number } | null {
+    public static getP2LastLocation(): { row: number, col: number } | null {
         if (this.p2LastLocation) return this.p2LastLocation;
         if (typeof window !== "undefined" && window.localStorage) {
             const stored = localStorage.getItem("p2_last_interacted");

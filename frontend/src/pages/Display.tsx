@@ -150,21 +150,21 @@ export default function Game() {
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden font-sans select-none font-light bg-[#FAF9F6] text-zinc-800">
-      <div className="w-full flex-grow flex flex-col p-4 md:p-8 bg-[#FAF9F6]">
+      <div className="w-full flex-grow flex flex-col bg-[#FAF9F6]">
         {game.mode === "IDLE" && (
           <div className="flex-1 p-6 md:p-12 flex flex-col items-center justify-center animate-fade-in min-h-full relative overflow-hidden select-none w-full">
             {/* Charming Soft Pastel Decorative Blobs */}
             <div className="absolute top-16 left-16 w-64 h-64 bg-[#E1F7EC]/40 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-20 right-20 w-72 h-72 bg-[#FFEBF0]/50 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute top-1/3 right-1/4 w-48 h-48 bg-[#FFFBE6]/60 rounded-full blur-3xl pointer-events-none" />
-            
+
             {/* Central Pill-shaped Card */}
             <div className="w-full max-w-4xl bg-white rounded-[3rem] shadow-[0_8px_40px_rgba(0,0,0,0.04)] p-12 md:p-20 flex flex-col items-center border border-[#FFF0F3] z-10 text-center">
-              
+
               <span className="text-[10px] md:text-xs font-extrabold tracking-[0.3em] text-indigo-500 bg-indigo-50 border border-indigo-100 px-5 py-2.5 rounded-full uppercase mb-6 shadow-sm">
                 Interactive Sound Exhibition
               </span>
-              
+
               <h2 className="text-xl md:text-2xl font-bold text-zinc-500 uppercase tracking-widest mb-4">
                 Welcome to the Exhibition
               </h2>
@@ -172,12 +172,12 @@ export default function Game() {
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight text-[#333C4E] leading-tight max-w-3xl mb-6">
                 THE LOST MEMORY
               </h1>
-              
+
               <p className="text-zinc-500 text-sm md:text-lg mt-2 tracking-wide font-medium max-w-2xl mx-auto leading-relaxed">
                 Bridging the Weser and the Chao Phraya through sound.
               </p>
 
-              <div className="mt-12 flex items-center justify-center gap-3 bg-[#FAF9F6] border border-zinc-200 px-6 py-4 rounded-2xl animate-pulse">
+              <div className="mt-12 flex items-center justify-center gap-3 bg-[#FAF9F6] border border-zinc-200 px-4 py-2 rounded-2xl animate-pulse">
                 <div className="w-3 h-3 rounded-full bg-emerald-400" />
                 <span className="text-xs md:text-sm font-bold text-zinc-600 uppercase tracking-widest">
                   {t("display.standby_desc")}

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 import Home from "@/pages/Home"
 import Map from "@/pages/Map"
@@ -7,12 +7,8 @@ import Display from "@/pages/Display"
 import Controller from "@/pages/Controller"
 
 // import Navbar from "@/components/Navbar"
-import Footer from "@/components/Footer"
 
 function AppContent() {
-  const location = useLocation();
-  const hideFooterRoutes = ["/controller", "/display", "/game", "/control", "/controll"];
-  const shouldShowFooter = !hideFooterRoutes.includes(location.pathname);
 
   return (
     <div className="min-h-screen lg:h-screen w-screen lg:max-h-screen lg:overflow-hidden bg-[#FAF9F6] text-[#333C4E] font-sans flex flex-col items-stretch">
@@ -34,8 +30,6 @@ function AppContent() {
               <Route path="/controll" element={<Controller />} />
             </Routes>
           </main>
-
-          {shouldShowFooter && <Footer />}
         </div>
 
       </div>

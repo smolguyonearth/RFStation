@@ -55,7 +55,7 @@ export default function GameMonitorView({
       <div className="absolute bottom-10 right-10 w-72 h-72 rounded-full bg-[#2BB673]/3 blur-[100px] animate-float-medium pointer-events-none" />
 
       {/* Header Panel */}
-      <div className="w-full flex justify-between items-center mb-4 z-10 shrink-0">
+      {/* <div className="w-full flex justify-between items-center mb-4 z-10 shrink-0">
         <div className="flex items-center gap-3">
           <div className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF7899] opacity-75"></span>
@@ -68,15 +68,14 @@ export default function GameMonitorView({
         <div className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">
           {t("game.footer_version")}
         </div>
-      </div>
+      </div> */}
 
       {/* Main Glass HUD Dashboard */}
       <div className="w-full bg-white border border-[#FFF0F3] rounded-[2.5rem] p-6 shadow-cute flex flex-col lg:flex-row gap-6 z-10 relative overflow-hidden flex-1 min-h-0">
         {/* Dynamic Game MapViewer (Left/Main Side) */}
         <div
-          className={`w-full lg:w-2/3 flex-1 min-h-0 bg-[#FAF9F6] border border-[#FFF0F3] rounded-[2rem] overflow-hidden transition-all duration-700 shadow-inner ${
-            game.gamePhase === "BATTLE" ? "scale-[0.97] opacity-40 blur-[1px] pointer-events-none" : ""
-          }`}
+          className={`w-full lg:w-2/3 flex-1 min-h-0 bg-[#FAF9F6] border border-[#FFF0F3] rounded-[2rem] overflow-hidden transition-all duration-700 shadow-inner ${game.gamePhase === "BATTLE" ? "scale-[0.97] opacity-40 blur-[1px] pointer-events-none" : ""
+            }`}
         >
           <MapViewer
             selectedLand={null}

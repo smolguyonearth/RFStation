@@ -19,12 +19,13 @@ export default function MuseumControllerView({
     ["lm_10", "lm_02", "lm_04"],
   ];
 
-  const selectedLand = gameState.activeMuseumLocation &&
-    typeof gameState.activeMuseumLocation.row === "number" &&
-    typeof gameState.activeMuseumLocation.col === "number"
+  const activeLoc = gameState.activeMuseumLocation;
+  const selectedLand = activeLoc &&
+    typeof activeLoc.row === "number" &&
+    typeof activeLoc.col === "number"
     ? Landmarks.find(
       (l) =>
-        l.id === matrixToLandmarkId[gameState.activeMuseumLocation.row]?.[gameState.activeMuseumLocation.col]
+        l.id === matrixToLandmarkId[activeLoc.row]?.[activeLoc.col]
     ) || null
     : null;
 
@@ -49,56 +50,55 @@ export default function MuseumControllerView({
   };
 
   return (
-    <div className="flex-grow p-4 sm:p-6 lg:p-8 flex flex-col animate-fade-in relative h-full bg-[#FAF9F6] text-[#333C4E] font-sans justify-between overflow-hidden select-none">
+    <div className="flex flex-col h-screen p-6 bg-stone-50 text-stone-800 font-sans overflow-hidden">
 
-      {/* Top Console Bar */}
-      <div className="relative z-50 flex justify-between items-baseline pb-6 border-b border-[#FFF0F3]">
-        <div>
-          <span className="text-[10px] font-bold tracking-[0.25em] text-[#FF7899] bg-[#FFEBF0] border border-[#FFD6E0] px-3.5 py-1.5 rounded-full uppercase shadow-cute-xs inline-block">
-            {t("museum.tag")}
-          </span>
-          <h1 className="text-2xl font-black tracking-wide text-[#333C4E] uppercase mt-4">
-            {t("museum.title")}
-          </h1>
-          <p className="text-zinc-400 text-xs font-bold mt-1 uppercase tracking-wider">
-            {t("museum.language")}: <span className="text-indigo-500">{gameState.language}</span>
-          </p>
+      {/* 1. Header Section: ล็อกความสูงไว้ ไม่ให้ยุ่งกับ Map */}
+      <div className="flex-none space-y-4 mb-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-xl font-serif font-bold text-[#364F6B] uppercase tracking-widest">
+              {t("museum.title")}
+            </h1>
+            <p className="text-stone-400 text-[10px] font-medium uppercase tracking-widest">
+              {t("museum.language")}: {gameState.language}
+            </p>
+          </div>
+          <button
+            onClick={() => setMode("IDLE")}
+            className="px-5 py-2 rounded-full border border-stone-200 bg-white text-[10px] font-bold uppercase tracking-widest text-stone-500 hover:border-stone-300 transition-all"
+          >
+            {t("museum.exit")}
+          </button>
         </div>
-        <button
-          data-testid="exit-btn"
-          onClick={() => setMode("IDLE")}
-          className="px-5 py-2.5 rounded-2xl border border-[#FFF0F3] bg-white text-xs font-bold uppercase tracking-wider text-zinc-500 hover:bg-[#FAF9F6] hover:border-[#FFD6E0] transition-all shadow-cute-xs flex items-center gap-2"
-        >
-          {t("museum.exit")}
-        </button>
-      </div>
 
-      {/* Main Map Viewer Console */}
-      <div className="flex-grow flex flex-col items-center justify-center my-4 md:my-6 z-10 w-full min-h-0">
-
+        {/* แถบ Playing: จะแสดงผลเมื่อมีข้อมูลเท่านั้น */}
         {selectedLand && (
-          <div className="text-center w-full max-w-sm animate-pop mb-4">
-            <div className="bg-[#E1F7EC] border border-[#C2F0D9] rounded-2xl px-6 py-3.5 shadow-cute-xs flex items-center justify-between gap-4">
+          <div className="flex justify-center animate-fade-in mb-4">
+            <div className="inline-flex items-center gap-4 bg-[#3FC1C9]/5 border border-[#3FC1C9]/20 rounded-full px-6 py-2 shadow-sm">
               <div className="flex items-center gap-2">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#3FC1C9] opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#3FC1C9]"></span>
                 </span>
-                <span className="text-[10px] font-bold tracking-wider text-emerald-800 uppercase">
-                  Playing: {t(selectedLand.name)}
+                <span className="text-[10px] font-bold tracking-widest text-[#3FC1C9] uppercase whitespace-nowrap">
+                  {t("museum.playing")}: {t(selectedLand.name)}
                 </span>
               </div>
+              <div className="h-3 w-px bg-[#3FC1C9]/20" /> {/* เส้นคั่นเล็กๆ */}
               <button
                 onClick={() => onAction(-1, -1)}
-                className="text-xs font-bold text-zinc-400 hover:text-rose-500 uppercase tracking-widest px-2 py-1 bg-white border border-zinc-100 rounded-lg shadow-sm"
+                className="text-[10px] font-bold text-stone-400 hover:text-[#FC5185] uppercase tracking-widest whitespace-nowrap"
               >
                 {t("common.close")}
               </button>
             </div>
           </div>
         )}
+      </div>
 
-        <div className="w-full max-w-3xl flex-1 max-h-[70vh] aspect-square bg-white border border-[#FFF0F3] rounded-[2.5rem] p-4 shadow-cute flex items-center justify-center relative min-h-0">
+      {/* 2. Map Section: ให้กินพื้นที่ส่วนที่เหลือทั้งหมด โดยไม่โดนเบียด */}
+      <div className="flex-grow flex items-center justify-center min-h-0">
+        <div className="w-full max-w-2xl aspect-square bg-white border border-stone-200 rounded-[2rem] p-4 shadow-sm flex items-center justify-center">
           <MapViewer
             selectedLand={selectedLand}
             onSelect={(land) => {
@@ -113,12 +113,6 @@ export default function MuseumControllerView({
           />
         </div>
       </div>
-
-      {/* Footer System Status */}
-      <div className="text-center text-[10px] font-bold text-zinc-400 tracking-[0.25em] uppercase pt-6 border-t border-[#FFF0F3]">
-        RFStation Audio System
-      </div>
-
     </div>
   );
 }

@@ -16,13 +16,10 @@ export default function GameControllerView({
   return (
     <div className="flex-grow p-4 sm:p-6 lg:p-8 flex flex-col h-full bg-[#FAF9F6] text-[#333C4E] font-sans justify-between relative animate-fade-in select-none overflow-hidden">
       {/* Top Header Deck - Structured 3-Column Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-4 pb-4 border-b border-[#FFF0F3] z-10 w-full shrink-0">
+      <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-4 pb-2 border-b border-[#FFF0F3] z-10 w-full shrink-0">
         {/* Left: Status & Round */}
         <div className="flex flex-col items-start gap-1.5">
-          <span className="text-[9px] font-extrabold tracking-[0.2em] text-zinc-500 bg-zinc-100 border border-zinc-200 px-2.5 py-1 rounded-full uppercase shadow-cute-xs inline-block">
-            {t("game.status", { phase: gameState.gamePhase })}
-          </span>
-          <div className="flex items-center gap-1 bg-[#FFFBE6] border border-[#FFE3B5] px-2.5 py-1 rounded-full text-amber-700 text-[9px] font-extrabold tracking-widest uppercase shadow-cute-xs">
+          <div className="flex items-center gap-2 bg-[#FFFBE6] border border-[#FFE3B5] px-4 py-2 rounded-full text-amber-700 text-[11px] font-extrabold tracking-widest uppercase shadow-cute-xs">
             <span>{t("game.round")}</span>
             <span className="text-amber-800">{gameState.currentTurn}</span>
             <span className="text-zinc-300">/</span>
