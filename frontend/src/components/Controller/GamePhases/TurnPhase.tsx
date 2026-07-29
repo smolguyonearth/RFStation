@@ -43,7 +43,7 @@ export default function TurnPhase({ gameState, endTurn }: any) {
           </div>
 
           {hasRolled && (
-            <div className="mt-4 flex flex-col items-center">
+            <div className="mt-2 lg:mt-4 flex flex-col items-center">
               <button
                 data-testid="next-move-btn"
                 onTouchStart={(e) => {
@@ -77,28 +77,32 @@ export default function TurnPhase({ gameState, endTurn }: any) {
             {t("turn.move_piece")}
           </h2>
 
-          <div className="w-full bg-white border border-[#FFF0F3] rounded-[2.5rem] p-7 shadow-cute mb-6 text-left relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
-
+          <div className="w-full bg-white border border-[#FFF0F3] rounded-[1.5rem] p-4 lg:p-7 shadow-cute mb-6 text-left relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-sky-300 to-pink-300" />
+            {/* 
             <span className="text-[10px] font-extrabold tracking-[0.25em] uppercase block text-indigo-600">
               {t("turn.checklist")}
-            </span>
-            <h3 className="text-sm font-black mt-1.5 mb-4 uppercase tracking-wider text-zinc-700">
+            </span> */}
+            <h3 className="text-sm font-black mt-1.5 mb-2 lg:mb-4 uppercase tracking-wider text-zinc-700">
               {t("turn.complete_on_board")}
             </h3>
 
-            <ul className="space-y-3.5 text-[13px] text-zinc-600 font-bold">
-              <li className="flex items-start gap-3 bg-zinc-50/50 p-3 rounded-2xl border border-zinc-100/60">
-                <span className="w-2 h-2 rounded-full mt-1.5 shrink-0 bg-indigo-500" />
+            <ul className="space-y-4 text-[13px] text-zinc-500 font-medium">
+              {/* Standard Items: ตัดกรอบและพื้นหลังออก ใช้แค่ Dot เล็กๆ */}
+              <li className="flex items-start gap-3">
+                <div className="w-1.5 h-1.5 rounded-full mt-1.5 bg-zinc-300 shrink-0" />
                 <span>{t("turn.checklist_1")}</span>
               </li>
-              <li className="flex items-start gap-3 bg-zinc-50/50 p-3 rounded-2xl border border-zinc-100/60">
-                <span className="w-2 h-2 rounded-full mt-1.5 shrink-0 bg-indigo-500" />
+
+              <li className="flex items-start gap-3">
+                <div className="w-1.5 h-1.5 rounded-full mt-1.5 bg-zinc-300 shrink-0" />
                 <span>{t("turn.checklist_2")}</span>
               </li>
-              <li className="flex items-start gap-3 px-4 py-3 rounded-2xl border text-amber-800 bg-amber-50/60 border-amber-200/70">
-                <span className="w-2 h-2 rounded-full bg-amber-400 mt-1.5 shrink-0 animate-pulse" />
-                <span className="font-extrabold">{t("turn.checklist_3")}</span>
+
+              {/* Active/Alert Item: ใช้สีอ่อนๆ เบาๆ เพื่อให้ดูเป็นจุดสนใจแต่ไม่ตะโกน */}
+              <li className="flex items-start gap-3 p-3 rounded-xl bg-amber-50/50 border border-amber-100/50 text-amber-800">
+                <div className="w-1.5 h-1.5 rounded-full mt-1.5 bg-amber-400 shrink-0 animate-pulse" />
+                <span className="font-semibold">{t("turn.checklist_3")}</span>
               </li>
             </ul>
           </div>

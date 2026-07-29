@@ -130,7 +130,7 @@ export function PlayerScoreCard({
         <div className="flex items-baseline justify-center">
           <span
             data-testid={config.scoreTestId}
-            className="text-5xl font-black text-zinc-800 font-mono leading-none tracking-tight"
+            className="text-2xl lg:text-5xl font-black text-zinc-800 font-mono leading-none tracking-tight"
           >
             {score}
           </span>
@@ -209,8 +209,7 @@ export function BattleOverlay({ t }: BattleOverlayProps) {
   return (
     <div className="absolute inset-0 flex items-center justify-center z-50 bg-[#FAF9F6]/90 backdrop-blur-xs rounded-[2.5rem] animate-fade-in p-6">
       <div className="text-center px-10 py-12 bg-white border border-[#FFF0F3] rounded-[2.5rem] shadow-cute max-w-sm w-full animate-pop flex flex-col items-center relative overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#FF7899] via-amber-400 to-[#2BB673]" />
-        <div className="p-4 bg-amber-500/10 rounded-full border border-amber-500/20 text-amber-500 mb-6 animate-pulse">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#A7D8FF] via-[#FFD1E6] to-[#FFC4D6]" />        <div className="p-4 bg-amber-500/10 rounded-full border border-amber-500/20 text-amber-500 mb-6 animate-pulse">
           <Swords size={40} className="text-amber-500" />
         </div>
         <span className="text-[10px] font-bold tracking-[0.25em] text-[#FF7899] bg-[#FFEBF0] border border-[#FFD6E0] px-4 py-1.5 rounded-xl uppercase shadow-cute-xs">

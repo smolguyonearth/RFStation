@@ -102,7 +102,7 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                     </div>
 
                     {p1Roll !== null && (
-                        <div className="mt-4 flex flex-col items-center">
+                        <div className="mt-2 lg:mt-4 flex flex-col items-center">
                             <button
                                 data-testid="p1-roll-next-btn"
                                 onTouchStart={(e) => {
@@ -136,7 +136,7 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                     </div>
 
                     {p2Roll !== null && (
-                        <div className="mt-4 flex flex-col items-center">
+                        <div className="mt-2 lg:mt-4 flex flex-col items-center">
                             <button
                                 data-testid="p2-roll-next-btn"
                                 onTouchStart={(e) => {
@@ -178,10 +178,10 @@ export default function InitRollPhase({ gameState, startGame }: any) {
                     </div>
 
                     <div className={`mb-8 text-xs sm:text-sm font-extrabold tracking-widest uppercase px-8 py-4 rounded-2xl border text-center shadow-cute-sm ${p1Roll === p2Roll
-                            ? "bg-[#FCE38A]/20 border-[#FCE38A] text-amber-900" // กรณีเสมอ
-                            : p1Roll! > p2Roll!
-                                ? "bg-[#3B82F6]/10 border-[#3B82F6]/20 text-[#3B82F6]" // กรณี Player 1 ชนะ
-                                : "bg-[#EF4444]/10 border-[#EF4444]/20 text-[#EF4444]" // กรณี Player 2 ชนะ
+                        ? "bg-[#FCE38A]/20 border-[#FCE38A] text-amber-900" // กรณีเสมอ
+                        : p1Roll! > p2Roll!
+                            ? "bg-[#3B82F6]/10 border-[#3B82F6]/20 text-[#3B82F6]" // กรณี Player 1 ชนะ
+                            : "bg-[#EF4444]/10 border-[#EF4444]/20 text-[#EF4444]" // กรณี Player 2 ชนะ
                         }`}>
                         {p1Roll === p2Roll
                             ? t("init_roll.tie")

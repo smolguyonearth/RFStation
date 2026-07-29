@@ -85,8 +85,9 @@ export default function GameMonitorView({
         </div>
 
         {/* Vertical Scoreboard Sidebar (Right Side) */}
-        <div className="w-full lg:w-76 flex flex-col gap-4 lg:gap-5 items-stretch shrink-0 overflow-y-auto px-3 pb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <div className="w-full lg:w-72 h-1/2 lg:h-full flex flex-col gap-4 lg:gap-5 items-stretch shrink-0 overflow-y-auto px-3 pb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <PlayerScoreCard
+            className="flex-1"
             playerId={1}
             currentPlayer={game.currentPlayer}
             score={game.scores[1]}
@@ -95,12 +96,14 @@ export default function GameMonitorView({
           />
 
           <GameStatusPanel
+            className="flex-1"
             gamePhase={game.gamePhase}
             currentPlayer={game.currentPlayer}
             t={t}
           />
 
           <PlayerScoreCard
+            className="flex-1"
             playerId={2}
             currentPlayer={game.currentPlayer}
             score={game.scores[2]}

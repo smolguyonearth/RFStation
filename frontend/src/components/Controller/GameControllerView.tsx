@@ -18,7 +18,7 @@ export default function GameControllerView({
       {/* Top Header Deck - Structured 3-Column Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-4 pb-2 border-b border-[#FFF0F3] z-10 w-full shrink-0">
         {/* Left: Status & Round */}
-        <div className="flex flex-col items-start gap-1.5">
+        <div className="flex flex-col items-center lg:items-start gap-1.5">
           <div className="flex items-center gap-2 bg-[#FFFBE6] border border-[#FFE3B5] px-4 py-2 rounded-full text-amber-700 text-[11px] font-extrabold tracking-widest uppercase shadow-cute-xs">
             <span>{t("game.round")}</span>
             <span className="text-amber-800">{gameState.currentTurn}</span>
@@ -53,7 +53,7 @@ export default function GameControllerView({
         </div>
 
         {/* Right: Global Controls */}
-        <div className="flex justify-end gap-2 w-full">
+        <div className="flex justify-center lg:justify-end gap-2 w-full">
           <button
             data-testid="restart-btn"
             onTouchStart={(e) => {
@@ -102,9 +102,9 @@ export default function GameControllerView({
       </div>
 
       {/* Bottom Status Deck */}
-      <div className="text-center text-[10px] font-bold text-zinc-300 tracking-[0.25em] uppercase pt-6 border-t border-[#FFF0F3]">
+      {/* <div className="text-center text-[10px] font-bold text-zinc-300 tracking-[0.25em] uppercase pt-6 border-t border-[#FFF0F3]">
         {t("game.control_footer")}
-      </div>
+      </div> */}
     </div>
   );
 }

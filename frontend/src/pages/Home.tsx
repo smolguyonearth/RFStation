@@ -81,9 +81,9 @@ export default function HomePage() {
             <Link to="/display" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto text-center bg-indigo-400 hover:bg-indigo-500 text-white font-semibold text-xs uppercase tracking-wider px-6 py-4 rounded-xl transition-all shadow-sm active:scale-95">
               Launch Display
             </Link>
-            <Link to="/map" className="w-full sm:w-auto text-center border border-slate-300 hover:bg-slate-100 text-slate-700 font-semibold text-xs uppercase tracking-wider px-6 py-4 rounded-xl transition-all active:scale-95">
+            {/* <Link to="/map" className="w-full sm:w-auto text-center border border-slate-300 hover:bg-slate-100 text-slate-700 font-semibold text-xs uppercase tracking-wider px-6 py-4 rounded-xl transition-all active:scale-95">
               View Map
-            </Link>
+            </Link> */}
           </div>
         </div>
 

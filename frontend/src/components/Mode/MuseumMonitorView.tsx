@@ -166,9 +166,9 @@ export default function MuseumMonitorView({
       </div>
 
       {/* Footer */}
-      <div className="text-center text-[10px] font-bold text-stone-400 tracking-[0.3em] uppercase pt-6 border-t border-stone-200">
+      {/* <div className="text-center text-[10px] font-bold text-stone-400 tracking-[0.3em] uppercase pt-6 border-t border-stone-200">
         {t("museum.footer")}
-      </div>
+      </div> */}
     </div>
   );
 }

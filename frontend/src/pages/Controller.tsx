@@ -115,7 +115,7 @@ export default function Controller() {
   return (
     <div className="h-[100dvh] max-h-[100dvh] w-full bg-gradient-to-br from-indigo-50 via-sky-50 to-rose-50 text-slate-800 font-sans flex flex-col relative overflow-hidden">
 
-      {/* Container สำหรับ View ต่างๆ */}
+      {/* Container */}
       <div className="relative z-10 flex-1 flex flex-col w-full h-full min-h-0 p-4">
         {gameState.mode === "IDLE" && <SetupView setMode={setMode} />}
         {gameState.mode === "MUSEUM" && (

@@ -150,7 +150,7 @@ export default function Game() {
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden font-sans select-none font-light bg-[#FAF9F6] text-zinc-800">
-      <div className="w-full flex-grow flex flex-col bg-[#FAF9F6]">
+      <div className="w-full flex-grow flex flex-col bg-[#FAF9F6] items-center justify-center">
         {game.mode === "IDLE" && (
           <div className="flex-1 p-6 md:p-12 flex flex-col items-center justify-center animate-fade-in min-h-full relative overflow-hidden select-none w-full">
             {/* Charming Soft Pastel Decorative Blobs */}
